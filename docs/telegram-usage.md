@@ -188,7 +188,7 @@ You can create your own keyboard in `config.json`:
 !!! Note "Supported Commands"
     Only the following commands are allowed. Command arguments are not supported!
 
-    `/start`, `/pause`, `/stop`, `/status`, `/status table`, `/trades`, `/profit`, `/performance`, `/daily`, `/stats`, `/count`, `/locks`, `/balance`, `/stopentry`, `/reload_config`, `/show_config`, `/logs`, `/whitelist`, `/blacklist`, `/help`, `/version`, `/marketdir`
+    `/start`, `/pause`, `/stop`, `/status`, `/status table`, `/trades`, `/profit`, `/performance`, `/daily`, `/stats`, `/count`, `/locks`, `/balance`, `/stopentry`, `/reload_config`, `/show_config`, `/logs`, `/whitelist`, `/blacklist`, `/help`, `/version`, `/marketdir`, `/longall`, `/shortall`, `/closelong`, `/closeshort`, `/enable_pairs`, `/disable_pairs`, `/setmaxopen`, `/emergency_stop`, `/pausefor`, `/risk_status`, `/quickstatus`, `/qs`, `/alerts`, `/watchlist`, `/pnl`, `/preset`, `/close_profitable`, `/close_losing`, `/scale_out`, `/enable_volatile`, `/disable_low_volume`, `/rotate_pairs`, `/pause_new_shorts`, `/pause_new_longs`, `/market_sentiment`, `/top_gainers`, `/top_losers`, `/avg_down`, `/take_profit`, `/breakeven`, `/config_backup`, `/config_restore`, `/strategy_reload`, `/menu_trade`, `/menu_risk`, `/menu_status`, `/disable_roi`, `/enable_roi`, `/set_roi`, `/disable_trailing`, `/enable_trailing`, `/profit_mode`, `/profit_status`, `/set_roi_long`, `/set_roi_short`, `/disable_roi_long`, `/disable_roi_short`, `/enable_roi_long`, `/enable_roi_short`, `/roi_status`, `/force_roi_check`, `/check_roi_targets`, `/auto_roi_mode`, `/extend_roi`
 
 ## Telegram commands
 
@@ -241,6 +241,72 @@ official commands. You can ask at any moment for help with `/help`.
 | `/entries` | Shows Wins / losses by Exit reason as well as Avg. holding durations for buys and sells
 | `/whitelist [sorted] [baseonly]` | Show the current whitelist. Optionally display in alphabetical order and/or with just the base currency of each pairing.
 | `/blacklist [pair]` | Show the current blacklist, or adds a pair to the blacklist.
+| **Bulk Trading Operations** |
+| `/longall` | Open long positions for all pairs in whitelist (requires `force_entry_enable: true`)
+| `/shortall` | Open short positions for all pairs in whitelist (requires `force_entry_enable: true`)
+| `/closelong` | Close all open long trades
+| `/closeshort` | Close all open short trades
+| **Pair Management** |
+| `/enable_pairs <pair1> [pair2] ...` | Remove specified pairs from blacklist (enable trading)
+| `/disable_pairs <pair1> [pair2] ...` | Add specified pairs to blacklist (disable trading)
+| **Safety & Risk Management** |
+| `/emergency_stop` | Instantly close all positions and stop the bot
+| `/setmaxopen <number>` | Dynamically adjust maximum number of open trades
+| `/pausefor <minutes>` | Pause bot for specified minutes, then auto-resume
+| `/risk_status` | Show current risk metrics and exposure
+| **Advanced Status & Monitoring** |
+| `/quickstatus` or `/qs` | Quick overview of bot status and key metrics
+| `/alerts` | Show current alerts and warnings
+| `/watchlist` | Display pairs being monitored
+| `/pnl` | Show current profit/loss summary
+| **Batch Operations** |
+| `/close_profitable` | Close all currently profitable trades
+| `/close_losing` | Close all currently losing trades
+| `/scale_out` | Partially exit positions (reduce position sizes)
+| `/preset <name>` | Save/load bot configuration presets
+| **Smart Control** |
+| `/enable_volatile` | Enable trading for volatile pairs
+| `/disable_low_volume` | Disable low-volume pairs from trading
+| `/rotate_pairs` | Rotate trading pairs based on performance
+| `/pause_new_shorts` | Stop opening new short positions
+| `/pause_new_longs` | Stop opening new long positions
+| **Market Analysis** |
+| `/market_sentiment` | Display current market sentiment analysis
+| `/top_gainers` | Show best performing pairs
+| `/top_losers` | Show worst performing pairs
+| **Advanced Trade Management** |
+| `/avg_down <trade_id>` | Average down on a specific trade
+| `/take_profit <trade_id>` | Take partial profits on a trade
+| `/breakeven <trade_id>` | Set trade to break-even level
+| **Configuration** |
+| `/config_backup` | Backup current configuration
+| `/config_restore` | Restore previously saved configuration
+| `/strategy_reload` | Reload strategy without restarting bot
+| **Menu Systems** |
+| `/menu_trade` | Show trading command menu
+| `/menu_risk` | Show risk management menu
+| `/menu_status` | Show status monitoring menu
+| **Profit Control** |
+| `/disable_roi` | Disable all ROI-based exits (let trends run)
+| `/enable_roi` | Re-enable ROI-based exits
+| `/set_roi <percentage>` | Set simple ROI target for all trades
+| `/disable_trailing` | Disable trailing stop loss
+| `/enable_trailing` | Re-enable trailing stop loss
+| `/profit_mode <mode>` | Set profit-taking mode (conservative/aggressive/balanced)
+| `/profit_status` | Show current profit control settings
+| **Separate Long/Short ROI** |
+| `/set_roi_long <percentage> [duration]` | Set ROI target for long trades only (e.g., `/set_roi_long 15 2h`)
+| `/set_roi_short <percentage> [duration]` | Set ROI target for short trades only (e.g., `/set_roi_short 10 1h`)
+| `/disable_roi_long` | Disable ROI exits for long trades only
+| `/disable_roi_short` | Disable ROI exits for short trades only
+| `/enable_roi_long` | Re-enable ROI exits for long trades
+| `/enable_roi_short` | Re-enable ROI exits for short trades
+| `/roi_status` | Show separate long/short ROI settings with expiration times
+| **ROI Management** |
+| `/force_roi_check` | Manually exit trades that meet their ROI targets
+| `/check_roi_targets` | Show which trades are ready for ROI exit
+| `/auto_roi_mode <on/off>` | Enable/disable automatic ROI checking
+| `/extend_roi <direction> <duration>` | Extend ROI expiration (e.g., `/extend_roi long 30m`)
 
 ## Telegram commands in action
 
@@ -480,3 +546,146 @@ You can use the market direction in your strategy via `self.market_direction`.
 !!! Danger "Backtesting"
     As this value/variable is intended to be changed manually in dry/live trading.
     Strategies using `market_direction` will probably not produce reliable, reproducible results (changes to this variable will not be reflected for backtesting). Use at your own risk.
+
+## Advanced Telegram Commands Examples
+
+### Bulk Trading Operations
+
+#### /longall
+
+Opens long positions for all pairs in your whitelist. Requires `force_entry_enable: true` in configuration.
+
+> ✅ Opened long positions for: BTC/USDT, ETH/USDT, ADA/USDT
+> ❌ Failed to open: SOL/USDT: Insufficient balance
+
+#### /shortall
+
+Opens short positions for all pairs in your whitelist (futures/margin trading only).
+
+> ✅ Opened short positions for: BTC/USDT, ETH/USDT
+> ❌ Failed to open: ADA/USDT: Shorting not available
+
+#### /closelong | /closeshort
+
+Closes all long or short positions respectively.
+
+> ✅ Closed long trades: BTC/USDT (#123), ETH/USDT (#124)
+> ❌ Failed to close: ADA/USDT (#125): Order timeout
+
+### Time-Based ROI Management
+
+#### /set_roi_long <percentage> [duration]
+
+Sets ROI targets that automatically expire after a specified time.
+
+**Examples:**
+- `/set_roi_long 15 2h` - 15% ROI for 2 hours, then revert to strategy
+- `/set_roi_long 30` - Permanent 30% ROI target
+- `/set_roi_short 10 45m` - 10% ROI for 45 minutes
+
+> ⏰ **Long ROI target: 15% for 2h**
+> 
+> 📈 Long trades exit at 15% profit
+> ⏱️ Expires: 14:30:45  
+> 🔄 After expiry: Strategy controls exits
+
+#### /roi_status
+
+Shows current ROI settings with expiration information.
+
+> 📊 **Separate ROI Settings**
+> 
+> 📈 **Long Trades:** 15.0% profit target ⏱️ Expires in 1h 23m
+> 📉 **Short Trades:** 10.0% profit target (permanent)
+> 
+> **Current Positions:**
+>   📈 Long: 3 trades
+>   📉 Short: 2 trades
+
+#### /check_roi_targets
+
+Shows which trades are ready for ROI-based exits.
+
+> 🎯 **ROI Target Status:**
+> 
+> **Summary:**
+> • Long ROI: Enabled (15.0%)
+> • Short ROI: Enabled (10.0%)
+> • Trades ready for exit: 2
+> 
+> **✅ Ready for ROI Exit:**
+> 📈 **BTC/USDT** (#123)
+>    Current: 16.2% | Target: 15.0%
+>    🟢 **TARGET REACHED!**
+
+#### /extend_roi <direction> <duration>
+
+Extends ROI expiration times.
+
+> ⏰ **Extended ROI by 30m:**
+> 
+> 📈 Long extended to 15:00:45
+> 📉 Short extended to 14:45:30
+
+### Safety & Risk Management
+
+#### /emergency_stop
+
+Instantly stops the bot and closes all positions.
+
+> 🚨 **EMERGENCY STOP EXECUTED**
+> 
+> ✅ Bot stopped
+> ✅ Closed 5 trades  
+> 
+> ⚠️ Bot is now stopped. Use /start to resume.
+
+#### /risk_status
+
+Shows comprehensive risk metrics.
+
+> 📊 **Risk Status**
+> 
+> **Exposure:** 1250.00 USDT (25.0% of balance)
+> **Open Trades:** 5/10
+> **Current P&L:** +125.50 USDT
+> **Max Drawdown:** -3.2%
+> **Trading Mode:** futures
+
+#### /pausefor <minutes>
+
+Temporarily pauses the bot with automatic resume.
+
+> ⏸️ Bot paused for 30 minutes
+> Will automatically resume at 14:30:00
+
+### Pair Management
+
+#### /enable_pairs | /disable_pairs
+
+Manage trading pairs dynamically.
+
+> ✅ **Enabled pairs (removed from blacklist):**
+> `BTC/USDT, ETH/USDT`
+> 
+> 📋 **Current blacklist:** 5 pairs
+
+### Duration Formats
+
+Time-based commands support flexible duration formats:
+
+- `2h` - 2 hours
+- `30m` - 30 minutes  
+- `1.5h` - 1 hour 30 minutes
+- `45m` - 45 minutes
+
+### Configuration Requirements
+
+Some advanced features require specific configuration settings:
+
+```json
+{
+  "force_entry_enable": true,  // Required for /longall, /shortall
+  "trading_mode": "futures"    // Required for shorting operations
+}
+```
