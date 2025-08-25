@@ -1802,12 +1802,23 @@ class Telegram(RPCHandler):
         """
         Handler for /closeshort - Close all short trades
         """
+        try:
+            loop = asyncio.get_running_loop()
+            # Workaround to avoid nested loops - run the close short operation in executor
+            msg = await loop.run_in_executor(None, safe_async_db(self._closeshort_sync))
+            await self._send_msg(msg, ParseMode.HTML)
+        except RPCException as e:
+            await self._send_msg(str(e))
+    
+    def _closeshort_sync(self) -> str:
+        """
+        Synchronous helper for closing short trades
+        """
         trades = Trade.get_open_trades()
         short_trades = [t for t in trades if t.is_short]
         
         if not short_trades:
-            await self._send_msg("No open short trades to close")
-            return
+            return "No open short trades to close"
         
         # Use the bulk processing approach similar to _rpc_force_exit("all")
         closed_trades = []
@@ -1834,7 +1845,7 @@ class Telegram(RPCHandler):
         if failed_trades:
             msg += f"❌ Failed to close:\n" + "\n".join(failed_trades)
         
-        await self._send_msg(msg or "No trades closed", ParseMode.HTML)
+        return msg or "No trades closed"
 
     @authorized_only
     async def _trades(self, update: Update, context: CallbackContext) -> None:
