@@ -206,6 +206,10 @@ class Telegram(RPCHandler):
             r"/whitelist(\ssorted|\sbaseonly)+$",
             r"/blacklist$",
             r"/bl_delete$",
+            r"/enable_pairs$",
+            r"/enable$",
+            r"/disable_pairs$",
+            r"/disable$",
             r"/weekly$",
             r"/weekly \d+$",
             r"/monthly$",
@@ -213,6 +217,10 @@ class Telegram(RPCHandler):
             r"/forcebuy$",
             r"/forcelong$",
             r"/forceshort$",
+            r"/longall$",
+            r"/shortall$",
+            r"/closelong$",
+            r"/closeshort$",
             r"/forcesell$",
             r"/forceexit$",
             r"/health$",
@@ -220,6 +228,77 @@ class Telegram(RPCHandler):
             r"/version$",
             r"/marketdir (long|short|even|none)$",
             r"/marketdir$",
+            
+            # Safety & Risk Management
+            r"/setmaxopen$",
+            r"/emergency_stop$",
+            r"/pausefor$",
+            r"/risk_status$",
+            r"/set_stoploss$",
+            
+            # Quick Status & Monitoring
+            r"/quickstatus$",
+            r"/qs$",
+            r"/alerts$",
+            r"/watchlist$",
+            r"/pnl$",
+            
+            # Batch Operations & Presets
+            r"/preset$",
+            r"/close_profitable$",
+            r"/close_losing$",
+            r"/scale_out$",
+            
+            # Smart Filtering & Control
+            r"/enable_volatile$",
+            r"/disable_low_volume$",
+            r"/rotate_pairs$",
+            r"/pause_new_shorts$",
+            r"/pause_new_longs$",
+            
+            # Market Analysis
+            r"/market_sentiment$",
+            r"/top_gainers$",
+            r"/top_losers$",
+            
+            # Trade Management
+            r"/avg_down$",
+            r"/take_profit$",
+            r"/breakeven$",
+            
+            # Configuration Backup/Restore
+            r"/config_backup$",
+            r"/config_restore$",
+            r"/strategy_reload$",
+            
+            # Menu System
+            r"/menu_trade$",
+            r"/menu_risk$",
+            r"/menu_status$",
+            
+            # Profit Control
+            r"/disable_roi$",
+            r"/enable_roi$",
+            r"/set_roi$",
+            r"/disable_trailing$",
+            r"/enable_trailing$",
+            r"/profit_mode$",
+            r"/profit_status$",
+            
+            # Separate Long/Short ROI
+            r"/set_roi_long$",
+            r"/set_roi_short$", 
+            r"/disable_roi_long$",
+            r"/disable_roi_short$",
+            r"/enable_roi_long$",
+            r"/enable_roi_short$",
+            r"/roi_status$",
+            
+            # ROI Management
+            r"/force_roi_check$",
+            r"/check_roi_targets$",
+            r"/auto_roi_mode$",
+            r"/extend_roi$",
         ]
         # Create keys for generation
         valid_keys_print = [k.replace("$", "") for k in valid_keys]
@@ -276,6 +355,10 @@ class Telegram(RPCHandler):
             CommandHandler(
                 "forceshort", partial(self._force_enter, order_side=SignalDirection.SHORT)
             ),
+            CommandHandler("longall", self._longall),
+            CommandHandler("shortall", self._shortall),
+            CommandHandler("closelong", self._closelong),
+            CommandHandler("closeshort", self._closeshort),
             CommandHandler("reload_trade", self._reload_trade_from_exchange),
             CommandHandler("trades", self._trades),
             CommandHandler("delete", self._delete_trade),
@@ -297,6 +380,8 @@ class Telegram(RPCHandler):
             CommandHandler("whitelist", self._whitelist),
             CommandHandler("blacklist", self._blacklist),
             CommandHandler(["blacklist_delete", "bl_delete"], self._blacklist_delete),
+            CommandHandler(["enable_pairs", "enable"], self._enable_pairs),
+            CommandHandler(["disable_pairs", "disable"], self._disable_pairs),
             CommandHandler("logs", self._logs),
             CommandHandler("health", self._health),
             CommandHandler("help", self._help),
@@ -307,6 +392,76 @@ class Telegram(RPCHandler):
             CommandHandler("tg_info", self._tg_info),
             CommandHandler("profit_long", self._profit_long),
             CommandHandler("profit_short", self._profit_short),
+            
+            # Safety & Risk Management
+            CommandHandler("setmaxopen", self._setmaxopen),
+            CommandHandler("emergency_stop", self._emergency_stop),
+            CommandHandler("pausefor", self._pausefor),
+            CommandHandler("risk_status", self._risk_status),
+            CommandHandler("set_stoploss", self._set_stoploss),
+            
+            # Quick Status & Monitoring
+            CommandHandler(["quickstatus", "qs"], self._quickstatus),
+            CommandHandler("alerts", self._alerts),
+            CommandHandler("watchlist", self._watchlist),
+            CommandHandler("pnl", self._pnl),
+            
+            # Batch Operations & Presets
+            CommandHandler("preset", self._preset_save),  # Will handle both save/load in method
+            CommandHandler("close_profitable", self._close_profitable),
+            CommandHandler("close_losing", self._close_losing),
+            CommandHandler("scale_out", self._scale_out),
+            
+            # Smart Filtering & Control
+            CommandHandler("enable_volatile", self._enable_volatile),
+            CommandHandler("disable_low_volume", self._disable_low_volume),
+            CommandHandler("rotate_pairs", self._rotate_pairs),
+            CommandHandler("pause_new_shorts", self._pause_new_shorts),
+            CommandHandler("pause_new_longs", self._pause_new_longs),
+            
+            # Market Analysis
+            CommandHandler("market_sentiment", self._market_sentiment),
+            CommandHandler("top_gainers", self._top_gainers),
+            CommandHandler("top_losers", self._top_losers),
+            
+            # Trade Management
+            CommandHandler("avg_down", self._avg_down),
+            CommandHandler("take_profit", self._take_profit),
+            CommandHandler("breakeven", self._breakeven),
+            
+            # Configuration Backup/Restore
+            CommandHandler("config_backup", self._config_backup),
+            CommandHandler("config_restore", self._config_restore),
+            CommandHandler("strategy_reload", self._strategy_reload),
+            
+            # Menu System
+            CommandHandler("menu_trade", self._menu_trade),
+            CommandHandler("menu_risk", self._menu_risk),
+            CommandHandler("menu_status", self._menu_status),
+            
+            # Profit Control Commands
+            CommandHandler("disable_roi", self._disable_roi),
+            CommandHandler("enable_roi", self._enable_roi),
+            CommandHandler("set_roi", self._set_roi),
+            CommandHandler("disable_trailing", self._disable_trailing),
+            CommandHandler("enable_trailing", self._enable_trailing),
+            CommandHandler("profit_mode", self._profit_mode),
+            CommandHandler("profit_status", self._profit_status),
+            
+            # Separate Long/Short ROI Commands
+            CommandHandler("set_roi_long", self._set_roi_long),
+            CommandHandler("set_roi_short", self._set_roi_short),
+            CommandHandler("disable_roi_long", self._disable_roi_long),
+            CommandHandler("disable_roi_short", self._disable_roi_short),
+            CommandHandler("enable_roi_long", self._enable_roi_long),
+            CommandHandler("enable_roi_short", self._enable_roi_short),
+            CommandHandler("roi_status", self._roi_status_separate),
+            
+            # ROI Management Commands
+            CommandHandler("force_roi_check", self._force_roi_check),
+            CommandHandler("check_roi_targets", self._check_roi_targets),
+            CommandHandler("auto_roi_mode", self._auto_roi_mode),
+            CommandHandler("extend_roi", self._extend_roi),
         ]
         callbacks = [
             CallbackQueryHandler(self._status_table, pattern="update_status_table"),
@@ -1538,6 +1693,132 @@ class Telegram(RPCHandler):
             )
 
     @authorized_only
+    async def _longall(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /longall - Long all coins in whitelist
+        """
+        whitelist = self._rpc._rpc_whitelist()["whitelist"]
+        if not whitelist:
+            await self._send_msg("No pairs in whitelist")
+            return
+        
+        success_pairs = []
+        failed_pairs = []
+        
+        for pair in whitelist:
+            try:
+                @safe_async_db
+                def _force_long():
+                    self._rpc._rpc_force_entry(pair, None, order_side=SignalDirection.LONG)
+                
+                loop = asyncio.get_running_loop()
+                await loop.run_in_executor(None, _force_long)
+                success_pairs.append(pair)
+            except RPCException as e:
+                failed_pairs.append(f"{pair}: {str(e)}")
+        
+        msg = ""
+        if success_pairs:
+            msg += f"✅ Opened long positions for: {', '.join(success_pairs)}\n"
+        if failed_pairs:
+            msg += f"❌ Failed to open:\n" + "\n".join(failed_pairs)
+        
+        await self._send_msg(msg or "No positions opened", ParseMode.HTML)
+
+    @authorized_only
+    async def _shortall(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /shortall - Short all coins in whitelist
+        """
+        whitelist = self._rpc._rpc_whitelist()["whitelist"]
+        if not whitelist:
+            await self._send_msg("No pairs in whitelist")
+            return
+        
+        success_pairs = []
+        failed_pairs = []
+        
+        for pair in whitelist:
+            try:
+                @safe_async_db
+                def _force_short():
+                    self._rpc._rpc_force_entry(pair, None, order_side=SignalDirection.SHORT)
+                
+                loop = asyncio.get_running_loop()
+                await loop.run_in_executor(None, _force_short)
+                success_pairs.append(pair)
+            except RPCException as e:
+                failed_pairs.append(f"{pair}: {str(e)}")
+        
+        msg = ""
+        if success_pairs:
+            msg += f"✅ Opened short positions for: {', '.join(success_pairs)}\n"
+        if failed_pairs:
+            msg += f"❌ Failed to open:\n" + "\n".join(failed_pairs)
+        
+        await self._send_msg(msg or "No positions opened", ParseMode.HTML)
+
+    @authorized_only
+    async def _closelong(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /closelong - Close all long trades
+        """
+        trades = Trade.get_open_trades()
+        long_trades = [t for t in trades if not t.is_short]
+        
+        if not long_trades:
+            await self._send_msg("No open long trades to close")
+            return
+        
+        closed_trades = []
+        failed_trades = []
+        
+        for trade in long_trades:
+            try:
+                self._rpc._rpc_force_exit(str(trade.id))
+                closed_trades.append(f"{trade.pair} (#{trade.id})")
+            except RPCException as e:
+                failed_trades.append(f"{trade.pair} (#{trade.id}): {str(e)}")
+        
+        msg = ""
+        if closed_trades:
+            msg += f"✅ Closed long trades: {', '.join(closed_trades)}\n"
+        if failed_trades:
+            msg += f"❌ Failed to close:\n" + "\n".join(failed_trades)
+        
+        await self._send_msg(msg or "No trades closed", ParseMode.HTML)
+
+    @authorized_only
+    async def _closeshort(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /closeshort - Close all short trades
+        """
+        trades = Trade.get_open_trades()
+        short_trades = [t for t in trades if t.is_short]
+        
+        if not short_trades:
+            await self._send_msg("No open short trades to close")
+            return
+        
+        closed_trades = []
+        failed_trades = []
+        
+        for trade in short_trades:
+            try:
+                self._rpc._rpc_force_exit(str(trade.id))
+                closed_trades.append(f"{trade.pair} (#{trade.id})")
+            except RPCException as e:
+                failed_trades.append(f"{trade.pair} (#{trade.id}): {str(e)}")
+        
+        msg = ""
+        if closed_trades:
+            msg += f"✅ Closed short trades: {', '.join(closed_trades)}\n"
+        if failed_trades:
+            msg += f"❌ Failed to close:\n" + "\n".join(failed_trades)
+        
+        await self._send_msg(msg or "No trades closed", ParseMode.HTML)
+
+    @authorized_only
     async def _trades(self, update: Update, context: CallbackContext) -> None:
         """
         Handler for /trades <n>
@@ -1868,6 +2149,1944 @@ class Telegram(RPCHandler):
         await self.send_blacklist_msg(self._rpc._rpc_blacklist_delete(context.args or []))
 
     @authorized_only
+    async def _enable_pairs(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /enable_pairs - Enable (remove from blacklist) one or more pairs
+        Usage: /enable_pairs BTC/USDT ETH/USDT
+        """
+        if not context.args:
+            await self._send_msg("Usage: `/enable_pairs <pair1> [pair2] ...`\nExample: `/enable_pairs BTC/USDT ETH/USDT`", ParseMode.MARKDOWN)
+            return
+        
+        pairs_to_enable = context.args
+        enabled_pairs = []
+        already_enabled = []
+        invalid_pairs = []
+        
+        # Get current blacklist
+        blacklist_data = self._rpc._rpc_blacklist()
+        current_blacklist = blacklist_data.get('blacklist', [])
+        
+        # Get all valid pairs from exchange
+        valid_pairs = list(self._freqtrade.exchange.get_markets().keys())
+        
+        for pair in pairs_to_enable:
+            # Check if pair is valid
+            if pair not in valid_pairs:
+                # Try to match with wildcard patterns
+                try:
+                    from freqtrade.plugins.pairlist.pairlist_helpers import expand_pairlist
+                    expanded = expand_pairlist([pair], valid_pairs)
+                    if expanded:
+                        # If it's a wildcard pattern, we need to handle each expanded pair
+                        for expanded_pair in expanded:
+                            if expanded_pair in current_blacklist:
+                                enabled_pairs.append(expanded_pair)
+                            else:
+                                already_enabled.append(expanded_pair)
+                    else:
+                        invalid_pairs.append(pair)
+                except:
+                    invalid_pairs.append(pair)
+            else:
+                # Single pair case
+                if pair in current_blacklist:
+                    enabled_pairs.append(pair)
+                else:
+                    already_enabled.append(pair)
+        
+        # Remove pairs from blacklist
+        if enabled_pairs:
+            result = self._rpc._rpc_blacklist_delete(enabled_pairs)
+        
+        # Build response message
+        msg = ""
+        if enabled_pairs:
+            msg += f"✅ **Enabled pairs (removed from blacklist):**\n`{', '.join(enabled_pairs)}`\n\n"
+        if already_enabled:
+            msg += f"ℹ️ **Already enabled pairs:**\n`{', '.join(already_enabled)}`\n\n"
+        if invalid_pairs:
+            msg += f"❌ **Invalid pairs:**\n`{', '.join(invalid_pairs)}`\n\n"
+        
+        if not msg:
+            msg = "No changes made."
+        else:
+            # Show current blacklist status
+            blacklist_data = self._rpc._rpc_blacklist()
+            msg += f"📋 **Current blacklist:** {blacklist_data['length']} pairs"
+            if blacklist_data['length'] > 0:
+                msg += f"\n`{', '.join(blacklist_data['blacklist'][:10])}`"
+                if blacklist_data['length'] > 10:
+                    msg += f"\n... and {blacklist_data['length'] - 10} more"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _disable_pairs(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /disable_pairs - Disable (add to blacklist) one or more pairs
+        Usage: /disable_pairs BTC/USDT ETH/USDT
+        """
+        if not context.args:
+            await self._send_msg("Usage: `/disable_pairs <pair1> [pair2] ...`\nExample: `/disable_pairs BTC/USDT ETH/USDT`", ParseMode.MARKDOWN)
+            return
+        
+        pairs_to_disable = context.args
+        disabled_pairs = []
+        already_disabled = []
+        invalid_pairs = []
+        
+        # Add pairs to blacklist
+        result = self._rpc._rpc_blacklist(pairs_to_disable)
+        
+        # Process results
+        errors = result.get('errors', {})
+        current_blacklist = result.get('blacklist', [])
+        
+        for pair in pairs_to_disable:
+            if pair in errors:
+                error_msg = errors[pair].get('error_msg', '')
+                if 'already in pairlist' in error_msg:
+                    already_disabled.append(pair)
+                elif 'not a valid' in error_msg:
+                    invalid_pairs.append(pair)
+            else:
+                disabled_pairs.append(pair)
+        
+        # Build response message
+        msg = ""
+        if disabled_pairs:
+            msg += f"🚫 **Disabled pairs (added to blacklist):**\n`{', '.join(disabled_pairs)}`\n\n"
+        if already_disabled:
+            msg += f"ℹ️ **Already disabled pairs:**\n`{', '.join(already_disabled)}`\n\n"
+        if invalid_pairs:
+            msg += f"❌ **Invalid pairs:**\n`{', '.join(invalid_pairs)}`\n\n"
+        
+        if not msg:
+            msg = "No changes made."
+        else:
+            # Show current blacklist status
+            msg += f"📋 **Current blacklist:** {result['length']} pairs"
+            if result['length'] > 0:
+                msg += f"\n`{', '.join(current_blacklist[:10])}`"
+                if result['length'] > 10:
+                    msg += f"\n... and {result['length'] - 10} more"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    # ====== SAFETY & RISK MANAGEMENT COMMANDS ======
+    
+    @authorized_only
+    async def _setmaxopen(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /setmaxopen <number> - Dynamically adjust max open trades
+        """
+        if not context.args or len(context.args) != 1:
+            await self._send_msg("Usage: `/setmaxopen <number>`\nExample: `/setmaxopen 5`", ParseMode.MARKDOWN)
+            return
+        
+        try:
+            new_max = int(context.args[0])
+            if new_max < 0:
+                await self._send_msg("❌ Max open trades must be positive or 0")
+                return
+            
+            old_max = self._config.get('max_open_trades', 0)
+            self._config['max_open_trades'] = new_max
+            self._freqtrade.config['max_open_trades'] = new_max
+            
+            current_open = len(Trade.get_open_trades())
+            msg = f"✅ Max open trades changed from {old_max} to {new_max}\n"
+            msg += f"Currently open: {current_open}/{new_max}"
+            
+            await self._send_msg(msg)
+        except ValueError:
+            await self._send_msg("❌ Invalid number. Please provide a valid integer.")
+
+    @authorized_only
+    async def _emergency_stop(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /emergency_stop - Instantly close all positions and stop bot
+        """
+        # First stop the bot
+        self._rpc._rpc_stop()
+        
+        # Close all open trades
+        trades = Trade.get_open_trades()
+        closed_count = 0
+        failed_count = 0
+        
+        for trade in trades:
+            try:
+                self._rpc._rpc_force_exit(str(trade.id))
+                closed_count += 1
+            except:
+                failed_count += 1
+        
+        msg = "🚨 **EMERGENCY STOP EXECUTED**\n\n"
+        msg += f"✅ Bot stopped\n"
+        msg += f"✅ Closed {closed_count} trades\n"
+        if failed_count > 0:
+            msg += f"❌ Failed to close {failed_count} trades\n"
+        msg += "\n⚠️ Bot is now stopped. Use /start to resume."
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _pausefor(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /pausefor <minutes> - Pause bot for X minutes then auto-resume
+        """
+        if not context.args or len(context.args) != 1:
+            await self._send_msg("Usage: `/pausefor <minutes>`\nExample: `/pausefor 30`", ParseMode.MARKDOWN)
+            return
+        
+        try:
+            minutes = int(context.args[0])
+            if minutes <= 0:
+                await self._send_msg("❌ Minutes must be positive")
+                return
+            
+            # Pause the bot
+            self._rpc._rpc_stop_entry()
+            
+            # Schedule resume
+            async def resume_bot():
+                await asyncio.sleep(minutes * 60)
+                self._rpc._rpc_start()
+                await self._send_msg(f"🔄 Bot automatically resumed after {minutes} minutes")
+            
+            # Start the resume task in background
+            asyncio.create_task(resume_bot())
+            
+            msg = f"⏸️ Bot paused for {minutes} minutes\n"
+            msg += f"Will automatically resume at {(datetime.now() + timedelta(minutes=minutes)).strftime('%H:%M:%S')}"
+            await self._send_msg(msg)
+            
+        except ValueError:
+            await self._send_msg("❌ Invalid number. Please provide minutes as integer.")
+
+    @authorized_only
+    async def _risk_status(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /risk_status - Show current risk metrics
+        """
+        trades = Trade.get_open_trades()
+        if not trades:
+            await self._send_msg("📊 No open trades - No risk exposure")
+            return
+        
+        stake_currency = self._config.get('stake_currency', '')
+        total_stake = sum(trade.stake_amount for trade in trades)
+        
+        # Calculate current values and P&L
+        current_values = []
+        total_profit = 0
+        for trade in trades:
+            current_rate = self._freqtrade.exchange.get_rate(
+                trade.pair, side="exit", is_short=trade.is_short, refresh=False
+            )
+            current_value = trade.amount * current_rate
+            profit = trade.calc_profit_ratio(current_rate)
+            total_profit += trade.calc_profit(current_rate)
+            current_values.append((trade.pair, current_value, profit))
+        
+        # Calculate metrics
+        balance = self._rpc._rpc_balance()
+        total_balance = balance['total']
+        exposure_pct = (total_stake / total_balance * 100) if total_balance > 0 else 0
+        
+        # Find max drawdown
+        max_loss = min(profit for _, _, profit in current_values) if current_values else 0
+        
+        msg = "📊 **Risk Status**\n\n"
+        msg += f"**Exposure:** {total_stake:.2f} {stake_currency} ({exposure_pct:.1f}% of balance)\n"
+        msg += f"**Open Trades:** {len(trades)}/{self._config.get('max_open_trades', 'unlimited')}\n"
+        msg += f"**Current P&L:** {total_profit:.2f} {stake_currency}\n"
+        msg += f"**Max Drawdown:** {max_loss:.2%}\n"
+        msg += f"**Trading Mode:** {self._config.get('trading_mode', 'spot')}\n"
+        
+        if len(trades) > 0:
+            msg += "\n**Per Trade Risk:**\n"
+            for trade in trades[:5]:  # Show first 5
+                profit_pct = trade.calc_profit_ratio(
+                    self._freqtrade.exchange.get_rate(
+                        trade.pair, side="exit", is_short=trade.is_short, refresh=False
+                    )
+                )
+                msg += f"  {trade.pair}: {profit_pct:.2%}\n"
+            
+            if len(trades) > 5:
+                msg += f"  ... and {len(trades) - 5} more\n"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _set_stoploss(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /set_stoploss <percent> - Adjust stop-loss for new trades
+        """
+        if not context.args or len(context.args) != 1:
+            await self._send_msg("Usage: `/set_stoploss <percent>`\nExample: `/set_stoploss -5` (for -5%)", ParseMode.MARKDOWN)
+            return
+        
+        try:
+            new_stoploss = float(context.args[0])
+            if new_stoploss > 0:
+                new_stoploss = -new_stoploss  # Ensure it's negative
+            
+            if new_stoploss < -50:
+                await self._send_msg("❌ Stop-loss cannot be more than -50%")
+                return
+            
+            old_stoploss = self._config.get('stoploss', 0)
+            self._config['stoploss'] = new_stoploss / 100  # Convert percentage to decimal
+            self._freqtrade.strategy.stoploss = new_stoploss / 100
+            
+            msg = f"✅ Stop-loss changed from {old_stoploss*100:.1f}% to {new_stoploss:.1f}%\n"
+            msg += "⚠️ Note: Only affects new trades"
+            
+            await self._send_msg(msg)
+        except ValueError:
+            await self._send_msg("❌ Invalid number. Please provide a valid percentage.")
+
+    # ====== QUICK STATUS & MONITORING COMMANDS ======
+    
+    @authorized_only
+    async def _quickstatus(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /quickstatus or /qs - Compact one-line status
+        """
+        trades = Trade.get_open_trades()
+        profit_sum = 0
+        
+        for trade in trades:
+            current_rate = self._freqtrade.exchange.get_rate(
+                trade.pair, side="exit", is_short=trade.is_short, refresh=False
+            )
+            profit_sum += trade.calc_profit(current_rate)
+        
+        stake_cur = self._config['stake_currency']
+        status = "running" if self._freqtrade.state == State.RUNNING else "stopped"
+        
+        msg = f"🤖 {status.upper()} | 📈 {len(trades)} trades | 💰 {profit_sum:.2f} {stake_cur}"
+        await self._send_msg(msg)
+
+    @authorized_only
+    async def _alerts(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /alerts on/off - Toggle trade notifications
+        """
+        if not context.args or context.args[0] not in ['on', 'off']:
+            await self._send_msg("Usage: `/alerts on` or `/alerts off`", ParseMode.MARKDOWN)
+            return
+        
+        enable = context.args[0] == 'on'
+        self._config['telegram']['notification_settings'] = {
+            'buy': enable,
+            'sell': enable,
+            'buy_cancel': enable,
+            'sell_cancel': enable,
+            'buy_fill': enable,
+            'sell_fill': enable
+        }
+        
+        status = "enabled 🔔" if enable else "disabled 🔕"
+        await self._send_msg(f"Trade notifications {status}")
+
+    @authorized_only
+    async def _watchlist(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /watchlist - Show pairs being monitored for entry
+        """
+        whitelist = self._rpc._rpc_whitelist()['whitelist']
+        blacklist = self._rpc._rpc_blacklist()['blacklist']
+        
+        # Get pairs that are in whitelist but not blacklisted
+        active_pairs = [p for p in whitelist if p not in blacklist]
+        
+        # Get open trades
+        open_trades = Trade.get_open_trades()
+        open_pairs = [t.pair for t in open_trades]
+        
+        # Pairs being watched (in whitelist, not blacklisted, not in trade)
+        watching = [p for p in active_pairs if p not in open_pairs]
+        
+        msg = f"👁️ **Watchlist** ({len(watching)} pairs)\n\n"
+        if watching:
+            msg += "**Available for entry:**\n"
+            for pair in watching[:20]:  # Limit to 20 pairs
+                msg += f"  • {pair}\n"
+            if len(watching) > 20:
+                msg += f"  ... and {len(watching) - 20} more\n"
+        else:
+            msg += "No pairs available for entry\n"
+        
+        msg += f"\n**Already in position:** {len(open_pairs)} pairs"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _pnl(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /pnl [today/week/month] - Quick P&L summary
+        """
+        period = context.args[0] if context.args else 'today'
+        
+        if period not in ['today', 'week', 'month']:
+            period = 'today'
+        
+        # Get the date range
+        now = datetime.now()
+        if period == 'today':
+            start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            period_label = "Today"
+        elif period == 'week':
+            start_date = now - timedelta(days=now.weekday())
+            start_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            period_label = "This Week"
+        else:  # month
+            start_date = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            period_label = "This Month"
+        
+        # Get trades
+        trades = Trade.get_trades([Trade.close_date >= start_date, Trade.is_open.is_(False)]).all()
+        
+        # Calculate P&L
+        total_profit = sum(t.close_profit_abs for t in trades if t.close_profit_abs)
+        win_trades = [t for t in trades if t.close_profit_abs and t.close_profit_abs > 0]
+        lose_trades = [t for t in trades if t.close_profit_abs and t.close_profit_abs < 0]
+        
+        stake_cur = self._config['stake_currency']
+        
+        msg = f"📊 **{period_label} P&L**\n\n"
+        msg += f"**Total:** {total_profit:.2f} {stake_cur}\n"
+        msg += f"**Trades:** {len(trades)} (✅ {len(win_trades)} / ❌ {len(lose_trades)})\n"
+        
+        if trades:
+            win_rate = len(win_trades) / len(trades) * 100
+            msg += f"**Win Rate:** {win_rate:.1f}%\n"
+            
+            if win_trades:
+                avg_win = sum(t.close_profit_abs for t in win_trades) / len(win_trades)
+                msg += f"**Avg Win:** {avg_win:.2f} {stake_cur}\n"
+            
+            if lose_trades:
+                avg_loss = sum(t.close_profit_abs for t in lose_trades) / len(lose_trades)
+                msg += f"**Avg Loss:** {avg_loss:.2f} {stake_cur}\n"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    # ====== BATCH OPERATIONS & PRESETS ======
+    
+    @authorized_only
+    async def _preset_save(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /preset save|load <name> - Save/load presets
+        """
+        if not context.args or len(context.args) < 2:
+            await self._send_msg("Usage: `/preset save <name>` or `/preset load <name>`\nExample: `/preset save bull_market`", ParseMode.MARKDOWN)
+            return
+        
+        action = context.args[0]
+        if action == 'load':
+            return await self._preset_load(update, context)
+        elif action != 'save':
+            await self._send_msg("Usage: `/preset save <name>` or `/preset load <name>`", ParseMode.MARKDOWN)
+            return
+        
+        preset_name = context.args[1]
+        
+        # Create presets directory if not exists
+        import os
+        preset_dir = os.path.join(self._config['user_data_dir'], 'presets')
+        os.makedirs(preset_dir, exist_ok=True)
+        
+        # Save current configuration
+        preset_data = {
+            'whitelist': self._rpc._rpc_whitelist()['whitelist'],
+            'blacklist': self._rpc._rpc_blacklist()['blacklist'],
+            'max_open_trades': self._config.get('max_open_trades'),
+            'stake_amount': self._config.get('stake_amount'),
+            'stoploss': self._config.get('stoploss'),
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        preset_file = os.path.join(preset_dir, f"{preset_name}.json")
+        with open(preset_file, 'w') as f:
+            json.dump(preset_data, f, indent=2)
+        
+        msg = f"✅ Preset '{preset_name}' saved with:\n"
+        msg += f"  • {len(preset_data['whitelist'])} whitelist pairs\n"
+        msg += f"  • {len(preset_data['blacklist'])} blacklist pairs\n"
+        msg += f"  • Max trades: {preset_data['max_open_trades']}"
+        
+        await self._send_msg(msg)
+
+    @authorized_only
+    async def _preset_load(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /preset load <name> - Load saved preset
+        """
+        if not context.args or len(context.args) < 2 or context.args[0] != 'load':
+            await self._send_msg("Usage: `/preset load <name>`\nExample: `/preset load bull_market`", ParseMode.MARKDOWN)
+            return
+        
+        preset_name = context.args[1]
+        
+        import os
+        preset_file = os.path.join(self._config['user_data_dir'], 'presets', f"{preset_name}.json")
+        
+        if not os.path.exists(preset_file):
+            await self._send_msg(f"❌ Preset '{preset_name}' not found")
+            return
+        
+        try:
+            with open(preset_file, 'r') as f:
+                preset_data = json.load(f)
+            
+            # Apply preset
+            # Update blacklist
+            current_blacklist = self._rpc._rpc_blacklist()['blacklist']
+            for pair in current_blacklist:
+                if pair not in preset_data['blacklist']:
+                    self._freqtrade.pairlists.blacklist.remove(pair)
+            
+            for pair in preset_data['blacklist']:
+                if pair not in current_blacklist:
+                    self._freqtrade.pairlists.blacklist.append(pair)
+            
+            # Update config
+            if preset_data.get('max_open_trades'):
+                self._config['max_open_trades'] = preset_data['max_open_trades']
+                self._freqtrade.config['max_open_trades'] = preset_data['max_open_trades']
+            
+            msg = f"✅ Preset '{preset_name}' loaded\n"
+            msg += f"Saved on: {preset_data.get('timestamp', 'unknown')}"
+            
+            await self._send_msg(msg)
+            
+        except Exception as e:
+            await self._send_msg(f"❌ Error loading preset: {str(e)}")
+
+    @authorized_only
+    async def _close_profitable(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /close_profitable - Close only profitable trades
+        """
+        trades = Trade.get_open_trades()
+        closed_trades = []
+        total_profit = 0
+        
+        for trade in trades:
+            current_rate = self._freqtrade.exchange.get_rate(
+                trade.pair, side="exit", is_short=trade.is_short, refresh=False
+            )
+            profit = trade.calc_profit(current_rate)
+            
+            if profit > 0:
+                try:
+                    self._rpc._rpc_force_exit(str(trade.id))
+                    closed_trades.append((trade.pair, profit))
+                    total_profit += profit
+                except:
+                    pass
+        
+        if closed_trades:
+            stake_cur = self._config['stake_currency']
+            msg = f"✅ Closed {len(closed_trades)} profitable trades\n"
+            msg += f"**Total profit:** {total_profit:.2f} {stake_cur}\n\n"
+            for pair, profit in closed_trades[:10]:
+                msg += f"  • {pair}: +{profit:.2f} {stake_cur}\n"
+            if len(closed_trades) > 10:
+                msg += f"  ... and {len(closed_trades) - 10} more"
+        else:
+            msg = "No profitable trades to close"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _close_losing(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /close_losing - Close only losing trades
+        """
+        trades = Trade.get_open_trades()
+        closed_trades = []
+        total_loss = 0
+        
+        for trade in trades:
+            current_rate = self._freqtrade.exchange.get_rate(
+                trade.pair, side="exit", is_short=trade.is_short, refresh=False
+            )
+            profit = trade.calc_profit(current_rate)
+            
+            if profit < 0:
+                try:
+                    self._rpc._rpc_force_exit(str(trade.id))
+                    closed_trades.append((trade.pair, profit))
+                    total_loss += profit
+                except:
+                    pass
+        
+        if closed_trades:
+            stake_cur = self._config['stake_currency']
+            msg = f"✅ Closed {len(closed_trades)} losing trades\n"
+            msg += f"**Total loss:** {total_loss:.2f} {stake_cur}\n\n"
+            for pair, loss in closed_trades[:10]:
+                msg += f"  • {pair}: {loss:.2f} {stake_cur}\n"
+            if len(closed_trades) > 10:
+                msg += f"  ... and {len(closed_trades) - 10} more"
+        else:
+            msg = "No losing trades to close"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _scale_out(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /scale_out <trade_id> <percent> - Partial exit
+        """
+        if not context.args or len(context.args) != 2:
+            await self._send_msg("Usage: `/scale_out <trade_id> <percent>`\nExample: `/scale_out 5 50` (sell 50% of trade 5)", ParseMode.MARKDOWN)
+            return
+        
+        try:
+            trade_id = int(context.args[0])
+            percent = float(context.args[1])
+            
+            if percent <= 0 or percent > 100:
+                await self._send_msg("❌ Percent must be between 1 and 100")
+                return
+            
+            trade = Trade.get_trades([Trade.id == trade_id, Trade.is_open.is_(True)]).first()
+            if not trade:
+                await self._send_msg(f"❌ Trade {trade_id} not found or not open")
+                return
+            
+            # Calculate amount to sell
+            amount_to_sell = trade.amount * (percent / 100)
+            
+            # Force partial exit
+            self._rpc._rpc_force_exit(str(trade_id), amount=amount_to_sell)
+            
+            msg = f"✅ Scaled out {percent}% of {trade.pair}\n"
+            msg += f"Sold amount: {amount_to_sell:.8f}"
+            
+            await self._send_msg(msg)
+            
+        except (ValueError, IndexError):
+            await self._send_msg("❌ Invalid parameters. Use: `/scale_out <trade_id> <percent>`", ParseMode.MARKDOWN)
+
+    # ====== SMART FILTERING & CONTROL ======
+    
+    @authorized_only
+    async def _enable_volatile(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /enable_volatile - Enable only high volatility pairs
+        """
+        # Get all pairs and their 24h price changes
+        whitelist = self._rpc._rpc_whitelist()['whitelist']
+        volatile_pairs = []
+        
+        for pair in whitelist:
+            try:
+                ticker = self._freqtrade.exchange.fetch_ticker(pair)
+                if ticker and 'percentage' in ticker:
+                    change_pct = abs(ticker['percentage'])
+                    if change_pct > 5:  # More than 5% change
+                        volatile_pairs.append((pair, change_pct))
+            except:
+                continue
+        
+        # Sort by volatility
+        volatile_pairs.sort(key=lambda x: x[1], reverse=True)
+        
+        # Enable top volatile pairs
+        if volatile_pairs:
+            # First disable all
+            self._rpc._rpc_blacklist(whitelist)
+            
+            # Then enable volatile ones
+            pairs_to_enable = [p[0] for p in volatile_pairs[:10]]  # Top 10
+            self._rpc._rpc_blacklist_delete(pairs_to_enable)
+            
+            msg = f"✅ Enabled {len(pairs_to_enable)} volatile pairs:\n"
+            for pair, change in volatile_pairs[:10]:
+                msg += f"  • {pair}: {change:.1f}% change\n"
+        else:
+            msg = "No volatile pairs found (>5% 24h change)"
+        
+        await self._send_msg(msg)
+
+    @authorized_only
+    async def _disable_low_volume(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /disable_low_volume - Disable pairs with low volume
+        """
+        whitelist = self._rpc._rpc_whitelist()['whitelist']
+        low_volume_pairs = []
+        
+        for pair in whitelist:
+            try:
+                ticker = self._freqtrade.exchange.fetch_ticker(pair)
+                if ticker and 'quoteVolume' in ticker:
+                    volume = ticker['quoteVolume']
+                    if volume < 100000:  # Less than 100k volume
+                        low_volume_pairs.append((pair, volume))
+            except:
+                continue
+        
+        if low_volume_pairs:
+            pairs_to_disable = [p[0] for p in low_volume_pairs]
+            self._rpc._rpc_blacklist(pairs_to_disable)
+            
+            msg = f"🚫 Disabled {len(pairs_to_disable)} low volume pairs:\n"
+            for pair, volume in low_volume_pairs[:10]:
+                msg += f"  • {pair}: {volume:.0f} volume\n"
+            if len(low_volume_pairs) > 10:
+                msg += f"  ... and {len(low_volume_pairs) - 10} more"
+        else:
+            msg = "No low volume pairs found (<100k)"
+        
+        await self._send_msg(msg)
+
+    @authorized_only
+    async def _rotate_pairs(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /rotate_pairs <number> - Keep only top N performing pairs
+        """
+        if not context.args or len(context.args) != 1:
+            await self._send_msg("Usage: `/rotate_pairs <number>`\nExample: `/rotate_pairs 10`", ParseMode.MARKDOWN)
+            return
+        
+        try:
+            top_n = int(context.args[0])
+            if top_n <= 0:
+                await self._send_msg("❌ Number must be positive")
+                return
+            
+            # Get performance data
+            performance = self._rpc._rpc_performance()
+            
+            if not performance:
+                await self._send_msg("No performance data available")
+                return
+            
+            # Sort by profit
+            performance.sort(key=lambda x: x['profit_abs'], reverse=True)
+            
+            # Get top performers
+            top_pairs = [p['pair'] for p in performance[:top_n]]
+            
+            # Disable all pairs first
+            whitelist = self._rpc._rpc_whitelist()['whitelist']
+            self._rpc._rpc_blacklist(whitelist)
+            
+            # Enable only top performers
+            if top_pairs:
+                self._rpc._rpc_blacklist_delete(top_pairs)
+            
+            msg = f"✅ Rotated to top {len(top_pairs)} performing pairs:\n"
+            for p in performance[:top_n]:
+                msg += f"  • {p['pair']}: {p['profit_abs']:.2f} profit\n"
+            
+            await self._send_msg(msg)
+            
+        except ValueError:
+            await self._send_msg("❌ Invalid number")
+
+    @authorized_only
+    async def _pause_new_shorts(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /pause_new_shorts - Only pause short entries
+        """
+        # This would need strategy-level implementation
+        # For now, we'll track it in config
+        if 'pause_shorts' not in self._config:
+            self._config['pause_shorts'] = False
+        
+        self._config['pause_shorts'] = True
+        await self._send_msg("⏸️ New short positions paused\n⚠️ Note: Existing shorts will continue to be managed")
+
+    @authorized_only
+    async def _pause_new_longs(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /pause_new_longs - Only pause long entries
+        """
+        # This would need strategy-level implementation
+        # For now, we'll track it in config
+        if 'pause_longs' not in self._config:
+            self._config['pause_longs'] = False
+        
+        self._config['pause_longs'] = True
+        await self._send_msg("⏸️ New long positions paused\n⚠️ Note: Existing longs will continue to be managed")
+
+    # ====== MARKET ANALYSIS ======
+    
+    @authorized_only
+    async def _market_sentiment(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /market_sentiment - Show overall market direction
+        """
+        whitelist = self._rpc._rpc_whitelist()['whitelist']
+        
+        bullish = 0
+        bearish = 0
+        neutral = 0
+        
+        for pair in whitelist[:20]:  # Check first 20 pairs
+            try:
+                ticker = self._freqtrade.exchange.fetch_ticker(pair)
+                if ticker and 'percentage' in ticker:
+                    change = ticker['percentage']
+                    if change > 1:
+                        bullish += 1
+                    elif change < -1:
+                        bearish += 1
+                    else:
+                        neutral += 1
+            except:
+                continue
+        
+        total = bullish + bearish + neutral
+        if total == 0:
+            await self._send_msg("Unable to determine market sentiment")
+            return
+        
+        bull_pct = (bullish / total) * 100
+        bear_pct = (bearish / total) * 100
+        
+        if bull_pct > 60:
+            sentiment = "🟢 BULLISH"
+            emoji = "📈"
+        elif bear_pct > 60:
+            sentiment = "🔴 BEARISH"
+            emoji = "📉"
+        else:
+            sentiment = "🟡 NEUTRAL"
+            emoji = "➡️"
+        
+        msg = f"{emoji} **Market Sentiment: {sentiment}**\n\n"
+        msg += f"Based on {total} pairs:\n"
+        msg += f"🟢 Bullish: {bullish} ({bull_pct:.1f}%)\n"
+        msg += f"🔴 Bearish: {bearish} ({bear_pct:.1f}%)\n"
+        msg += f"🟡 Neutral: {neutral} ({(neutral/total*100):.1f}%)"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _top_gainers(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /top_gainers [number] - Show best performing pairs
+        """
+        limit = int(context.args[0]) if context.args else 5
+        
+        whitelist = self._rpc._rpc_whitelist()['whitelist']
+        gainers = []
+        
+        for pair in whitelist:
+            try:
+                ticker = self._freqtrade.exchange.fetch_ticker(pair)
+                if ticker and 'percentage' in ticker:
+                    gainers.append((pair, ticker['percentage']))
+            except:
+                continue
+        
+        gainers.sort(key=lambda x: x[1], reverse=True)
+        
+        msg = f"📈 **Top {min(limit, len(gainers))} Gainers (24h)**\n\n"
+        for pair, change in gainers[:limit]:
+            msg += f"• {pair}: +{change:.2f}%\n"
+        
+        if not gainers:
+            msg = "No gainer data available"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _top_losers(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /top_losers [number] - Show worst performing pairs
+        """
+        limit = int(context.args[0]) if context.args else 5
+        
+        whitelist = self._rpc._rpc_whitelist()['whitelist']
+        losers = []
+        
+        for pair in whitelist:
+            try:
+                ticker = self._freqtrade.exchange.fetch_ticker(pair)
+                if ticker and 'percentage' in ticker:
+                    losers.append((pair, ticker['percentage']))
+            except:
+                continue
+        
+        losers.sort(key=lambda x: x[1])
+        
+        msg = f"📉 **Top {min(limit, len(losers))} Losers (24h)**\n\n"
+        for pair, change in losers[:limit]:
+            msg += f"• {pair}: {change:.2f}%\n"
+        
+        if not losers:
+            msg = "No loser data available"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    # ====== TRADE MANAGEMENT ======
+    
+    @authorized_only
+    async def _avg_down(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /avg_down <trade_id> - Add to losing position
+        """
+        if not context.args or len(context.args) != 1:
+            await self._send_msg("Usage: `/avg_down <trade_id>`", ParseMode.MARKDOWN)
+            return
+        
+        try:
+            trade_id = int(context.args[0])
+            trade = Trade.get_trades([Trade.id == trade_id, Trade.is_open.is_(True)]).first()
+            
+            if not trade:
+                await self._send_msg(f"❌ Trade {trade_id} not found or not open")
+                return
+            
+            # Check if position adjustment is enabled
+            if not self._freqtrade.strategy.position_adjustment_enable:
+                await self._send_msg("❌ Position adjustment not enabled in strategy")
+                return
+            
+            # Force another entry for the same pair
+            self._rpc._rpc_force_entry(
+                trade.pair, 
+                None, 
+                order_side=SignalDirection.SHORT if trade.is_short else SignalDirection.LONG
+            )
+            
+            msg = f"✅ Added to position for {trade.pair}\n"
+            msg += f"This will average down your entry price"
+            
+            await self._send_msg(msg)
+            
+        except ValueError:
+            await self._send_msg("❌ Invalid trade ID")
+
+    @authorized_only
+    async def _take_profit(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /take_profit <trade_id> <price> - Set TP for specific trade
+        """
+        if not context.args or len(context.args) != 2:
+            await self._send_msg("Usage: `/take_profit <trade_id> <price>`", ParseMode.MARKDOWN)
+            return
+        
+        try:
+            trade_id = int(context.args[0])
+            tp_price = float(context.args[1])
+            
+            trade = Trade.get_trades([Trade.id == trade_id, Trade.is_open.is_(True)]).first()
+            if not trade:
+                await self._send_msg(f"❌ Trade {trade_id} not found or not open")
+                return
+            
+            # Store take profit in custom data
+            trade.set_custom_data('take_profit', tp_price)
+            
+            msg = f"✅ Take profit set for {trade.pair} at {tp_price}\n"
+            msg += f"⚠️ Note: Manual monitoring required - will notify when price is reached"
+            
+            await self._send_msg(msg)
+            
+        except ValueError:
+            await self._send_msg("❌ Invalid parameters")
+
+    @authorized_only
+    async def _breakeven(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /breakeven <trade_id> - Move SL to breakeven
+        """
+        if not context.args or len(context.args) != 1:
+            await self._send_msg("Usage: `/breakeven <trade_id>`", ParseMode.MARKDOWN)
+            return
+        
+        try:
+            trade_id = int(context.args[0])
+            trade = Trade.get_trades([Trade.id == trade_id, Trade.is_open.is_(True)]).first()
+            
+            if not trade:
+                await self._send_msg(f"❌ Trade {trade_id} not found or not open")
+                return
+            
+            # Set stop loss to entry price (breakeven)
+            trade.adjust_stop_loss(trade.open_rate, 0)
+            
+            msg = f"✅ Stop loss moved to breakeven for {trade.pair}\n"
+            msg += f"Entry: {trade.open_rate}, New SL: {trade.stop_loss}"
+            
+            await self._send_msg(msg)
+            
+        except ValueError:
+            await self._send_msg("❌ Invalid trade ID")
+
+    # ====== CONFIGURATION BACKUP/RESTORE ======
+    
+    @authorized_only
+    async def _config_backup(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /config_backup - Backup current config
+        """
+        import os
+        from shutil import copyfile
+        
+        backup_dir = os.path.join(self._config['user_data_dir'], 'backups')
+        os.makedirs(backup_dir, exist_ok=True)
+        
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        backup_file = os.path.join(backup_dir, f'config_backup_{timestamp}.json')
+        
+        # Save current config
+        config_to_save = {
+            'exchange': self._config.get('exchange'),
+            'stake_currency': self._config.get('stake_currency'),
+            'stake_amount': self._config.get('stake_amount'),
+            'max_open_trades': self._config.get('max_open_trades'),
+            'stoploss': self._config.get('stoploss'),
+            'trailing_stop': self._config.get('trailing_stop'),
+            'whitelist': self._rpc._rpc_whitelist()['whitelist'],
+            'blacklist': self._rpc._rpc_blacklist()['blacklist']
+        }
+        
+        with open(backup_file, 'w') as f:
+            json.dump(config_to_save, f, indent=2)
+        
+        msg = f"✅ Configuration backed up\n"
+        msg += f"File: config_backup_{timestamp}.json"
+        
+        await self._send_msg(msg)
+
+    @authorized_only
+    async def _config_restore(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /config_restore - Restore from backup
+        """
+        import os
+        
+        backup_dir = os.path.join(self._config['user_data_dir'], 'backups')
+        
+        if not os.path.exists(backup_dir):
+            await self._send_msg("❌ No backups found")
+            return
+        
+        # Get latest backup
+        backups = [f for f in os.listdir(backup_dir) if f.startswith('config_backup_')]
+        
+        if not backups:
+            await self._send_msg("❌ No backups found")
+            return
+        
+        backups.sort()
+        latest_backup = backups[-1]
+        
+        backup_file = os.path.join(backup_dir, latest_backup)
+        
+        try:
+            with open(backup_file, 'r') as f:
+                backup_config = json.load(f)
+            
+            # Restore settings
+            for key in ['stake_amount', 'max_open_trades', 'stoploss']:
+                if key in backup_config:
+                    self._config[key] = backup_config[key]
+                    self._freqtrade.config[key] = backup_config[key]
+            
+            msg = f"✅ Configuration restored from {latest_backup}\n"
+            msg += "⚠️ Restart bot for full restoration"
+            
+            await self._send_msg(msg)
+            
+        except Exception as e:
+            await self._send_msg(f"❌ Error restoring config: {str(e)}")
+
+    @authorized_only
+    async def _strategy_reload(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /strategy_reload - Reload strategy without restart
+        """
+        try:
+            # Reload strategy
+            self._freqtrade.strategy.reload()
+            await self._send_msg("✅ Strategy reloaded successfully")
+        except Exception as e:
+            await self._send_msg(f"❌ Error reloading strategy: {str(e)}")
+
+    # ====== MENU SYSTEM ======
+    
+    @authorized_only
+    async def _menu_trade(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /menu_trade - Shows trading commands menu
+        """
+        msg = "📊 **Trading Commands**\n\n"
+        msg += "**Entry/Exit:**\n"
+        msg += "`/longall` - Long all whitelist pairs\n"
+        msg += "`/shortall` - Short all whitelist pairs\n"
+        msg += "`/closelong` - Close all long trades\n"
+        msg += "`/closeshort` - Close all short trades\n"
+        msg += "`/close_profitable` - Close profitable trades\n"
+        msg += "`/close_losing` - Close losing trades\n"
+        msg += "`/scale_out <id> <pct>` - Partial exit\n\n"
+        msg += "**Management:**\n"
+        msg += "`/avg_down <id>` - Average down position\n"
+        msg += "`/take_profit <id> <price>` - Set take profit\n"
+        msg += "`/breakeven <id>` - Move SL to breakeven"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _menu_risk(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /menu_risk - Shows risk management commands menu
+        """
+        msg = "🛡️ **Risk Management Commands**\n\n"
+        msg += "**Position Risk:**\n"
+        msg += "`/risk_status` - Current risk metrics\n"
+        msg += "`/setmaxopen <n>` - Set max open trades\n"
+        msg += "`/set_stoploss <pct>` - Set stop-loss %\n\n"
+        msg += "**Emergency Controls:**\n"
+        msg += "`/emergency_stop` - Stop bot & close all\n"
+        msg += "`/pausefor <min>` - Pause for X minutes\n"
+        msg += "`/pause_new_longs` - Pause long entries\n"
+        msg += "`/pause_new_shorts` - Pause short entries\n\n"
+        msg += "**Profit Control:**\n"
+        msg += "`/disable_roi` - Let trends run (no profit exits)\n"
+        msg += "`/profit_mode disabled` - Same as disable_roi\n"
+        msg += "`/profit_status` - Current profit settings"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _menu_status(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /menu_status - Shows monitoring commands menu
+        """
+        msg = "📈 **Status & Monitoring Commands**\n\n"
+        msg += "`/qs` - Quick status\n"
+        msg += "`/pnl [today/week/month]` - P&L summary\n"
+        msg += "`/watchlist` - Pairs being monitored\n"
+        msg += "`/market_sentiment` - Market direction\n"
+        msg += "`/top_gainers [n]` - Best performers\n"
+        msg += "`/top_losers [n]` - Worst performers\n"
+        msg += "`/alerts on/off` - Toggle notifications"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    # ====== PROFIT CONTROL COMMANDS ======
+    
+    @authorized_only
+    async def _disable_roi(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /disable_roi - Disable ROI-based exits (let trends run)
+        """
+        # Set ROI to a very high value effectively disabling it
+        original_roi = self._config.get('minimal_roi', {})
+        
+        # Store original for restoration
+        self._config['original_minimal_roi'] = original_roi.copy()
+        
+        # Set extremely high ROI to disable automatic exits
+        disabled_roi = {"0": 100.0}  # 10000% ROI requirement
+        
+        self._config['minimal_roi'] = disabled_roi
+        self._freqtrade.strategy.minimal_roi = disabled_roi
+        
+        msg = "🚫 **ROI-based exits DISABLED**\n\n"
+        msg += "✅ Positions will run until:\n"
+        msg += "  • Strategy exit signals\n"
+        msg += "  • Stop-loss hits\n"
+        msg += "  • Manual exit commands\n\n"
+        msg += "⚠️ **Higher risk** - Monitor positions closely!\n"
+        msg += "Use `/enable_roi` to restore profit-taking"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only 
+    async def _enable_roi(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /enable_roi - Re-enable ROI-based exits
+        """
+        # Restore original ROI if available
+        original_roi = self._config.get('original_minimal_roi')
+        
+        if original_roi:
+            self._config['minimal_roi'] = original_roi
+            self._freqtrade.strategy.minimal_roi = original_roi
+            msg = "✅ **ROI-based exits RESTORED**\n\n"
+            msg += "Original ROI settings:\n"
+            for time_key, roi_value in original_roi.items():
+                msg += f"  • {time_key}min: {roi_value:.1%}\n"
+        else:
+            # Default conservative ROI
+            default_roi = {"0": 0.10, "40": 0.05, "100": 0.02, "200": 0.01}
+            self._config['minimal_roi'] = default_roi
+            self._freqtrade.strategy.minimal_roi = default_roi
+            msg = "✅ **ROI-based exits ENABLED**\n\n"
+            msg += "Using default ROI settings:\n"
+            for time_key, roi_value in default_roi.items():
+                msg += f"  • {time_key}min: {roi_value:.1%}\n"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _set_roi(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /set_roi <percentage> - Set simple ROI target
+        Usage: /set_roi 5 (for 5% profit target)
+        """
+        if not context.args or len(context.args) != 1:
+            await self._send_msg("Usage: `/set_roi <percentage>`\nExample: `/set_roi 5` (for 5% target)", ParseMode.MARKDOWN)
+            return
+        
+        try:
+            roi_pct = float(context.args[0])
+            if roi_pct <= 0:
+                await self._send_msg("❌ ROI percentage must be positive")
+                return
+            
+            roi_decimal = roi_pct / 100
+            
+            # Store original ROI for restoration
+            self._config['original_minimal_roi'] = self._config.get('minimal_roi', {}).copy()
+            
+            # Set simple ROI target
+            new_roi = {"0": roi_decimal}
+            self._config['minimal_roi'] = new_roi
+            self._freqtrade.strategy.minimal_roi = new_roi
+            
+            msg = f"✅ **ROI target set to {roi_pct}%**\n\n"
+            msg += f"Trades will exit when {roi_pct}% profit is reached\n"
+            msg += "Use `/disable_roi` to let trends run longer"
+            
+            await self._send_msg(msg, ParseMode.MARKDOWN)
+            
+        except ValueError:
+            await self._send_msg("❌ Invalid percentage. Please provide a valid number.")
+
+    @authorized_only
+    async def _disable_trailing(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /disable_trailing - Disable trailing stop
+        """
+        # Store original settings
+        self._config['original_trailing_stop'] = self._config.get('trailing_stop', False)
+        self._config['original_trailing_stop_positive'] = self._config.get('trailing_stop_positive')
+        
+        # Disable trailing stop
+        self._config['trailing_stop'] = False
+        self._freqtrade.strategy.trailing_stop = False
+        
+        msg = "🚫 **Trailing stop DISABLED**\n\n"
+        msg += "✅ Stop-loss will remain fixed\n"
+        msg += "⚠️ Won't lock in profits automatically\n"
+        msg += "Use `/enable_trailing` to restore"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _enable_trailing(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /enable_trailing - Re-enable trailing stop
+        """
+        # Restore original settings or use defaults
+        original_trailing = self._config.get('original_trailing_stop', True)
+        original_positive = self._config.get('original_trailing_stop_positive', 0.01)
+        
+        self._config['trailing_stop'] = original_trailing
+        self._config['trailing_stop_positive'] = original_positive
+        self._freqtrade.strategy.trailing_stop = original_trailing
+        self._freqtrade.strategy.trailing_stop_positive = original_positive
+        
+        msg = "✅ **Trailing stop ENABLED**\n\n"
+        if original_trailing:
+            msg += f"Trailing positive: {original_positive:.1%}\n"
+            msg += "Will lock in profits as price moves favorably"
+        else:
+            msg += "Fixed stop-loss mode restored"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _profit_mode(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /profit_mode <mode> - Set profit-taking behavior
+        Modes: disabled, conservative, normal, aggressive
+        """
+        if not context.args or len(context.args) != 1:
+            await self._send_msg(
+                "Usage: `/profit_mode <mode>`\n\n"
+                "**Available modes:**\n"
+                "`disabled` - Let all trends run (no ROI exits)\n"
+                "`conservative` - 10%+ profit targets\n"  
+                "`normal` - 5%+ profit targets\n"
+                "`aggressive` - 2%+ profit targets", 
+                ParseMode.MARKDOWN
+            )
+            return
+        
+        mode = context.args[0].lower()
+        
+        # Store original settings
+        self._config['original_minimal_roi'] = self._config.get('minimal_roi', {}).copy()
+        
+        if mode == 'disabled':
+            # Disable ROI completely
+            new_roi = {"0": 100.0}  # 10000% requirement
+            msg = "🚫 **PROFIT MODE: DISABLED**\n\nLetting all trends run until strategy exits or stop-loss"
+        elif mode == 'conservative':
+            new_roi = {"0": 0.15, "30": 0.10, "60": 0.08, "120": 0.05}
+            msg = "🛡️ **PROFIT MODE: CONSERVATIVE**\n\nTargeting 10-15% profits with patience"
+        elif mode == 'normal':
+            new_roi = {"0": 0.08, "20": 0.05, "40": 0.03, "80": 0.02}
+            msg = "⚖️ **PROFIT MODE: NORMAL**\n\nBalanced 5-8% profit targets"
+        elif mode == 'aggressive':
+            new_roi = {"0": 0.05, "10": 0.03, "20": 0.02, "40": 0.01}
+            msg = "⚡ **PROFIT MODE: AGGRESSIVE**\n\nQuick 2-5% profit taking"
+        else:
+            await self._send_msg("❌ Invalid mode. Use: disabled, conservative, normal, or aggressive")
+            return
+        
+        # Apply new ROI settings
+        self._config['minimal_roi'] = new_roi
+        self._freqtrade.strategy.minimal_roi = new_roi
+        
+        msg += "\n\n**ROI Schedule:**\n"
+        for time_key, roi_value in new_roi.items():
+            if roi_value < 10:  # Don't show the disabled mode's 100.0
+                msg += f"  • {time_key}min: {roi_value:.1%}\n"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _profit_status(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /profit_status - Show current profit-taking settings
+        """
+        roi_config = self._config.get('minimal_roi', {})
+        trailing = self._config.get('trailing_stop', False)
+        trailing_positive = self._config.get('trailing_stop_positive', 0)
+        
+        msg = "📊 **Current Profit Settings**\n\n"
+        
+        # Determine mode
+        if roi_config.get("0", 0) >= 10:
+            mode = "🚫 DISABLED"
+        elif roi_config.get("0", 0) >= 0.10:
+            mode = "🛡️ CONSERVATIVE"  
+        elif roi_config.get("0", 0) >= 0.05:
+            mode = "⚖️ NORMAL"
+        else:
+            mode = "⚡ AGGRESSIVE"
+        
+        msg += f"**Mode:** {mode}\n\n"
+        
+        msg += "**ROI Schedule:**\n"
+        for time_key, roi_value in roi_config.items():
+            if roi_value < 10:  # Don't show disabled mode
+                msg += f"  • {time_key}min: {roi_value:.1%}\n"
+        
+        if roi_config.get("0", 0) >= 10:
+            msg += "  • ROI exits disabled - trends will run\n"
+        
+        msg += f"\n**Trailing Stop:** {'✅ Enabled' if trailing else '❌ Disabled'}\n"
+        if trailing and trailing_positive:
+            msg += f"**Trailing Positive:** {trailing_positive:.1%}\n"
+        
+        # Show impact on open trades
+        open_trades = len(Trade.get_open_trades())
+        if open_trades > 0:
+            msg += f"\n📈 **{open_trades} open trades** using these settings"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _set_roi_long(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /set_roi_long <percentage> [duration] - Set ROI target for long trades
+        Usage: /set_roi_long 30 => permanent 30% target
+               /set_roi_long 15 2h => 15% target for 2 hours, then revert to strategy
+        """
+        if not context.args or len(context.args) < 1 or len(context.args) > 2:
+            msg = "Usage: `/set_roi_long <percentage> [duration]`\n\n"
+            msg += "Examples:\n"
+            msg += "• `/set_roi_long 30` - 30% permanent target\n"
+            msg += "• `/set_roi_long 15 2h` - 15% for 2 hours\n" 
+            msg += "• `/set_roi_long 20 30m` - 20% for 30 minutes\n"
+            msg += "• `/set_roi_long 10 1.5h` - 10% for 1.5 hours"
+            await self._send_msg(msg, ParseMode.MARKDOWN)
+            return
+        
+        try:
+            roi_pct = float(context.args[0])
+            if roi_pct <= 0:
+                await self._send_msg("❌ ROI percentage must be positive")
+                return
+            
+            roi_decimal = roi_pct / 100
+            duration_minutes = None
+            duration_text = "permanent"
+            
+            # Parse duration if provided
+            if len(context.args) == 2:
+                duration_str = context.args[1].lower()
+                duration_minutes = self._parse_duration(duration_str)
+                if duration_minutes is None:
+                    await self._send_msg("❌ Invalid duration format. Use examples: 2h, 30m, 1.5h")
+                    return
+                duration_text = duration_str
+            
+            # Store long ROI setting with timestamp if temporary
+            if 'roi_settings' not in self._config:
+                self._config['roi_settings'] = {}
+            
+            from datetime import datetime, timedelta
+            
+            self._config['roi_settings']['long_roi'] = roi_decimal
+            
+            if duration_minutes:
+                # Set expiration time
+                expiry_time = datetime.now() + timedelta(minutes=duration_minutes)
+                self._config['roi_settings']['long_roi_expiry'] = expiry_time.isoformat()
+                msg = f"⏰ **Long ROI target: {roi_pct}% for {duration_text}**\n\n"
+                msg += f"📈 Long trades exit at {roi_pct}% profit\n"
+                msg += f"⏱️ Expires: {expiry_time.strftime('%H:%M:%S')}\n"
+                msg += f"🔄 After expiry: Strategy controls exits"
+            else:
+                # Remove expiry if setting permanent ROI
+                self._config['roi_settings'].pop('long_roi_expiry', None)
+                msg = f"✅ **Long ROI target: {roi_pct}% (permanent)**\n\n"
+                msg += f"📈 Long trades will exit at {roi_pct}% profit\n"
+                msg += "📉 Short trades use separate settings"
+            
+            msg += "\nUse `/roi_status` to see all settings"
+            await self._send_msg(msg, ParseMode.MARKDOWN)
+            
+        except ValueError:
+            await self._send_msg("❌ Invalid percentage. Please provide a valid number.")
+
+    @authorized_only
+    async def _set_roi_short(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /set_roi_short <percentage> [duration] - Set ROI target for short trades
+        Usage: /set_roi_short 20 => permanent 20% target  
+               /set_roi_short 12 1h => 12% target for 1 hour, then revert to strategy
+        """
+        if not context.args or len(context.args) < 1 or len(context.args) > 2:
+            msg = "Usage: `/set_roi_short <percentage> [duration]`\n\n"
+            msg += "Examples:\n"
+            msg += "• `/set_roi_short 20` - 20% permanent target\n"
+            msg += "• `/set_roi_short 12 1h` - 12% for 1 hour\n"
+            msg += "• `/set_roi_short 15 45m` - 15% for 45 minutes\n" 
+            msg += "• `/set_roi_short 8 2.5h` - 8% for 2.5 hours"
+            await self._send_msg(msg, ParseMode.MARKDOWN)
+            return
+        
+        try:
+            roi_pct = float(context.args[0])
+            if roi_pct <= 0:
+                await self._send_msg("❌ ROI percentage must be positive")
+                return
+            
+            roi_decimal = roi_pct / 100
+            duration_minutes = None
+            duration_text = "permanent"
+            
+            # Parse duration if provided
+            if len(context.args) == 2:
+                duration_str = context.args[1].lower()
+                duration_minutes = self._parse_duration(duration_str)
+                if duration_minutes is None:
+                    await self._send_msg("❌ Invalid duration format. Use examples: 1h, 45m, 2.5h")
+                    return
+                duration_text = duration_str
+            
+            # Store short ROI setting with timestamp if temporary
+            if 'roi_settings' not in self._config:
+                self._config['roi_settings'] = {}
+            
+            from datetime import datetime, timedelta
+            
+            self._config['roi_settings']['short_roi'] = roi_decimal
+            
+            if duration_minutes:
+                # Set expiration time
+                expiry_time = datetime.now() + timedelta(minutes=duration_minutes)
+                self._config['roi_settings']['short_roi_expiry'] = expiry_time.isoformat()
+                msg = f"⏰ **Short ROI target: {roi_pct}% for {duration_text}**\n\n"
+                msg += f"📉 Short trades exit at {roi_pct}% profit\n"
+                msg += f"⏱️ Expires: {expiry_time.strftime('%H:%M:%S')}\n"
+                msg += f"🔄 After expiry: Strategy controls exits"
+            else:
+                # Remove expiry if setting permanent ROI
+                self._config['roi_settings'].pop('short_roi_expiry', None)
+                msg = f"✅ **Short ROI target: {roi_pct}% (permanent)**\n\n"
+                msg += f"📉 Short trades will exit at {roi_pct}% profit\n"
+                msg += "📈 Long trades use separate settings"
+            
+            msg += "\nUse `/roi_status` to see all settings"
+            await self._send_msg(msg, ParseMode.MARKDOWN)
+            
+        except ValueError:
+            await self._send_msg("❌ Invalid percentage. Please provide a valid number.")
+
+    @authorized_only
+    async def _disable_roi_long(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /disable_roi_long - Disable ROI exits for long trades only
+        """
+        if 'roi_settings' not in self._config:
+            self._config['roi_settings'] = {}
+        
+        # Store that long ROI is disabled
+        self._config['roi_settings']['long_roi'] = 100.0  # 10000% = disabled
+        
+        msg = "🚫 **Long ROI DISABLED**\n\n"
+        msg += "📈 Long positions will run until:\n"
+        msg += "  • Strategy exit signals\n"
+        msg += "  • Stop-loss hits\n"
+        msg += "  • Manual exit commands\n\n"
+        msg += "📉 Short trades still use ROI settings\n"
+        msg += "Use `/enable_roi_long` to restore"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _disable_roi_short(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /disable_roi_short - Disable ROI exits for short trades only
+        """
+        if 'roi_settings' not in self._config:
+            self._config['roi_settings'] = {}
+        
+        # Store that short ROI is disabled
+        self._config['roi_settings']['short_roi'] = 100.0  # 10000% = disabled
+        
+        msg = "🚫 **Short ROI DISABLED**\n\n"
+        msg += "📉 Short positions will run until:\n"
+        msg += "  • Strategy exit signals\n"
+        msg += "  • Stop-loss hits\n"
+        msg += "  • Manual exit commands\n\n"
+        msg += "📈 Long trades still use ROI settings\n"
+        msg += "Use `/enable_roi_short` to restore"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _enable_roi_long(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /enable_roi_long - Re-enable ROI for long trades
+        """
+        if 'roi_settings' not in self._config:
+            self._config['roi_settings'] = {}
+        
+        # Set default long ROI if none exists
+        default_long_roi = 0.08  # 8% default for longs
+        self._config['roi_settings']['long_roi'] = default_long_roi
+        
+        msg = f"✅ **Long ROI ENABLED**\n\n"
+        msg += f"📈 Long trades: {default_long_roi:.1%} target\n"
+        msg += "Use `/set_roi_long <pct>` to customize"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _enable_roi_short(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /enable_roi_short - Re-enable ROI for short trades
+        """
+        if 'roi_settings' not in self._config:
+            self._config['roi_settings'] = {}
+        
+        # Set default short ROI if none exists  
+        default_short_roi = 0.06  # 6% default for shorts
+        self._config['roi_settings']['short_roi'] = default_short_roi
+        
+        msg = f"✅ **Short ROI ENABLED**\n\n"
+        msg += f"📉 Short trades: {default_short_roi:.1%} target\n"
+        msg += "Use `/set_roi_short <pct>` to customize"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _roi_status_separate(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /roi_status - Show separate long/short ROI settings with expiration
+        """
+        from datetime import datetime
+        
+        roi_settings = self._config.get('roi_settings', {})
+        long_roi = roi_settings.get('long_roi', 'Not set')
+        short_roi = roi_settings.get('short_roi', 'Not set')
+        long_expiry = roi_settings.get('long_roi_expiry')
+        short_expiry = roi_settings.get('short_roi_expiry')
+        current_time = datetime.now()
+        
+        msg = "📊 **Separate ROI Settings**\n\n"
+        
+        # Long settings with expiration check
+        if long_roi == 'Not set':
+            msg += "📈 **Long Trades:** Using global ROI\n"
+        elif long_roi >= 10:
+            msg += "📈 **Long Trades:** 🚫 DISABLED (letting trends run)\n"
+        else:
+            msg += f"📈 **Long Trades:** {long_roi:.1%} profit target"
+            if long_expiry:
+                try:
+                    expiry_time = datetime.fromisoformat(long_expiry)
+                    if current_time > expiry_time:
+                        msg += " ⏰ **EXPIRED** (reverted to strategy)\n"
+                        # Clean up expired setting
+                        self._cleanup_expired_roi('long')
+                    else:
+                        time_left = expiry_time - current_time
+                        hours_left = int(time_left.total_seconds() / 3600)
+                        mins_left = int((time_left.total_seconds() % 3600) / 60)
+                        if hours_left > 0:
+                            msg += f" ⏱️ Expires in {hours_left}h {mins_left}m\n"
+                        else:
+                            msg += f" ⏱️ Expires in {mins_left}m\n"
+                except (ValueError, TypeError):
+                    msg += " ⚠️ Invalid expiry - cleaned up\n"
+                    self._cleanup_expired_roi('long')
+            else:
+                msg += " (permanent)\n"
+        
+        # Short settings with expiration check
+        if short_roi == 'Not set':
+            msg += "📉 **Short Trades:** Using global ROI\n"
+        elif short_roi >= 10:
+            msg += "📉 **Short Trades:** 🚫 DISABLED (letting trends run)\n"
+        else:
+            msg += f"📉 **Short Trades:** {short_roi:.1%} profit target"
+            if short_expiry:
+                try:
+                    expiry_time = datetime.fromisoformat(short_expiry)
+                    if current_time > expiry_time:
+                        msg += " ⏰ **EXPIRED** (reverted to strategy)\n"
+                        # Clean up expired setting
+                        self._cleanup_expired_roi('short')
+                    else:
+                        time_left = expiry_time - current_time
+                        hours_left = int(time_left.total_seconds() / 3600)
+                        mins_left = int((time_left.total_seconds() % 3600) / 60)
+                        if hours_left > 0:
+                            msg += f" ⏱️ Expires in {hours_left}h {mins_left}m\n"
+                        else:
+                            msg += f" ⏱️ Expires in {mins_left}m\n"
+                except (ValueError, TypeError):
+                    msg += " ⚠️ Invalid expiry - cleaned up\n"
+                    self._cleanup_expired_roi('short')
+            else:
+                msg += " (permanent)\n"
+        
+        # Show current trades breakdown
+        trades = Trade.get_open_trades()
+        long_trades = [t for t in trades if not t.is_short]
+        short_trades = [t for t in trades if t.is_short]
+        
+        msg += f"\n**Current Positions:**\n"
+        msg += f"  📈 Long: {len(long_trades)} trades\n"
+        msg += f"  📉 Short: {len(short_trades)} trades\n"
+        
+        msg += f"\n**Quick Commands:**\n"
+        msg += f"`/set_roi_long 30 2h` - 30% for 2 hours\n"
+        msg += f"`/set_roi_short 20` - 20% permanent\n"
+        msg += f"`/check_roi_targets` - See ready trades"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _extend_roi(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /extend_roi <direction> <duration> - Extend ROI expiration time
+        Usage: /extend_roi long 1h   - Extend long ROI by 1 hour
+               /extend_roi short 30m - Extend short ROI by 30 minutes
+        """
+        if not context.args or len(context.args) != 2:
+            msg = "Usage: `/extend_roi <direction> <duration>`\n\n"
+            msg += "Examples:\n"
+            msg += "• `/extend_roi long 1h` - Extend long ROI by 1 hour\n"
+            msg += "• `/extend_roi short 30m` - Extend short ROI by 30 minutes\n"
+            msg += "• `/extend_roi both 45m` - Extend both by 45 minutes"
+            await self._send_msg(msg, ParseMode.MARKDOWN)
+            return
+        
+        direction = context.args[0].lower()
+        duration_str = context.args[1].lower()
+        
+        if direction not in ['long', 'short', 'both']:
+            await self._send_msg("❌ Direction must be 'long', 'short', or 'both'")
+            return
+        
+        duration_minutes = self._parse_duration(duration_str)
+        if duration_minutes is None:
+            await self._send_msg("❌ Invalid duration format. Use examples: 1h, 30m, 2.5h")
+            return
+        
+        from datetime import datetime, timedelta
+        roi_settings = self._config.get('roi_settings', {})
+        current_time = datetime.now()
+        extensions = []
+        
+        if direction in ['long', 'both']:
+            long_expiry = roi_settings.get('long_roi_expiry')
+            if long_expiry:
+                try:
+                    expiry_time = datetime.fromisoformat(long_expiry)
+                    new_expiry = expiry_time + timedelta(minutes=duration_minutes)
+                    roi_settings['long_roi_expiry'] = new_expiry.isoformat()
+                    extensions.append(f"📈 Long extended to {new_expiry.strftime('%H:%M:%S')}")
+                except (ValueError, TypeError):
+                    extensions.append("❌ Long ROI expiry was invalid")
+            else:
+                extensions.append("⚠️ Long ROI has no expiration to extend")
+        
+        if direction in ['short', 'both']:
+            short_expiry = roi_settings.get('short_roi_expiry')
+            if short_expiry:
+                try:
+                    expiry_time = datetime.fromisoformat(short_expiry)
+                    new_expiry = expiry_time + timedelta(minutes=duration_minutes)
+                    roi_settings['short_roi_expiry'] = new_expiry.isoformat()
+                    extensions.append(f"📉 Short extended to {new_expiry.strftime('%H:%M:%S')}")
+                except (ValueError, TypeError):
+                    extensions.append("❌ Short ROI expiry was invalid")
+            else:
+                extensions.append("⚠️ Short ROI has no expiration to extend")
+        
+        msg = f"⏰ **Extended ROI by {duration_str}:**\n\n"
+        msg += "\n".join(extensions)
+        msg += "\n\nUse `/roi_status` to see current settings"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    def _parse_duration(self, duration_str: str) -> int:
+        """
+        Parse duration string to minutes
+        Examples: '2h', '30m', '1.5h', '45m'
+        Returns: duration in minutes or None if invalid
+        """
+        import re
+        
+        # Remove spaces and convert to lowercase
+        duration_str = duration_str.strip().lower()
+        
+        # Match patterns like: 2h, 30m, 1.5h
+        hour_match = re.match(r'^(\d+(?:\.\d+)?)h$', duration_str)
+        minute_match = re.match(r'^(\d+)m$', duration_str)
+        
+        if hour_match:
+            hours = float(hour_match.group(1))
+            return int(hours * 60)
+        elif minute_match:
+            minutes = int(minute_match.group(1))
+            return minutes
+        
+        return None
+
+    def get_roi_for_trade(self, trade) -> dict:
+        """
+        Get the appropriate ROI table for a trade based on its direction and expiration
+        This method can be called by the strategy or bot to get position-specific ROI
+        """
+        from datetime import datetime
+        
+        roi_settings = self._config.get('roi_settings', {})
+        current_time = datetime.now()
+        
+        if trade.is_short:
+            # Short trade - check if ROI has expired
+            short_roi = roi_settings.get('short_roi')
+            short_roi_expiry = roi_settings.get('short_roi_expiry')
+            
+            if short_roi is not None:
+                # Check if ROI has expired
+                if short_roi_expiry:
+                    try:
+                        expiry_time = datetime.fromisoformat(short_roi_expiry)
+                        if current_time > expiry_time:
+                            # ROI expired - clean up and revert to strategy
+                            self._cleanup_expired_roi('short')
+                            return None  # Let strategy handle ROI
+                    except (ValueError, TypeError):
+                        # Invalid expiry format, clean up
+                        self._cleanup_expired_roi('short')
+                        return None
+                
+                if short_roi >= 10:  # Disabled
+                    return {"0": 100.0}  # Very high ROI = disabled
+                else:
+                    return {"0": short_roi}
+        else:
+            # Long trade - check if ROI has expired
+            long_roi = roi_settings.get('long_roi')
+            long_roi_expiry = roi_settings.get('long_roi_expiry')
+            
+            if long_roi is not None:
+                # Check if ROI has expired
+                if long_roi_expiry:
+                    try:
+                        expiry_time = datetime.fromisoformat(long_roi_expiry)
+                        if current_time > expiry_time:
+                            # ROI expired - clean up and revert to strategy
+                            self._cleanup_expired_roi('long')
+                            return None  # Let strategy handle ROI
+                    except (ValueError, TypeError):
+                        # Invalid expiry format, clean up
+                        self._cleanup_expired_roi('long')
+                        return None
+                
+                if long_roi >= 10:  # Disabled
+                    return {"0": 100.0}  # Very high ROI = disabled
+                else:
+                    return {"0": long_roi}
+        
+        # Fall back to global ROI if no specific setting
+        return self._config.get('minimal_roi', {"0": 0.05})
+
+    def _cleanup_expired_roi(self, direction: str) -> None:
+        """
+        Clean up expired ROI settings and notify user
+        """
+        if 'roi_settings' not in self._config:
+            return
+        
+        roi_settings = self._config['roi_settings']
+        
+        if direction == 'long':
+            roi_settings.pop('long_roi', None)
+            roi_settings.pop('long_roi_expiry', None)
+        elif direction == 'short':
+            roi_settings.pop('short_roi', None)
+            roi_settings.pop('short_roi_expiry', None)
+        
+        # Could send notification here if needed
+        # For now, silent cleanup
+
+    def should_exit_roi(self, trade, current_profit: float) -> bool:
+        """
+        Check if a trade should exit based on position-specific ROI
+        This replaces the standard ROI check with direction-aware logic
+        """
+        roi_table = self.get_roi_for_trade(trade)
+        
+        # Get the ROI target (assuming simple ROI for now)
+        roi_target = list(roi_table.values())[0]
+        
+        # If ROI is disabled (very high value), don't exit
+        if roi_target >= 10:
+            return False
+        
+        # Exit if current profit meets or exceeds ROI target
+        return current_profit >= roi_target
+
+    @authorized_only
+    async def _force_roi_check(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /force_roi_check - Manually check and exit trades that meet ROI targets
+        """
+        try:
+            result = self._rpc._force_roi_exit_trades()
+            
+            if "exited_trades" in result and result["exited_trades"]:
+                msg = "✅ **ROI Exits Executed:**\n\n"
+                for trade_info in result["exited_trades"][:10]:
+                    direction = "📉 Short" if trade_info['direction'] == 'short' else "📈 Long"
+                    msg += f"• {direction} {trade_info['pair']}: "
+                    msg += f"{trade_info['current_profit_pct']:.1f}% (target: {trade_info['roi_target']:.1f}%)\n"
+                
+                if len(result["exited_trades"]) > 10:
+                    msg += f"... and {len(result['exited_trades']) - 10} more"
+            else:
+                msg = "📊 No trades meet their ROI targets yet"
+                
+        except RPCException as e:
+            msg = f"❌ Error checking ROI: {str(e)}"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _check_roi_targets(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /check_roi_targets - Show which trades are close to ROI targets
+        """
+        try:
+            result = self._rpc._check_roi_for_trades()
+            
+            if result.get("result") == "No open trades to check":
+                await self._send_msg("No open trades to check")
+                return
+            
+            msg = "🎯 **ROI Target Status:**\n\n"
+            
+            # Show summary first
+            summary = result.get('summary', {})
+            msg += f"**Summary:**\n"
+            msg += f"• Long ROI: {'Enabled' if summary.get('long_roi_enabled') else 'Disabled'}"
+            if summary.get('long_roi_enabled'):
+                msg += f" ({summary.get('long_roi_target', 0):.1f}%)"
+            msg += "\n"
+            msg += f"• Short ROI: {'Enabled' if summary.get('short_roi_enabled') else 'Disabled'}"
+            if summary.get('short_roi_enabled'):
+                msg += f" ({summary.get('short_roi_target', 0):.1f}%)"
+            msg += f"\n• Trades ready for exit: {summary.get('trades_ready_for_roi_exit', 0)}\n\n"
+            
+            # Show trades ready for ROI exit
+            roi_ready = result.get('roi_ready_trades', [])
+            if roi_ready:
+                msg += "**✅ Ready for ROI Exit:**\n"
+                for trade_info in roi_ready[:5]:
+                    direction = "📉" if trade_info['direction'] == 'short' else "📈"
+                    msg += f"{direction} **{trade_info['pair']}** (#{trade_info['trade_id']})\n"
+                    msg += f"   Current: {trade_info['current_profit_pct']:.1f}% | "
+                    msg += f"Target: {trade_info['roi_target']:.1f}%\n"
+                    msg += f"   🟢 **TARGET REACHED!**\n\n"
+                
+                if len(roi_ready) > 5:
+                    msg += f"... and {len(roi_ready) - 5} more ready for exit\n\n"
+            
+            msg += f"Use `/force_roi_check` to exit ready trades"
+                
+        except RPCException as e:
+            msg = f"❌ Error checking ROI targets: {str(e)}"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
+    async def _auto_roi_mode(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /auto_roi_mode on/off - Enable/disable automatic ROI checking
+        """
+        if not context.args or context.args[0] not in ['on', 'off']:
+            await self._send_msg("Usage: `/auto_roi_mode on` or `/auto_roi_mode off`", ParseMode.MARKDOWN)
+            return
+        
+        enable = context.args[0] == 'on'
+        
+        if 'auto_roi' not in self._config:
+            self._config['auto_roi'] = {}
+        
+        self._config['auto_roi']['enabled'] = enable
+        
+        if enable:
+            msg = "🔄 **Automatic ROI checking ENABLED**\n\n"
+            msg += "Bot will automatically exit trades when they reach ROI targets\n"
+            msg += "Use `/check_roi_targets` to see current status"
+        else:
+            msg = "⏸️ **Automatic ROI checking DISABLED**\n\n"
+            msg += "Use `/force_roi_check` to manually check and exit trades"
+        
+        await self._send_msg(msg, ParseMode.MARKDOWN)
+
+    @authorized_only
     async def _logs(self, update: Update, context: CallbackContext) -> None:
         """
         Handler for /logs
@@ -1929,6 +4148,10 @@ class Telegram(RPCHandler):
             "regardless of profit`\n"
             "*/fx <trade_id>|all:* `Alias to /forceexit`\n"
             f"{force_enter_text if self._config.get('force_entry_enable', False) else ''}"
+            "*/longall:* `Open long positions for all pairs in whitelist`\n"
+            "*/shortall:* `Open short positions for all pairs in whitelist`\n"
+            "*/closelong:* `Close all open long trades`\n"
+            "*/closeshort:* `Close all open short trades`\n"
             "*/delete <trade_id>:* `Instantly delete the given trade in the database`\n"
             "*/reload_trade <trade_id>:* `Reload trade from exchange Orders`\n"
             "*/cancel_open_order <trade_id>:* `Cancels open orders for trade. "
@@ -1940,6 +4163,10 @@ class Telegram(RPCHandler):
             "to the blacklist.` \n"
             "*/blacklist_delete [pairs]| /bl_delete [pairs]:* "
             "`Delete pair / pattern from blacklist. Will reset on reload_conf.` \n"
+            "*/enable_pairs [pairs]| /enable [pairs]:* "
+            "`Enable trading for specified pairs (remove from blacklist).` \n"
+            "*/disable_pairs [pairs]| /disable [pairs]:* "
+            "`Disable trading for specified pairs (add to blacklist).` \n"
             "*/reload_config:* `Reload configuration file` \n"
             "*/unlock <pair|id>:* `Unlock this Pair (or this lock id if it's numeric)`\n"
             "_Current state_\n"
@@ -1980,6 +4207,42 @@ class Telegram(RPCHandler):
             "*/monthly <n>:* `Shows statistics per month, over the last n months`\n"
             "*/stats:* `Shows Wins / losses by Sell reason as well as "
             "Avg. holding durations for buys and sells.`\n"
+            "_Advanced Commands_\n"
+            "-------------------\n"
+            "*/qs:* `Quick status - compact one-line summary`\n"
+            "*/pnl [today/week/month]:* `P&L summary for period`\n"
+            "*/risk_status:* `Current risk exposure metrics`\n"
+            "*/watchlist:* `Show pairs available for entry`\n"
+            "*/close_profitable:* `Close all profitable trades`\n"
+            "*/close_losing:* `Close all losing trades`\n"
+            "*/market_sentiment:* `Overall market direction`\n"
+            "*/top_gainers [n]:* `Best performing pairs`\n"
+            "*/top_losers [n]:* `Worst performing pairs`\n"
+            "_Risk & Safety_\n"
+            "---------------\n"
+            "*/setmaxopen <n>:* `Set max open trades`\n"
+            "*/emergency_stop:* `Stop bot and close all trades`\n"
+            "*/pausefor <min>:* `Pause bot for X minutes`\n"
+            "*/set_stoploss <pct>:* `Update stop-loss percentage`\n"
+            "_Profit Control_\n"
+            "----------------\n"
+            "*/disable_roi:* `Disable profit exits - let trends run`\n"
+            "*/enable_roi:* `Re-enable profit-taking exits`\n" 
+            "*/profit_mode <mode>:* `Set profit behavior (disabled/normal/aggressive)`\n"
+            "*/profit_status:* `Show current profit settings`\n"
+            "*/set_roi <pct>:* `Set simple profit target percentage`\n"
+            "_Separate Long/Short ROI_\n"
+            "-------------------------\n"
+            "*/set_roi_long <pct>:* `Set profit target for long trades only`\n"
+            "*/set_roi_short <pct>:* `Set profit target for short trades only`\n"
+            "*/disable_roi_long:* `Disable profit exits for longs only`\n"
+            "*/disable_roi_short:* `Disable profit exits for shorts only`\n"
+            "*/roi_status:* `Show separate long/short ROI settings`\n"
+            "_Menu System_\n"
+            "-------------\n"
+            "*/menu_trade:* `Show trading commands menu`\n"
+            "*/menu_risk:* `Show risk management menu`\n"
+            "*/menu_status:* `Show monitoring commands menu`\n"
             "*/help:* `This help message`\n"
             "*/version:* `Show version`\n"
         )

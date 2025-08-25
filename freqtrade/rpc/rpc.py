@@ -1689,6 +1689,111 @@ class RPC:
 
         return res
 
+    def _check_roi_for_trades(self) -> dict:
+        """
+        Check all open trades against their individual ROI settings
+        Returns summary of ROI check results
+        """
+        if self._freqtrade.state == State.STOPPED:
+            raise RPCException("trader is not running")
+        
+        open_trades = Trade.get_open_trades()
+        if not open_trades:
+            return {"result": "No open trades to check"}
+        
+        roi_settings = self._freqtrade.config.get('roi_settings', {})
+        results = {
+            'total_trades': len(open_trades),
+            'roi_ready_trades': [],
+            'summary': {}
+        }
+        
+        from datetime import datetime
+        current_time = datetime.now()
+        
+        for trade in open_trades:
+            current_profit_pct = trade.calc_profit_ratio(trade.close_rate or trade.close_rate_requested) * 100
+            
+            # Get ROI target for this trade direction with expiration check
+            roi_target = None
+            direction = 'short' if trade.is_short else 'long'
+            roi_expired = False
+            
+            if trade.is_short:
+                roi_target = roi_settings.get('short_roi')
+                roi_expiry = roi_settings.get('short_roi_expiry')
+            else:
+                roi_target = roi_settings.get('long_roi')
+                roi_expiry = roi_settings.get('long_roi_expiry')
+            
+            # Check if ROI has expired
+            if roi_target is not None and roi_expiry:
+                try:
+                    expiry_time = datetime.fromisoformat(roi_expiry)
+                    if current_time > expiry_time:
+                        roi_expired = True
+                        roi_target = None  # Expired, don't use this ROI
+                except (ValueError, TypeError):
+                    roi_expired = True
+                    roi_target = None
+            
+            if roi_target is not None and roi_target < 10:  # Not disabled and not expired
+                if current_profit_pct >= roi_target * 100:  # Convert to percentage
+                    results['roi_ready_trades'].append({
+                        'trade_id': trade.id,
+                        'pair': trade.pair,
+                        'direction': direction,
+                        'current_profit_pct': round(current_profit_pct, 2),
+                        'roi_target': roi_target * 100,  # Store as percentage
+                        'ready_for_exit': True
+                    })
+        
+        results['summary'] = {
+            'trades_ready_for_roi_exit': len(results['roi_ready_trades']),
+            'long_roi_enabled': roi_settings.get('long_roi', 10) < 10,
+            'short_roi_enabled': roi_settings.get('short_roi', 10) < 10,
+            'long_roi_target': roi_settings.get('long_roi'),
+            'short_roi_target': roi_settings.get('short_roi')
+        }
+        
+        return results
+    
+    def _force_roi_exit_trades(self) -> dict:
+        """
+        Force exit all trades that have reached their ROI targets
+        """
+        if self._freqtrade.state == State.STOPPED:
+            raise RPCException("trader is not running")
+        
+        roi_check = self._check_roi_for_trades()
+        roi_ready_trades = roi_check.get('roi_ready_trades', [])
+        
+        if not roi_ready_trades:
+            return {"result": "No trades ready for ROI exit"}
+        
+        exited_trades = []
+        with self._freqtrade._exit_lock:
+            for trade_info in roi_ready_trades:
+                trade = Trade.get_trades(
+                    trade_filter=[
+                        Trade.id == trade_info['trade_id'],
+                        Trade.is_open.is_(True),
+                    ]
+                ).first()
+                
+                if trade:
+                    result = self.__exec_force_exit(trade, None)  # Use default order type
+                    if result:
+                        exited_trades.append(trade_info)
+            
+            Trade.commit()
+            self._freqtrade.wallets.update()
+        
+        return {
+            "result": f"Exited {len(exited_trades)} trades based on ROI targets",
+            "exited_trades": exited_trades
+        }
+
     def _update_market_direction(self, direction: MarketDirection) -> None:
         self._freqtrade.strategy.market_direction = direction
 
