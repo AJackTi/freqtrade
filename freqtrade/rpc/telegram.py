@@ -1770,15 +1770,24 @@ class Telegram(RPCHandler):
             await self._send_msg("No open long trades to close")
             return
         
+        # Use the bulk processing approach similar to _rpc_force_exit("all")
         closed_trades = []
         failed_trades = []
         
-        for trade in long_trades:
-            try:
-                self._rpc._rpc_force_exit(str(trade.id))
-                closed_trades.append(f"{trade.pair} (#{trade.id})")
-            except RPCException as e:
-                failed_trades.append(f"{trade.pair} (#{trade.id}): {str(e)}")
+        with self._rpc._freqtrade._exit_lock:
+            for trade in long_trades:
+                try:
+                    success = self._rpc._RPC__exec_force_exit(trade, None)
+                    if success:
+                        closed_trades.append(f"{trade.pair} (#{trade.id})")
+                    else:
+                        failed_trades.append(f"{trade.pair} (#{trade.id}): Failed to execute exit")
+                except Exception as e:
+                    failed_trades.append(f"{trade.pair} (#{trade.id}): {str(e)}")
+            
+            # Commit all changes at once and update wallets
+            Trade.commit()
+            self._rpc._freqtrade.wallets.update()
         
         msg = ""
         if closed_trades:
@@ -1800,15 +1809,24 @@ class Telegram(RPCHandler):
             await self._send_msg("No open short trades to close")
             return
         
+        # Use the bulk processing approach similar to _rpc_force_exit("all")
         closed_trades = []
         failed_trades = []
         
-        for trade in short_trades:
-            try:
-                self._rpc._rpc_force_exit(str(trade.id))
-                closed_trades.append(f"{trade.pair} (#{trade.id})")
-            except RPCException as e:
-                failed_trades.append(f"{trade.pair} (#{trade.id}): {str(e)}")
+        with self._rpc._freqtrade._exit_lock:
+            for trade in short_trades:
+                try:
+                    success = self._rpc._RPC__exec_force_exit(trade, None)
+                    if success:
+                        closed_trades.append(f"{trade.pair} (#{trade.id})")
+                    else:
+                        failed_trades.append(f"{trade.pair} (#{trade.id}): Failed to execute exit")
+                except Exception as e:
+                    failed_trades.append(f"{trade.pair} (#{trade.id}): {str(e)}")
+            
+            # Commit all changes at once and update wallets
+            Trade.commit()
+            self._rpc._freqtrade.wallets.update()
         
         msg = ""
         if closed_trades:
@@ -2311,17 +2329,26 @@ class Telegram(RPCHandler):
         # First stop the bot
         self._rpc._rpc_stop()
         
-        # Close all open trades
+        # Close all open trades using bulk processing
         trades = Trade.get_open_trades()
         closed_count = 0
         failed_count = 0
         
-        for trade in trades:
-            try:
-                self._rpc._rpc_force_exit(str(trade.id))
-                closed_count += 1
-            except:
-                failed_count += 1
+        if trades:
+            with self._rpc._freqtrade._exit_lock:
+                for trade in trades:
+                    try:
+                        success = self._rpc._RPC__exec_force_exit(trade, None)
+                        if success:
+                            closed_count += 1
+                        else:
+                            failed_count += 1
+                    except Exception:
+                        failed_count += 1
+                
+                # Commit all changes at once and update wallets
+                Trade.commit()
+                self._rpc._freqtrade.wallets.update()
         
         msg = "🚨 **EMERGENCY STOP EXECUTED**\n\n"
         msg += f"✅ Bot stopped\n"
@@ -2676,21 +2703,43 @@ class Telegram(RPCHandler):
         """
         trades = Trade.get_open_trades()
         closed_trades = []
+        failed_trades = []
         total_profit = 0
         
+        # First, identify profitable trades
+        profitable_trades = []
         for trade in trades:
-            current_rate = self._freqtrade.exchange.get_rate(
-                trade.pair, side="exit", is_short=trade.is_short, refresh=False
-            )
-            profit = trade.calc_profit(current_rate)
-            
-            if profit > 0:
+            try:
+                current_rate = self._freqtrade.exchange.get_rate(
+                    trade.pair, side="exit", is_short=trade.is_short, refresh=False
+                )
+                profit = trade.calc_profit(current_rate)
+                
+                if profit > 0:
+                    profitable_trades.append((trade, profit))
+            except Exception:
+                continue
+        
+        if not profitable_trades:
+            await self._send_msg("No profitable trades to close")
+            return
+        
+        # Close profitable trades using bulk processing
+        with self._rpc._freqtrade._exit_lock:
+            for trade, profit in profitable_trades:
                 try:
-                    self._rpc._rpc_force_exit(str(trade.id))
-                    closed_trades.append((trade.pair, profit))
-                    total_profit += profit
-                except:
-                    pass
+                    success = self._rpc._RPC__exec_force_exit(trade, None)
+                    if success:
+                        closed_trades.append((trade.pair, profit))
+                        total_profit += profit
+                    else:
+                        failed_trades.append(f"{trade.pair} (#{trade.id}): Failed to execute exit")
+                except Exception as e:
+                    failed_trades.append(f"{trade.pair} (#{trade.id}): {str(e)}")
+            
+            # Commit all changes at once and update wallets
+            Trade.commit()
+            self._rpc._freqtrade.wallets.update()
         
         if closed_trades:
             stake_cur = self._config['stake_currency']
@@ -2700,8 +2749,10 @@ class Telegram(RPCHandler):
                 msg += f"  • {pair}: +{profit:.2f} {stake_cur}\n"
             if len(closed_trades) > 10:
                 msg += f"  ... and {len(closed_trades) - 10} more"
+            if failed_trades:
+                msg += f"\n❌ Failed to close:\n" + "\n".join(failed_trades[:5])
         else:
-            msg = "No profitable trades to close"
+            msg = "Failed to close profitable trades"
         
         await self._send_msg(msg, ParseMode.MARKDOWN)
 
@@ -2712,21 +2763,43 @@ class Telegram(RPCHandler):
         """
         trades = Trade.get_open_trades()
         closed_trades = []
+        failed_trades = []
         total_loss = 0
         
+        # First, identify losing trades
+        losing_trades = []
         for trade in trades:
-            current_rate = self._freqtrade.exchange.get_rate(
-                trade.pair, side="exit", is_short=trade.is_short, refresh=False
-            )
-            profit = trade.calc_profit(current_rate)
-            
-            if profit < 0:
+            try:
+                current_rate = self._freqtrade.exchange.get_rate(
+                    trade.pair, side="exit", is_short=trade.is_short, refresh=False
+                )
+                profit = trade.calc_profit(current_rate)
+                
+                if profit < 0:
+                    losing_trades.append((trade, profit))
+            except Exception:
+                continue
+        
+        if not losing_trades:
+            await self._send_msg("No losing trades to close")
+            return
+        
+        # Close losing trades using bulk processing
+        with self._rpc._freqtrade._exit_lock:
+            for trade, profit in losing_trades:
                 try:
-                    self._rpc._rpc_force_exit(str(trade.id))
-                    closed_trades.append((trade.pair, profit))
-                    total_loss += profit
-                except:
-                    pass
+                    success = self._rpc._RPC__exec_force_exit(trade, None)
+                    if success:
+                        closed_trades.append((trade.pair, profit))
+                        total_loss += profit
+                    else:
+                        failed_trades.append(f"{trade.pair} (#{trade.id}): Failed to execute exit")
+                except Exception as e:
+                    failed_trades.append(f"{trade.pair} (#{trade.id}): {str(e)}")
+            
+            # Commit all changes at once and update wallets
+            Trade.commit()
+            self._rpc._freqtrade.wallets.update()
         
         if closed_trades:
             stake_cur = self._config['stake_currency']
@@ -2736,8 +2809,10 @@ class Telegram(RPCHandler):
                 msg += f"  • {pair}: {loss:.2f} {stake_cur}\n"
             if len(closed_trades) > 10:
                 msg += f"  ... and {len(closed_trades) - 10} more"
+            if failed_trades:
+                msg += f"\n❌ Failed to close:\n" + "\n".join(failed_trades[:5])
         else:
-            msg = "No losing trades to close"
+            msg = "Failed to close losing trades"
         
         await self._send_msg(msg, ParseMode.MARKDOWN)
 
