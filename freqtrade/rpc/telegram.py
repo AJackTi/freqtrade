@@ -2197,7 +2197,7 @@ class Telegram(RPCHandler):
         current_blacklist = blacklist_data.get('blacklist', [])
         
         # Get all valid pairs from exchange
-        valid_pairs = list(self._freqtrade.exchange.get_markets().keys())
+        valid_pairs = list(self._rpc._freqtrade.exchange.get_markets().keys())
         
         for pair in pairs_to_enable:
             # Check if pair is valid
@@ -2322,7 +2322,7 @@ class Telegram(RPCHandler):
             
             old_max = self._config.get('max_open_trades', 0)
             self._config['max_open_trades'] = new_max
-            self._freqtrade.config['max_open_trades'] = new_max
+            self._rpc._freqtrade.config['max_open_trades'] = new_max
             
             current_open = len(Trade.get_open_trades())
             msg = f"✅ Max open trades changed from {old_max} to {new_max}\n"
@@ -2421,7 +2421,7 @@ class Telegram(RPCHandler):
         current_values = []
         total_profit = 0
         for trade in trades:
-            current_rate = self._freqtrade.exchange.get_rate(
+            current_rate = self._rpc._freqtrade.exchange.get_rate(
                 trade.pair, side="exit", is_short=trade.is_short, refresh=False
             )
             current_value = trade.amount * current_rate
@@ -2448,7 +2448,7 @@ class Telegram(RPCHandler):
             msg += "\n**Per Trade Risk:**\n"
             for trade in trades[:5]:  # Show first 5
                 profit_pct = trade.calc_profit_ratio(
-                    self._freqtrade.exchange.get_rate(
+                    self._rpc._freqtrade.exchange.get_rate(
                         trade.pair, side="exit", is_short=trade.is_short, refresh=False
                     )
                 )
@@ -2479,7 +2479,7 @@ class Telegram(RPCHandler):
             
             old_stoploss = self._config.get('stoploss', 0)
             self._config['stoploss'] = new_stoploss / 100  # Convert percentage to decimal
-            self._freqtrade.strategy.stoploss = new_stoploss / 100
+            self._rpc._freqtrade.strategy.stoploss = new_stoploss / 100
             
             msg = f"✅ Stop-loss changed from {old_stoploss*100:.1f}% to {new_stoploss:.1f}%\n"
             msg += "⚠️ Note: Only affects new trades"
@@ -2499,13 +2499,13 @@ class Telegram(RPCHandler):
         profit_sum = 0
         
         for trade in trades:
-            current_rate = self._freqtrade.exchange.get_rate(
+            current_rate = self._rpc._freqtrade.exchange.get_rate(
                 trade.pair, side="exit", is_short=trade.is_short, refresh=False
             )
             profit_sum += trade.calc_profit(current_rate)
         
         stake_cur = self._config['stake_currency']
-        status = "running" if self._freqtrade.state == State.RUNNING else "stopped"
+        status = "running" if self._rpc._freqtrade.state == State.RUNNING else "stopped"
         
         msg = f"🤖 {status.upper()} | 📈 {len(trades)} trades | 💰 {profit_sum:.2f} {stake_cur}"
         await self._send_msg(msg)
@@ -2688,16 +2688,16 @@ class Telegram(RPCHandler):
             current_blacklist = self._rpc._rpc_blacklist()['blacklist']
             for pair in current_blacklist:
                 if pair not in preset_data['blacklist']:
-                    self._freqtrade.pairlists.blacklist.remove(pair)
+                    self._rpc._freqtrade.pairlists.blacklist.remove(pair)
             
             for pair in preset_data['blacklist']:
                 if pair not in current_blacklist:
-                    self._freqtrade.pairlists.blacklist.append(pair)
+                    self._rpc._freqtrade.pairlists.blacklist.append(pair)
             
             # Update config
             if preset_data.get('max_open_trades'):
                 self._config['max_open_trades'] = preset_data['max_open_trades']
-                self._freqtrade.config['max_open_trades'] = preset_data['max_open_trades']
+                self._rpc._freqtrade.config['max_open_trades'] = preset_data['max_open_trades']
             
             msg = f"✅ Preset '{preset_name}' loaded\n"
             msg += f"Saved on: {preset_data.get('timestamp', 'unknown')}"
@@ -2721,7 +2721,7 @@ class Telegram(RPCHandler):
         profitable_trades = []
         for trade in trades:
             try:
-                current_rate = self._freqtrade.exchange.get_rate(
+                current_rate = self._rpc._freqtrade.exchange.get_rate(
                     trade.pair, side="exit", is_short=trade.is_short, refresh=False
                 )
                 profit = trade.calc_profit(current_rate)
@@ -2781,7 +2781,7 @@ class Telegram(RPCHandler):
         losing_trades = []
         for trade in trades:
             try:
-                current_rate = self._freqtrade.exchange.get_rate(
+                current_rate = self._rpc._freqtrade.exchange.get_rate(
                     trade.pair, side="exit", is_short=trade.is_short, refresh=False
                 )
                 profit = trade.calc_profit(current_rate)
@@ -2876,7 +2876,7 @@ class Telegram(RPCHandler):
         
         for pair in whitelist:
             try:
-                ticker = self._freqtrade.exchange.fetch_ticker(pair)
+                ticker = self._rpc._freqtrade.exchange.fetch_ticker(pair)
                 if ticker and 'percentage' in ticker:
                     change_pct = abs(ticker['percentage'])
                     if change_pct > 5:  # More than 5% change
@@ -2914,7 +2914,7 @@ class Telegram(RPCHandler):
         
         for pair in whitelist:
             try:
-                ticker = self._freqtrade.exchange.fetch_ticker(pair)
+                ticker = self._rpc._freqtrade.exchange.fetch_ticker(pair)
                 if ticker and 'quoteVolume' in ticker:
                     volume = ticker['quoteVolume']
                     if volume < 100000:  # Less than 100k volume
@@ -3022,7 +3022,7 @@ class Telegram(RPCHandler):
         
         for pair in whitelist[:20]:  # Check first 20 pairs
             try:
-                ticker = self._freqtrade.exchange.fetch_ticker(pair)
+                ticker = self._rpc._freqtrade.exchange.fetch_ticker(pair)
                 if ticker and 'percentage' in ticker:
                     change = ticker['percentage']
                     if change > 1:
@@ -3072,7 +3072,7 @@ class Telegram(RPCHandler):
         
         for pair in whitelist:
             try:
-                ticker = self._freqtrade.exchange.fetch_ticker(pair)
+                ticker = self._rpc._freqtrade.exchange.fetch_ticker(pair)
                 if ticker and 'percentage' in ticker:
                     gainers.append((pair, ticker['percentage']))
             except:
@@ -3101,7 +3101,7 @@ class Telegram(RPCHandler):
         
         for pair in whitelist:
             try:
-                ticker = self._freqtrade.exchange.fetch_ticker(pair)
+                ticker = self._rpc._freqtrade.exchange.fetch_ticker(pair)
                 if ticker and 'percentage' in ticker:
                     losers.append((pair, ticker['percentage']))
             except:
@@ -3138,7 +3138,7 @@ class Telegram(RPCHandler):
                 return
             
             # Check if position adjustment is enabled
-            if not self._freqtrade.strategy.position_adjustment_enable:
+            if not self._rpc._freqtrade.strategy.position_adjustment_enable:
                 await self._send_msg("❌ Position adjustment not enabled in strategy")
                 return
             
@@ -3283,7 +3283,7 @@ class Telegram(RPCHandler):
             for key in ['stake_amount', 'max_open_trades', 'stoploss']:
                 if key in backup_config:
                     self._config[key] = backup_config[key]
-                    self._freqtrade.config[key] = backup_config[key]
+                    self._rpc._freqtrade.config[key] = backup_config[key]
             
             msg = f"✅ Configuration restored from {latest_backup}\n"
             msg += "⚠️ Restart bot for full restoration"
@@ -3300,7 +3300,7 @@ class Telegram(RPCHandler):
         """
         try:
             # Reload strategy
-            self._freqtrade.strategy.reload()
+            self._rpc._freqtrade.strategy.reload()
             await self._send_msg("✅ Strategy reloaded successfully")
         except Exception as e:
             await self._send_msg(f"❌ Error reloading strategy: {str(e)}")
@@ -3383,7 +3383,7 @@ class Telegram(RPCHandler):
         disabled_roi = {"0": 100.0}  # 10000% ROI requirement
         
         self._config['minimal_roi'] = disabled_roi
-        self._freqtrade.strategy.minimal_roi = disabled_roi
+        self._rpc._freqtrade.strategy.minimal_roi = disabled_roi
         
         msg = "🚫 **ROI-based exits DISABLED**\n\n"
         msg += "✅ Positions will run until:\n"
@@ -3405,7 +3405,7 @@ class Telegram(RPCHandler):
         
         if original_roi:
             self._config['minimal_roi'] = original_roi
-            self._freqtrade.strategy.minimal_roi = original_roi
+            self._rpc._freqtrade.strategy.minimal_roi = original_roi
             msg = "✅ **ROI-based exits RESTORED**\n\n"
             msg += "Original ROI settings:\n"
             for time_key, roi_value in original_roi.items():
@@ -3414,7 +3414,7 @@ class Telegram(RPCHandler):
             # Default conservative ROI
             default_roi = {"0": 0.10, "40": 0.05, "100": 0.02, "200": 0.01}
             self._config['minimal_roi'] = default_roi
-            self._freqtrade.strategy.minimal_roi = default_roi
+            self._rpc._freqtrade.strategy.minimal_roi = default_roi
             msg = "✅ **ROI-based exits ENABLED**\n\n"
             msg += "Using default ROI settings:\n"
             for time_key, roi_value in default_roi.items():
@@ -3446,7 +3446,7 @@ class Telegram(RPCHandler):
             # Set simple ROI target
             new_roi = {"0": roi_decimal}
             self._config['minimal_roi'] = new_roi
-            self._freqtrade.strategy.minimal_roi = new_roi
+            self._rpc._freqtrade.strategy.minimal_roi = new_roi
             
             msg = f"✅ **ROI target set to {roi_pct}%**\n\n"
             msg += f"Trades will exit when {roi_pct}% profit is reached\n"
@@ -3468,7 +3468,7 @@ class Telegram(RPCHandler):
         
         # Disable trailing stop
         self._config['trailing_stop'] = False
-        self._freqtrade.strategy.trailing_stop = False
+        self._rpc._freqtrade.strategy.trailing_stop = False
         
         msg = "🚫 **Trailing stop DISABLED**\n\n"
         msg += "✅ Stop-loss will remain fixed\n"
@@ -3488,8 +3488,8 @@ class Telegram(RPCHandler):
         
         self._config['trailing_stop'] = original_trailing
         self._config['trailing_stop_positive'] = original_positive
-        self._freqtrade.strategy.trailing_stop = original_trailing
-        self._freqtrade.strategy.trailing_stop_positive = original_positive
+        self._rpc._freqtrade.strategy.trailing_stop = original_trailing
+        self._rpc._freqtrade.strategy.trailing_stop_positive = original_positive
         
         msg = "✅ **Trailing stop ENABLED**\n\n"
         if original_trailing:
@@ -3542,7 +3542,7 @@ class Telegram(RPCHandler):
         
         # Apply new ROI settings
         self._config['minimal_roi'] = new_roi
-        self._freqtrade.strategy.minimal_roi = new_roi
+        self._rpc._freqtrade.strategy.minimal_roi = new_roi
         
         msg += "\n\n**ROI Schedule:**\n"
         for time_key, roi_value in new_roi.items():
