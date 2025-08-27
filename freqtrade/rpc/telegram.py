@@ -695,6 +695,15 @@ class Telegram(RPCHandler):
             profit_fiat_extra = f" / {profit_fiat:.3f} {fiat_currency}"
         return profit_fiat_extra
 
+    def _normalize_roi_keys(self, roi: dict) -> dict:
+        """
+        Convert ROI dictionary keys to integers.
+        JSON config files store ROI keys as strings, but the strategy expects integer keys.
+        """
+        if not roi:
+            return {}
+        return {int(k): v for k, v in roi.items()}
+
     def compose_message(self, msg: RPCSendMsg) -> str | None:
         if msg["type"] == RPCMessageType.ENTRY or msg["type"] == RPCMessageType.ENTRY_FILL:
             message = self._format_entry_msg(msg)
@@ -3376,11 +3385,11 @@ class Telegram(RPCHandler):
         # Set ROI to a very high value effectively disabling it
         original_roi = self._config.get('minimal_roi', {})
         
-        # Store original for restoration
-        self._config['original_minimal_roi'] = original_roi.copy()
+        # Store original for restoration (normalize keys to integers)
+        self._config['original_minimal_roi'] = self._normalize_roi_keys(original_roi)
         
         # Set extremely high ROI to disable automatic exits
-        disabled_roi = {"0": 100.0}  # 10000% ROI requirement
+        disabled_roi = {0: 100.0}  # 10000% ROI requirement
         
         self._config['minimal_roi'] = disabled_roi
         self._rpc._freqtrade.strategy.minimal_roi = disabled_roi
@@ -3404,6 +3413,8 @@ class Telegram(RPCHandler):
         original_roi = self._config.get('original_minimal_roi')
         
         if original_roi:
+            # Normalize keys to integers (in case they were stored as strings from config)
+            original_roi = self._normalize_roi_keys(original_roi)
             self._config['minimal_roi'] = original_roi
             self._rpc._freqtrade.strategy.minimal_roi = original_roi
             msg = "✅ **ROI-based exits RESTORED**\n\n"
@@ -3412,7 +3423,7 @@ class Telegram(RPCHandler):
                 msg += f"  • {time_key}min: {roi_value:.1%}\n"
         else:
             # Default conservative ROI
-            default_roi = {"0": 0.10, "40": 0.05, "100": 0.02, "200": 0.01}
+            default_roi = {0: 0.10, 40: 0.05, 100: 0.02, 200: 0.01}
             self._config['minimal_roi'] = default_roi
             self._rpc._freqtrade.strategy.minimal_roi = default_roi
             msg = "✅ **ROI-based exits ENABLED**\n\n"
@@ -3440,11 +3451,11 @@ class Telegram(RPCHandler):
             
             roi_decimal = roi_pct / 100
             
-            # Store original ROI for restoration
-            self._config['original_minimal_roi'] = self._config.get('minimal_roi', {}).copy()
+            # Store original ROI for restoration (normalize keys to integers)
+            self._config['original_minimal_roi'] = self._normalize_roi_keys(self._config.get('minimal_roi', {}))
             
             # Set simple ROI target
-            new_roi = {"0": roi_decimal}
+            new_roi = {0: roi_decimal}
             self._config['minimal_roi'] = new_roi
             self._rpc._freqtrade.strategy.minimal_roi = new_roi
             
@@ -3520,21 +3531,21 @@ class Telegram(RPCHandler):
         
         mode = context.args[0].lower()
         
-        # Store original settings
-        self._config['original_minimal_roi'] = self._config.get('minimal_roi', {}).copy()
+        # Store original settings (normalize keys to integers)
+        self._config['original_minimal_roi'] = self._normalize_roi_keys(self._config.get('minimal_roi', {}))
         
         if mode == 'disabled':
             # Disable ROI completely
-            new_roi = {"0": 100.0}  # 10000% requirement
+            new_roi = {0: 100.0}  # 10000% requirement
             msg = "🚫 **PROFIT MODE: DISABLED**\n\nLetting all trends run until strategy exits or stop-loss"
         elif mode == 'conservative':
-            new_roi = {"0": 0.15, "30": 0.10, "60": 0.08, "120": 0.05}
+            new_roi = {0: 0.15, 30: 0.10, 60: 0.08, 120: 0.05}
             msg = "🛡️ **PROFIT MODE: CONSERVATIVE**\n\nTargeting 10-15% profits with patience"
         elif mode == 'normal':
-            new_roi = {"0": 0.08, "20": 0.05, "40": 0.03, "80": 0.02}
+            new_roi = {0: 0.08, 20: 0.05, 40: 0.03, 80: 0.02}
             msg = "⚖️ **PROFIT MODE: NORMAL**\n\nBalanced 5-8% profit targets"
         elif mode == 'aggressive':
-            new_roi = {"0": 0.05, "10": 0.03, "20": 0.02, "40": 0.01}
+            new_roi = {0: 0.05, 10: 0.03, 20: 0.02, 40: 0.01}
             msg = "⚡ **PROFIT MODE: AGGRESSIVE**\n\nQuick 2-5% profit taking"
         else:
             await self._send_msg("❌ Invalid mode. Use: disabled, conservative, normal, or aggressive")
@@ -3556,7 +3567,7 @@ class Telegram(RPCHandler):
         """
         Handler for /profit_status - Show current profit-taking settings
         """
-        roi_config = self._config.get('minimal_roi', {})
+        roi_config = self._normalize_roi_keys(self._config.get('minimal_roi', {}))
         trailing = self._config.get('trailing_stop', False)
         trailing_positive = self._config.get('trailing_stop_positive', 0)
         
@@ -4008,9 +4019,9 @@ class Telegram(RPCHandler):
                         return None
                 
                 if short_roi >= 10:  # Disabled
-                    return {"0": 100.0}  # Very high ROI = disabled
+                    return {0: 100.0}  # Very high ROI = disabled
                 else:
-                    return {"0": short_roi}
+                    return {0: short_roi}
         else:
             # Long trade - check if ROI has expired
             long_roi = roi_settings.get('long_roi')
@@ -4031,12 +4042,12 @@ class Telegram(RPCHandler):
                         return None
                 
                 if long_roi >= 10:  # Disabled
-                    return {"0": 100.0}  # Very high ROI = disabled
+                    return {0: 100.0}  # Very high ROI = disabled
                 else:
-                    return {"0": long_roi}
+                    return {0: long_roi}
         
         # Fall back to global ROI if no specific setting
-        return self._config.get('minimal_roi', {"0": 0.05})
+        return self._normalize_roi_keys(self._config.get('minimal_roi', {0: 0.05}))
 
     def _cleanup_expired_roi(self, direction: str) -> None:
         """
