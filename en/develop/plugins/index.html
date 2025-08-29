@@ -2548,6 +2548,7 @@ While using a <code>max_rank</code> bigger than 250 is supported, it's not recom
 <p>The <code>refresh_period</code> setting defines the interval (in seconds) at which the marketcap rank data will be refreshed. The default is 86,400 seconds (1 day). The pairlist cache (<code>refresh_period</code>) applies to both generating pairlists (when in the first position in the list) and filtering instances (when not in the first position in the list).</p>
 <p>The <code>categories</code> setting specifies the <a href="https://www.coingecko.com/en/categories">coingecko categories</a> from which to select coins from. The default is an empty list <code>[]</code>, meaning no category filtering is applied.
 If an incorrect category string is chosen, the plugin will print the available categories from CoinGecko and fail. The category should be the ID of the category, for example, for <code>https://www.coingecko.com/en/categories/layer-1</code>, the category ID would be <code>layer-1</code>. You can pass multiple categories such as <code>["layer-1", "meme-token"]</code> to select from several categories.</p>
+<p>Coins like 1000PEPE/USDT or KPEPE/USDT:USDT are detected on a best effort basis, with the prefixes <code>1000</code> and <code>K</code> being used to identify them.</p>
 <div class="admonition warning">
 <p class="admonition-title">Many categories</p>
 <p>Each added category corresponds to one API call to CoinGecko. The more categories you add, the longer the pairlist generation will take, potentially causing rate limit issues.</p>
