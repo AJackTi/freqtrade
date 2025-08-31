@@ -1910,6 +1910,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#backtest-documentation-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backtest documentation results
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#continuous-integration" class="md-nav__link">
     <span class="md-ellipsis">
       Continuous integration
@@ -2351,6 +2360,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#backtest-documentation-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backtest documentation results
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#continuous-integration" class="md-nav__link">
     <span class="md-ellipsis">
       Continuous integration
@@ -2756,6 +2774,17 @@ Another way is to run this command multiple times in a row and observe if the vo
 <div class="highlight"><pre><span></span><code>jupyter<span class="w"> </span>nbconvert<span class="w"> </span>--ClearOutputPreprocessor.enabled<span class="o">=</span>True<span class="w"> </span>--inplace<span class="w"> </span>freqtrade/templates/strategy_analysis_example.ipynb
 jupyter<span class="w"> </span>nbconvert<span class="w"> </span>--ClearOutputPreprocessor.enabled<span class="o">=</span>True<span class="w"> </span>--to<span class="w"> </span>markdown<span class="w"> </span>freqtrade/templates/strategy_analysis_example.ipynb<span class="w"> </span>--stdout<span class="w"> </span>&gt;<span class="w"> </span>docs/strategy_analysis_example.md
 </code></pre></div>
+<h2 id="backtest-documentation-results">Backtest documentation results<a class="headerlink" href="#backtest-documentation-results" title="Permanent link">&para;</a></h2>
+<p>To generate backtest outputs, please use the following commands:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Assume a dedicated user directory for this output</span>
+freqtrade<span class="w"> </span>create-userdir<span class="w"> </span>--userdir<span class="w"> </span>user_data_bttest/
+<span class="c1"># set can_short = True</span>
+sed<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;s/can_short: bool = False/can_short: bool = True/&quot;</span><span class="w"> </span>user_data_bttest/strategies/sample_strategy.py
+
+freqtrade<span class="w"> </span>download-data<span class="w"> </span>--timerange<span class="w"> </span><span class="m">20250625</span>-20250801<span class="w"> </span>--config<span class="w"> </span>tests/testdata/config.tests.usdt.json<span class="w"> </span>--userdir<span class="w"> </span>user_data_bttest/<span class="w"> </span>-t<span class="w"> </span>5m
+
+freqtrade<span class="w"> </span>backtesting<span class="w"> </span>--config<span class="w"> </span>tests/testdata/config.tests.usdt.json<span class="w"> </span>-s<span class="w"> </span>SampleStrategy<span class="w"> </span>--userdir<span class="w"> </span>user_data_bttest/<span class="w"> </span>--cache<span class="w"> </span>none<span class="w"> </span>--timerange<span class="w"> </span><span class="m">20250701</span>-20250801
+</code></pre></div>
 <h2 id="continuous-integration">Continuous integration<a class="headerlink" href="#continuous-integration" title="Permanent link">&para;</a></h2>
 <p>This documents some decisions taken for the CI Pipeline.</p>
 <ul>
@@ -2765,7 +2794,6 @@ jupyter<span class="w"> </span>nbconvert<span class="w"> </span>--ClearOutputPre
 <li>Docker images contain a file, <code>/freqtrade/freqtrade_commit</code> containing the commit this image is based of.</li>
 <li>Full docker image rebuilds are run once a week via schedule.</li>
 <li>Deployments run on ubuntu.</li>
-<li>ta-lib binaries are contained in the build_helpers directory to avoid fails related to external unavailability.</li>
 <li>All tests must pass for a PR to be merged to <code>stable</code> or <code>develop</code>.</li>
 </ul>
 <h2 id="creating-a-release">Creating a release<a class="headerlink" href="#creating-a-release" title="Permanent link">&para;</a></h2>
