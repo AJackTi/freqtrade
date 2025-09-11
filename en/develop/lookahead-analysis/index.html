@@ -1808,6 +1808,7 @@ This is done by not looking at the strategy code itself, but at changed indicato
 <li><code>--dry-run-wallet</code> is forced to be basically infinite (1 billion).</li>
 <li><code>--stake-amount</code> is forced to be a static 10000 (10k).</li>
 <li><code>--enable-protections</code> is forced to be off.</li>
+<li><code>order_types</code> are forced to be "market" (late entries) unless <code>--lookahead-allow-limit-orders</code> is set.</li>
 </ul>
 <p>These are set to avoid users accidentally generating false positives.</p>
 <h2 id="lookahead-analysis-command-reference">Lookahead-analysis command reference<a class="headerlink" href="#lookahead-analysis-command-reference" title="Permanent link">&para;</a></h2>
@@ -1833,6 +1834,7 @@ This is done by not looking at the strategy code itself, but at changed indicato
                                     [--minimum-trade-amount INT]
                                     [--targeted-trade-amount INT]
                                     [--lookahead-analysis-exportfilename LOOKAHEAD_ANALYSIS_EXPORTFILENAME]
+                                    [--allow-limit-orders]
 
 options:
   -h, --help            show this help message and exit
@@ -1891,6 +1893,8 @@ options:
   --lookahead-analysis-exportfilename LOOKAHEAD_ANALYSIS_EXPORTFILENAME
                         Use this csv-filename to store lookahead-analysis-
                         results
+  --allow-limit-orders  Allow limit orders in lookahead analysis (could cause
+                        false positives in lookahead analysis results).
 
 Common arguments:
   -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
@@ -1985,6 +1989,9 @@ This would lead to a false-negative, i.e. the strategy will be reported as non-b
 Please don't use any options like enabling position stacking as this will distort the number of checked signals.
 If you decide to do so, then make doubly sure that you won't ever run out of <code>max_open_trades</code> slots,
 and that you have enough capital in the backtest wallet configuration.</li>
+<li>limit orders in combination with <code>custom_entry_price()</code> and <code>custom_exit_price()</code> callbacks can cause late / delayed entries and exists, causing false positives.
+To avoid this - market orders are forced for this command. This implicitly means that <code>custom_entry_price()</code> and <code>custom_exit_price()</code> callbacks are not called.
+Using <code>--lookahead-allow-limit-orders</code> will skip the override and use your configured order types - however has shown to eventually produce false positives.</li>
 <li>In the results table, the <code>biased_indicators</code> column
 will falsely flag FreqAI target indicators defined in <code>set_freqai_targets()</code> as biased.<br />
 <strong>These are not biased and can safely be ignored.</strong></li>
