@@ -2058,6 +2058,11 @@ to do so, please use the following:</p>
 <span class="c1"># Get the status of the bot</span>
 <span class="n">ping</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">ping</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">ping</span><span class="p">)</span>
+
+<span class="c1"># Add pairs to blacklist</span>
+<span class="n">client</span><span class="o">.</span><span class="n">blacklist</span><span class="p">(</span><span class="s2">&quot;BTC/USDT&quot;</span><span class="p">,</span> <span class="s2">&quot;ETH/USDT&quot;</span><span class="p">)</span>
+<span class="c1"># Add pairs to blacklist by supplying a list</span>
+<span class="n">client</span><span class="o">.</span><span class="n">blacklist</span><span class="p">(</span><span class="o">*</span><span class="n">listPairs</span><span class="p">)</span>
 <span class="c1"># ... </span>
 </code></pre></div>
 <p>For a full list of available commands, please refer to the list below.</p>
@@ -2173,7 +2178,7 @@ to do so, please use the following:</p>
 <span class="go">    Reload configuration.</span>
 
 <span class="go">show_config</span>
-<span class="go">        Returns part of the configuration, relevant for trading operations.</span>
+<span class="go">    Returns part of the configuration, relevant for trading operations.</span>
 
 <span class="go">start</span>
 <span class="go">    Start the bot if it&#39;s in the stopped state.</span>
@@ -2379,17 +2384,17 @@ All endpoints in the below table need to be prefixed with the base URL of the AP
 <tr>
 <td><code>/daily</code></td>
 <td>GET</td>
-<td>Shows profit or loss per day, over the last n days (n defaults to 7).<br/><em>Params:</em><br/>- <code>&lt;n&gt;</code> (<code>int</code>)</td>
+<td>Shows profit or loss per day, over the last n days (n defaults to 7).<br/><em>Params:</em><br/>- <code>timescale</code> (<code>int</code>)</td>
 </tr>
 <tr>
 <td><code>/weekly</code></td>
 <td>GET</td>
-<td>Shows profit or loss per week, over the last n days (n defaults to 4).<br/><em>Params:</em><br/>- <code>&lt;n&gt;</code> (<code>int</code>)</td>
+<td>Shows profit or loss per week, over the last n days (n defaults to 4).<br/><em>Params:</em><br/>- <code>timescale</code> (<code>int</code>)</td>
 </tr>
 <tr>
 <td><code>/monthly</code></td>
 <td>GET</td>
-<td>Shows profit or loss per month, over the last n days (n defaults to 3).<br/><em>Params:</em><br/>- <code>&lt;n&gt;</code> (<code>int</code>)</td>
+<td>Shows profit or loss per month, over the last n days (n defaults to 3).<br/><em>Params:</em><br/>- <code>timescale</code> (<code>int</code>)</td>
 </tr>
 <tr>
 <td><code>/stats</code></td>
@@ -2409,7 +2414,7 @@ All endpoints in the below table need to be prefixed with the base URL of the AP
 <tr>
 <td><code>/blacklist</code></td>
 <td>POST</td>
-<td>Adds the specified pair to the blacklist.<br/><em>Params:</em><br/>- <code>pair</code> (<code>str</code>)</td>
+<td>Adds the specified pair to the blacklist.<br/><em>Params:</em><br/>- <code>blacklist</code> (<code>str</code>)</td>
 </tr>
 <tr>
 <td><code>/blacklist</code></td>
