@@ -703,6 +703,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#delistfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      DelistFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#fulltradesfilter" class="md-nav__link">
     <span class="md-ellipsis">
       FullTradesFilter
@@ -2025,6 +2034,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#delistfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      DelistFilter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#fulltradesfilter" class="md-nav__link">
     <span class="md-ellipsis">
       FullTradesFilter
@@ -2236,7 +2254,7 @@
 <h2 id="pairlists-and-pairlist-handlers">Pairlists and Pairlist Handlers<a class="headerlink" href="#pairlists-and-pairlist-handlers" title="Permanent link">&para;</a></h2>
 <p>Pairlist Handlers define the list of pairs (pairlist) that the bot should trade. They are configured in the <code>pairlists</code> section of the configuration settings.</p>
 <p>In your configuration, you can use Static Pairlist (defined by the <a href="#static-pair-list"><code>StaticPairList</code></a> Pairlist Handler) and Dynamic Pairlist (defined by the <a href="#volume-pair-list"><code>VolumePairList</code></a> and <a href="#percent-change-pair-list"><code>PercentChangePairList</code></a> Pairlist Handlers).</p>
-<p>Additionally, <a href="#agefilter"><code>AgeFilter</code></a>, <a href="#precisionfilter"><code>PrecisionFilter</code></a>, <a href="#pricefilter"><code>PriceFilter</code></a>, <a href="#shufflefilter"><code>ShuffleFilter</code></a>, <a href="#spreadfilter"><code>SpreadFilter</code></a> and <a href="#volatilityfilter"><code>VolatilityFilter</code></a> act as Pairlist Filters, removing certain pairs and/or moving their positions in the pairlist.</p>
+<p>Additionally, <a href="#agefilter"><code>AgeFilter</code></a>, <a href="#delistfilter"><code>DelistFilter</code></a>, <a href="#precisionfilter"><code>PrecisionFilter</code></a>, <a href="#pricefilter"><code>PriceFilter</code></a>, <a href="#shufflefilter"><code>ShuffleFilter</code></a>, <a href="#spreadfilter"><code>SpreadFilter</code></a> and <a href="#volatilityfilter"><code>VolatilityFilter</code></a> act as Pairlist Filters, removing certain pairs and/or moving their positions in the pairlist.</p>
 <p>If multiple Pairlist Handlers are used, they are chained and a combination of all Pairlist Handlers forms the resulting pairlist the bot uses for trading and backtesting. Pairlist Handlers are executed in the sequence they are configured. You can define either <code>StaticPairList</code>, <code>VolumePairList</code>, <code>ProducerPairList</code>, <code>RemotePairList</code>, <code>MarketCapPairList</code> or <code>PercentChangePairList</code> as the starting Pairlist Handler.</p>
 <p>Inactive markets are always removed from the resulting pairlist. Explicitly blacklisted pairs (those in the <code>pair_blacklist</code> configuration setting) are also always removed from the resulting pairlist.</p>
 <h3 id="pair-blacklist">Pair blacklist<a class="headerlink" href="#pair-blacklist" title="Permanent link">&para;</a></h3>
@@ -2253,6 +2271,7 @@ You may also use something like <code>.*DOWN/BTC</code> or <code>.*UP/BTC</code>
 <li><a href="#remotepairlist"><code>RemotePairList</code></a></li>
 <li><a href="#marketcappairlist"><code>MarketCapPairList</code></a></li>
 <li><a href="#agefilter"><code>AgeFilter</code></a></li>
+<li><a href="#delistfilter"><code>DelistFilter</code></a></li>
 <li><a href="#fulltradesfilter"><code>FullTradesFilter</code></a></li>
 <li><a href="#offsetfilter"><code>OffsetFilter</code></a></li>
 <li><a href="#performancefilter"><code>PerformanceFilter</code></a></li>
@@ -2383,7 +2402,7 @@ Please note that These pairlists will only refresh once per day.</p>
 <li><code>refresh_period</code>: Defines the interval (in seconds) at which the pairlist will be refreshed. The default is 1800 seconds (30 minutes).</li>
 <li><code>lookback_days</code>: Number of days to look back. When <code>lookback_days</code> is selected, the <code>lookback_timeframe</code> is defaulted to 1 day.</li>
 <li><code>lookback_timeframe</code>: Timeframe to use for the lookback period.</li>
-<li><code>lookback_period</code>: Number of periods to look back at. </li>
+<li><code>lookback_period</code>: Number of periods to look back at.</li>
 </ul>
 <p>When PercentChangePairList is used after other Pairlist Handlers, it will operate on the outputs of those handlers. If it is the leading Pairlist Handler, it will select pairs from all available markets with the specified stake currency.</p>
 <p><code>PercentChangePairList</code> uses ticker data from the exchange, provided via the ccxt library:
@@ -2563,6 +2582,16 @@ If an incorrect category string is chosen, the plugin will print the available c
 in the first few days while the pair goes through its price-discovery period. Bots can often
 be caught out buying before the pair has finished dropping in price.</p>
 <p>This filter allows freqtrade to ignore pairs until they have been listed for at least <code>min_days_listed</code> days and listed before <code>max_days_listed</code>.</p>
+<h4 id="delistfilter">DelistFilter<a class="headerlink" href="#delistfilter" title="Permanent link">&para;</a></h4>
+<p>Removes pairs that will be delisted on the exchange maximum <code>max_days_from_now</code> days from now (defaults to <code>0</code> which remove all future delisted pairs no matter how far from now). Currently this filter only supports following exchanges:</p>
+<div class="admonition note">
+<p class="admonition-title">Available exchanges</p>
+<p>Delist filter is only available on Binance, where Binance Futures will work for both dry and live modes, while Binance Spot is limited to live mode (for technical reasons).</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Backtesting</p>
+<p><code>DelistFilter</code> does not support backtesting mode.</p>
+</div>
 <h4 id="fulltradesfilter">FullTradesFilter<a class="headerlink" href="#fulltradesfilter" title="Permanent link">&para;</a></h4>
 <p>Shrink whitelist to consist only in-trade pairs when the trade slots are full (when <code>max_open_trades</code> isn't being set to <code>-1</code> in the config).</p>
 <p>When the trade slots are full, there is no need to calculate indicators of the rest of the pairs (except informative pairs) since no new trade can be opened. By shrinking the whitelist to just the in-trade pairs, you can improve calculation speeds and reduce CPU usage. When a trade slot is free (either a trade is closed or <code>max_open_trades</code> value in config is increased), then the whitelist will return to normal state.</p>
@@ -2586,7 +2615,7 @@ be caught out buying before the pair has finished dropping in price.</p>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>When <code>OffsetFilter</code> is used to split a larger pairlist among multiple bots in combination with <code>VolumeFilter</code> 
+<p>When <code>OffsetFilter</code> is used to split a larger pairlist among multiple bots in combination with <code>VolumeFilter</code>
 it can not be guaranteed that pairs won't overlap due to slightly different refresh intervals for the
 <code>VolumeFilter</code>.</p>
 </div>
@@ -2713,7 +2742,7 @@ If the volatility over the last 10 days is not in the range of 0.05-0.50, remove
 </code></pre></div>
 <p>Adding <code>"sort_direction": "asc"</code> or <code>"sort_direction": "desc"</code> enables sorting mode for this pairlist.</p>
 <h3 id="full-example-of-pairlist-handlers">Full example of Pairlist Handlers<a class="headerlink" href="#full-example-of-pairlist-handlers" title="Permanent link">&para;</a></h3>
-<p>The below example blacklists <code>BNB/BTC</code>, uses <code>VolumePairList</code> with <code>20</code> assets, sorting pairs by <code>quoteVolume</code> and applies <a href="#precisionfilter"><code>PrecisionFilter</code></a> and <a href="#pricefilter"><code>PriceFilter</code></a>, filtering all assets where 1 price unit is &gt; 1%. Then the <a href="#spreadfilter"><code>SpreadFilter</code></a> and <a href="#volatilityfilter"><code>VolatilityFilter</code></a> is applied and pairs are finally shuffled with the random seed set to some predefined value.</p>
+<p>The below example blacklists <code>BNB/BTC</code>, uses <code>VolumePairList</code> with <code>20</code> assets, sorting pairs by <code>quoteVolume</code>, then filter future delisted pairs using <a href="#delistfilter"><code>DelistFilter</code></a> and <a href="#agefilter"><code>AgeFilter</code></a> to remove pairs that are listed less than 10 days ago. After that <a href="#precisionfilter"><code>PrecisionFilter</code></a> and <a href="#pricefilter"><code>PriceFilter</code></a> are applied, filtering all assets where 1 price unit is &gt; 1%. Then the <a href="#spreadfilter"><code>SpreadFilter</code></a> and <a href="#volatilityfilter"><code>VolatilityFilter</code></a> are applied and pairs are finally shuffled with the random seed set to some predefined value.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;exchange&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;pair_whitelist&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
 <span class="w">    </span><span class="nt">&quot;pair_blacklist&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;BNB/BTC&quot;</span><span class="p">]</span>
@@ -2723,6 +2752,10 @@ If the volatility over the last 10 days is not in the range of 0.05-0.50, remove
 <span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VolumePairList&quot;</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;sort_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quoteVolume&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DelistFilter&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;max_days_from_now&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AgeFilter&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;min_days_listed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PrecisionFilter&quot;</span><span class="p">},</span>

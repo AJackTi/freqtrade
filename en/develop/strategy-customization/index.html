@@ -888,6 +888,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#check_delistingpair" class="md-nav__link">
+    <span class="md-ellipsis">
+      check_delisting(pair)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#funding_ratepair" class="md-nav__link">
     <span class="md-ellipsis">
       funding_rate(pair)
@@ -2507,6 +2516,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#check_delistingpair" class="md-nav__link">
+    <span class="md-ellipsis">
+      check_delisting(pair)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#funding_ratepair" class="md-nav__link">
     <span class="md-ellipsis">
       funding_rate(pair)
@@ -2784,9 +2802,9 @@ Some common patterns for this are listed in the <a href="#common-mistakes-when-d
 </div>
 <details class="hint">
 <summary>Lookahead and recursive analysis</summary>
-<p>Freqtrade includes two helpful commands to help assess common lookahead (using future data) and 
-recursive bias (variance in indicator values) issues. Before running a strategy in dry or live more, 
-you should always use these commands first. Please check the relevant documentation for 
+<p>Freqtrade includes two helpful commands to help assess common lookahead (using future data) and
+recursive bias (variance in indicator values) issues. Before running a strategy in dry or live more,
+you should always use these commands first. Please check the relevant documentation for
 <a href="../lookahead-analysis/">lookahead</a> and <a href="../recursive-analysis/">recursive</a> analysis.</p>
 </details>
 <h3 id="dataframe">Dataframe<a class="headerlink" href="#dataframe" title="Permanent link">&para;</a></h3>
@@ -2927,7 +2945,7 @@ This is capped to 5 total calls to avoid overloading the exchange, or make freqt
 <p>Edit the method <code>populate_entry_trend()</code> in your strategy file to update your entry strategy.</p>
 <p>It's important to always return the dataframe without removing/modifying the columns <code>"open", "high", "low", "close", "volume"</code>, otherwise these fields would contain something unexpected. The strategy may then produce invalid values, or cease to work entirely.</p>
 <p>This method will also define a new column, <code>"enter_long"</code> (<code>"enter_short"</code> for shorts), which needs to contain <code>1</code> for entries, and <code>0</code> for "no action". <code>enter_long</code> is a mandatory column that must be set even if the strategy is shorting only.</p>
-<p>You can name your entry signals by using the <code>"enter_tag"</code> column, which can help debug and assess your strategy later. </p>
+<p>You can name your entry signals by using the <code>"enter_tag"</code> column, which can help debug and assess your strategy later.</p>
 <p>Sample from <code>user_data/strategies/sample_strategy.py</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">populate_entry_trend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3175,7 +3193,7 @@ to avoid hammering the exchange with too many requests and risk being blocked.</
 <details class="note">
 <summary>Alternative candle types</summary>
 <p>Informative_pairs can also provide a 3<sup>rd</sup> tuple element defining the candle type explicitly.
-Availability of alternative candle-types will depend on the trading-mode and the exchange. 
+Availability of alternative candle-types will depend on the trading-mode and the exchange.
 In general, spot pairs cannot be used in futures markets, and futures candles can't be used as informative pairs for spot bots.
 Details about this may vary, if they do, this can be found in the exchange documentation.</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">informative_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3383,6 +3401,7 @@ It is also not available in <code>populate_entry_trend()</code> and <code>popula
 <li><code>ohlcv(pair, timeframe)</code> - Currently cached candle (OHLCV) data for the pair, returns DataFrame or empty DataFrame.</li>
 <li><a href="#orderbookpair-maximum"><code>orderbook(pair, maximum)</code></a> - Returns latest orderbook data for the pair, a dict with bids/asks with a total of <code>maximum</code> entries.</li>
 <li><a href="#tickerpair"><code>ticker(pair)</code></a> - Returns current ticker data for the pair. See <a href="https://github.com/ccxt/ccxt/wiki/Manual#price-tickers">ccxt documentation</a> for more details on the Ticker data structure.</li>
+<li><a href="#check_delistingpair"><code>check_delisting(pair)</code></a> - Return Datetime of the pair delisting schedule if any, otherwise return None</li>
 <li><a href="#funding_ratepair"><code>funding_rate(pair)</code></a> - Returns current funding rate data for the pair.</li>
 <li><code>runmode</code> - Property containing the current runmode.</li>
 </ul>
@@ -3476,6 +3495,21 @@ This should not happen when using whitelisted pairs.</p>
 vary for different exchanges. For instance, many exchanges do not return <code>vwap</code> values, and some exchanges
 do not always fill in the <code>last</code> field (so it can be None), etc. So you need to carefully verify the ticker
 data returned from the exchange and add appropriate error handling / defaults.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning about backtesting</p>
+<p>This method will always return up-to-date / real-time values. As such, usage during backtesting / hyperopt without runmode checks will lead to wrong results, e.g. your whole dataframe will contain the same single value in all rows.</p>
+</div>
+<h3 id="check_delistingpair"><em>check_delisting(pair)</em><a class="headerlink" href="#check_delistingpair" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">custom_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">runmode</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;live&#39;</span><span class="p">,</span> <span class="s1">&#39;dry_run&#39;</span><span class="p">):</span>
+        <span class="n">delisting_dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">check_delisting</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">delisting_dt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;delist&quot;</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Availabiity of delisting information</p>
+<p>This method is only available for certain exchanges and will return <code>None</code> in cases this is not available or if the pair is not scheduled for delisting.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning about backtesting</p>
