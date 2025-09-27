@@ -1115,6 +1115,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#quick-overview-of-supported-exchange-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick overview of supported exchange features
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#exchange-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       Exchange configuration
@@ -1930,6 +1939,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#quick-overview-of-supported-exchange-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick overview of supported exchange features
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#exchange-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       Exchange configuration
@@ -2258,6 +2276,115 @@
 
 <h1 id="exchange-specific-notes">Exchange-specific Notes<a class="headerlink" href="#exchange-specific-notes" title="Permanent link">&para;</a></h1>
 <p>This page combines common gotchas and Information which are exchange-specific and most likely don't apply to other exchanges.</p>
+<h2 id="quick-overview-of-supported-exchange-features">Quick overview of supported exchange features<a class="headerlink" href="#quick-overview-of-supported-exchange-features" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Exchange</th>
+<th>Mode</th>
+<th>Margin mode</th>
+<th>Stoploss type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="./#binance">Binance</a></td>
+<td>spot</td>
+<td></td>
+<td>limit</td>
+</tr>
+<tr>
+<td><a href="./#binance">Binance</a></td>
+<td>futures</td>
+<td>isolated, cross</td>
+<td>market, limit</td>
+</tr>
+<tr>
+<td><a href="./#bingx">Bingx</a></td>
+<td>spot</td>
+<td></td>
+<td>market, limit</td>
+</tr>
+<tr>
+<td><a href="./#bitmart">Bitmart</a></td>
+<td>spot</td>
+<td></td>
+<td>❌ (not supported)</td>
+</tr>
+<tr>
+<td><a href="./#bybit">Bybit</a></td>
+<td>spot</td>
+<td></td>
+<td>❌ (not supported)</td>
+</tr>
+<tr>
+<td><a href="./#bybit">Bybit</a></td>
+<td>futures</td>
+<td>isolated</td>
+<td>market, limit</td>
+</tr>
+<tr>
+<td><a href="./#gateio">Gate.io</a></td>
+<td>spot</td>
+<td></td>
+<td>limit</td>
+</tr>
+<tr>
+<td><a href="./#gateio">Gate.io</a></td>
+<td>futures</td>
+<td>isolated</td>
+<td>limit</td>
+</tr>
+<tr>
+<td><a href="./#htx">HTX</a></td>
+<td>spot</td>
+<td></td>
+<td>limit</td>
+</tr>
+<tr>
+<td><a href="./#hyperliquid">Hyperliquid</a></td>
+<td>spot</td>
+<td></td>
+<td>❌ (not supported)</td>
+</tr>
+<tr>
+<td><a href="./#hyperliquid">Hyperliquid</a></td>
+<td>futures</td>
+<td>isolated</td>
+<td>limit</td>
+</tr>
+<tr>
+<td><a href="./#kraken">Kraken</a></td>
+<td>spot</td>
+<td></td>
+<td>market, limit</td>
+</tr>
+<tr>
+<td><a href="./#okx">OKX</a></td>
+<td>spot</td>
+<td></td>
+<td>limit</td>
+</tr>
+<tr>
+<td><a href="./#okx">OKX</a></td>
+<td>futures</td>
+<td>isolated</td>
+<td>limit</td>
+</tr>
+<tr>
+<td><a href="./#bitvavo">Bitvavo</a></td>
+<td>spot</td>
+<td></td>
+<td>❌ (not supported)</td>
+</tr>
+<tr>
+<td><a href="./#kucoin">Kucoin</a></td>
+<td>spot</td>
+<td></td>
+<td>market, limit</td>
+</tr>
+</tbody>
+</table>
 <h2 id="exchange-configuration">Exchange configuration<a class="headerlink" href="#exchange-configuration" title="Permanent link">&para;</a></h2>
 <p>Freqtrade is based on <a href="https://github.com/ccxt/ccxt">CCXT library</a> that supports over 100 cryptocurrency
 exchange markets and trading APIs. The complete up-to-date list can be found in the
