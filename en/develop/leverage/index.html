@@ -2071,6 +2071,12 @@ While freqtrade currently only supports one margin mode, this will change, and b
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;margin_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cross&quot;</span>
 </code></pre></div>
 <p>Please read the <a href="../exchanges/">exchange specific notes</a> for exchanges that support this mode and how they differ.</p>
+<div class="admonition warning">
+<p class="admonition-title">Increased risk of liquidation</p>
+<p>Cross margin mode increases the risk of full account liquidation, as all trades share the same collateral.
+A loss on one trade can affect the liquidation price of other trades.<br />
+Also, cross-position influence may not be fully simulated in dry-run or backtesting mode.</p>
+</div>
 <h2 id="set-leverage-to-use">Set leverage to use<a class="headerlink" href="#set-leverage-to-use" title="Permanent link">&para;</a></h2>
 <p>Different strategies and risk profiles will require different levels of leverage.
 While you could configure one static leverage value - freqtrade offers you the flexibility to adjust this via <a href="../strategy-callbacks/#leverage-callback">strategy leverage callback</a> - which allows you to use different leverages by pair, or based on some other factor benefitting your strategy result.</p>
