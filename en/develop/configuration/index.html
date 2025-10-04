@@ -3698,14 +3698,12 @@ refer to <a href="../stoploss/">the stoploss documentation</a>.</p>
 <p>The <code>order_time_in_force</code> configuration parameter defines the policy by which the order is executed on the exchange.<br />
 Commonly used time in force are:</p>
 <p><strong>GTC (Good Till Canceled):</strong></p>
-<p>This is most of the time the default time in force. It means the order will remain
-on exchange till it is cancelled by the user. It can be fully or partially fulfilled.
-If partially fulfilled, the remaining will stay on the exchange till cancelled.</p>
+<p>This is most of the time the default time in force. It means the order will remain on exchange till it is cancelled by the user. It can be fully or partially fulfilled. If partially fulfilled, the remaining will stay on the exchange till cancelled.</p>
 <p><strong>FOK (Fill Or Kill):</strong></p>
 <p>It means if the order is not executed immediately AND fully then it is cancelled by the exchange.</p>
 <p><strong>IOC (Immediate Or Canceled):</strong></p>
-<p>It is the same as FOK (above) except it can be partially fulfilled. The remaining part
-is automatically cancelled by the exchange.</p>
+<p>It is the same as FOK (above) except it can be partially fulfilled. The remaining part is automatically cancelled by the exchange.</p>
+<p>Not necessarily recommended, as this can lead to partial fills below the minimum trade size.</p>
 <p><strong>PO (Post only):</strong></p>
 <p>Post only order. The order is either placed as a maker order, or it is canceled.
 This means the order must be placed on orderbook for at least time in an unfilled state.</p>
