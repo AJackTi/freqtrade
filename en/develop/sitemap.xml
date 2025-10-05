@@ -188,4 +188,36 @@
          <loc>https://www.freqtrade.io/en/stable/windows_installation/</loc>
          <lastmod>2025-10-05</lastmod>
     </url>
+    <url>
+         <loc>https://www.freqtrade.io/en/stable/trend_control/</loc>
+         <lastmod>2025-10-05</lastmod>
+    </url>
+    <url>
+         <loc>https://www.freqtrade.io/en/stable/trend_control/IMPORT_NOTES/</loc>
+         <lastmod>2025-10-05</lastmod>
+    </url>
+    <url>
+         <loc>https://www.freqtrade.io/en/stable/trend_control/INTEGRATION/</loc>
+         <lastmod>2025-10-05</lastmod>
+    </url>
+    <url>
+         <loc>https://www.freqtrade.io/en/stable/trend_control/MIGRATION_GUIDE/</loc>
+         <lastmod>2025-10-05</lastmod>
+    </url>
+    <url>
+         <loc>https://www.freqtrade.io/en/stable/trend_control/QUICK_REFERENCE/</loc>
+         <lastmod>2025-10-05</lastmod>
+    </url>
+    <url>
+         <loc>https://www.freqtrade.io/en/stable/trend_control/SAFETY_ANALYSIS/</loc>
+         <lastmod>2025-10-05</lastmod>
+    </url>
+    <url>
+         <loc>https://www.freqtrade.io/en/stable/trend_control/TELEGRAM_CLI/</loc>
+         <lastmod>2025-10-05</lastmod>
+    </url>
+    <url>
+         <loc>https://www.freqtrade.io/en/stable/trend_control/USAGE/</loc>
+         <lastmod>2025-10-05</lastmod>
+    </url>
 </urlset>
