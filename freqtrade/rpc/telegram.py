@@ -169,10 +169,10 @@ class Telegram(RPCHandler):
         section.
         """
         self._keyboard: list[list[str | KeyboardButton]] = [
-            ["/longall", "/shortall", "/closelong", "/closeshort"],
-            ["/disablelong", "/enablelong", "/disableshort", "/enableshort"],
             ["/daily", "/profit", "/balance"],
             ["/status table", "/performance"],
+            ["/longall", "/shortall", "/closelong", "/closeshort"],
+            ["/disablelong", "/enablelong", "/disableshort", "/enableshort"],
             ["/count", "/start", "/stop", "/help"],
         ]
         # do not allow commands with mandatory arguments and critical cmds
