@@ -9,8 +9,8 @@ technical==1.5.3
 
 ccxt==4.5.10
 cryptography==46.0.2
-aiohttp==3.12.15
-SQLAlchemy==2.0.43
+aiohttp==3.13.0
+SQLAlchemy==2.0.44
 python-telegram-bot==22.5
 # can't be hard-pinned due to telegram-bot pinning httpx with ~
 httpx>=0.24.1
@@ -39,10 +39,10 @@ sdnotify==0.3.2
 
 # API Server
 fastapi==0.119.0
-pydantic==2.11.10
+pydantic==2.12.0
 uvicorn==0.37.0
 pyjwt==2.10.1
-aiofiles==24.1.0
+aiofiles==25.1.0
 psutil==7.1.0
 
 # Building config files interactively
