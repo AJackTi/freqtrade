@@ -169,11 +169,11 @@ class Telegram(RPCHandler):
         section.
         """
         self._keyboard: list[list[str | KeyboardButton]] = [
-            ["/daily", "/profit", "/balance"],
-            ["/status table", "/performance"],
-            ["/longall", "/shortall", "/closelong", "/closeshort"],
-            ["/disablelong", "/enablelong", "/disableshort", "/enableshort"],
-            ["/count", "/start", "/stop", "/help"],
+            ["📅 /daily", "💰 /profit", "💼 /balance"],
+            ["📊 /status table", "📈 /performance"],
+            ["📈 /longall", "📉 /shortall", "❌ /closelong", "❌ /closeshort"],
+            ["⛔ /disablelong", "✅ /enablelong", "⛔ /disableshort", "✅ /enableshort"],
+            ["🔢 /count", "▶️ /start", "⏹️ /stop", "❓ /help"],
         ]
         # do not allow commands with mandatory arguments and critical cmds
         # TODO: DRY! - its not good to list all valid cmds here. But otherwise
@@ -231,6 +231,10 @@ class Telegram(RPCHandler):
             r"/version$",
             r"/marketdir (long|short|even|none)$",
             r"/marketdir$",
+            r"/enablelong$",
+            r"/enableshort$",
+            r"/disablelong$",
+            r"/disableshort$",
             # Safety & Risk Management
             r"/setmaxopen$",
             r"/emergency_stop$",
@@ -379,6 +383,10 @@ class Telegram(RPCHandler):
             CommandHandler("help", self._help),
             CommandHandler("version", self._version),
             CommandHandler("marketdir", self._changemarketdir),
+            CommandHandler("enablelong", self._enablelong),
+            CommandHandler("enableshort", self._enableshort),
+            CommandHandler("disablelong", self._disablelong),
+            CommandHandler("disableshort", self._disableshort),
             CommandHandler("order", self._order),
             CommandHandler("list_custom_data", self._list_custom_data),
             CommandHandler("tg_info", self._tg_info),
@@ -473,6 +481,16 @@ class Telegram(RPCHandler):
             CallbackQueryHandler(self._count, pattern="update_count"),
             CallbackQueryHandler(self._force_exit_inline, pattern=r"force_exit__\S+"),
             CallbackQueryHandler(self._force_enter_inline, pattern=r"force_enter__\S+"),
+            CallbackQueryHandler(self._longall_callback, pattern=r"confirm_longall__\S+"),
+            CallbackQueryHandler(self._shortall_callback, pattern=r"confirm_shortall__\S+"),
+            CallbackQueryHandler(self._closelong_callback, pattern=r"confirm_closelong__\S+"),
+            CallbackQueryHandler(self._closeshort_callback, pattern=r"confirm_closeshort__\S+"),
+            CallbackQueryHandler(
+                self._trend_longall_callback, pattern=r"confirm_trend_longall__\S+"
+            ),
+            CallbackQueryHandler(
+                self._trend_shortall_callback, pattern=r"confirm_trend_shortall__\S+"
+            ),
         ]
         for handle in handles:
             self._app.add_handler(handle)
@@ -1699,29 +1717,63 @@ class Telegram(RPCHandler):
             await self._send_msg("No pairs in whitelist")
             return
 
-        success_pairs = []
-        failed_pairs = []
+        # Show confirmation dialog
+        msg = f"⚠️ **Confirm Long All**\n\n"
+        msg += f"Open long positions for **{len(whitelist)} pairs**?\n\n"
+        msg += f"Pairs: {', '.join(whitelist[:5])}"
+        if len(whitelist) > 5:
+            msg += f" and {len(whitelist) - 5} more..."
 
-        for pair in whitelist:
-            try:
+        keyboard = [
+            [
+                InlineKeyboardButton(text="✅ Yes", callback_data="confirm_longall__yes"),
+                InlineKeyboardButton(text="❌ No", callback_data="confirm_longall__no"),
+            ]
+        ]
+        await self._send_msg(msg, keyboard=keyboard, parse_mode=ParseMode.MARKDOWN)
 
-                @safe_async_db
-                def _force_long():
-                    self._rpc._rpc_force_entry(pair, None, order_side=SignalDirection.LONG)
+    async def _longall_callback(self, update: Update, context: CallbackContext) -> None:
+        """Callback handler for /longall confirmation"""
+        if update.callback_query:
+            query = update.callback_query
+            await query.answer()
 
-                loop = asyncio.get_running_loop()
-                await loop.run_in_executor(None, _force_long)
-                success_pairs.append(pair)
-            except RPCException as e:
-                failed_pairs.append(f"{pair}: {str(e)}")
+            if query.data and "__" in query.data:
+                action = query.data.split("__")[1]
 
-        msg = ""
-        if success_pairs:
-            msg += f"✅ Opened long positions for: {', '.join(success_pairs)}\n"
-        if failed_pairs:
-            msg += f"❌ Failed to open:\n" + "\n".join(failed_pairs)
+                if action == "no":
+                    await query.edit_message_text(text="❌ Long all canceled.")
+                    return
 
-        await self._send_msg(msg or "No positions opened", ParseMode.HTML)
+                # User confirmed - execute longall
+                await query.edit_message_text(text="⏳ Opening long positions...")
+
+                whitelist = self._rpc._rpc_whitelist()["whitelist"]
+                success_pairs = []
+                failed_pairs = []
+
+                for pair in whitelist:
+                    try:
+
+                        @safe_async_db
+                        def _force_long():
+                            self._rpc._rpc_force_entry(
+                                pair, None, order_side=SignalDirection.LONG
+                            )
+
+                        loop = asyncio.get_running_loop()
+                        await loop.run_in_executor(None, _force_long)
+                        success_pairs.append(pair)
+                    except RPCException as e:
+                        failed_pairs.append(f"{pair}: {str(e)}")
+
+                msg = ""
+                if success_pairs:
+                    msg += f"✅ Opened long positions for: {', '.join(success_pairs)}\n"
+                if failed_pairs:
+                    msg += f"❌ Failed to open:\n" + "\n".join(failed_pairs)
+
+                await query.edit_message_text(text=msg or "No positions opened")
 
     @authorized_only
     async def _shortall(self, update: Update, context: CallbackContext) -> None:
@@ -1733,42 +1785,114 @@ class Telegram(RPCHandler):
             await self._send_msg("No pairs in whitelist")
             return
 
-        success_pairs = []
-        failed_pairs = []
+        # Show confirmation dialog
+        msg = f"⚠️ **Confirm Short All**\n\n"
+        msg += f"Open short positions for **{len(whitelist)} pairs**?\n\n"
+        msg += f"Pairs: {', '.join(whitelist[:5])}"
+        if len(whitelist) > 5:
+            msg += f" and {len(whitelist) - 5} more..."
 
-        for pair in whitelist:
-            try:
+        keyboard = [
+            [
+                InlineKeyboardButton(text="✅ Yes", callback_data="confirm_shortall__yes"),
+                InlineKeyboardButton(text="❌ No", callback_data="confirm_shortall__no"),
+            ]
+        ]
+        await self._send_msg(msg, keyboard=keyboard, parse_mode=ParseMode.MARKDOWN)
 
-                @safe_async_db
-                def _force_short():
-                    self._rpc._rpc_force_entry(pair, None, order_side=SignalDirection.SHORT)
+    async def _shortall_callback(self, update: Update, context: CallbackContext) -> None:
+        """Callback handler for /shortall confirmation"""
+        if update.callback_query:
+            query = update.callback_query
+            await query.answer()
 
-                loop = asyncio.get_running_loop()
-                await loop.run_in_executor(None, _force_short)
-                success_pairs.append(pair)
-            except RPCException as e:
-                failed_pairs.append(f"{pair}: {str(e)}")
+            if query.data and "__" in query.data:
+                action = query.data.split("__")[1]
 
-        msg = ""
-        if success_pairs:
-            msg += f"✅ Opened short positions for: {', '.join(success_pairs)}\n"
-        if failed_pairs:
-            msg += f"❌ Failed to open:\n" + "\n".join(failed_pairs)
+                if action == "no":
+                    await query.edit_message_text(text="❌ Short all canceled.")
+                    return
 
-        await self._send_msg(msg or "No positions opened", ParseMode.HTML)
+                # User confirmed - execute shortall
+                await query.edit_message_text(text="⏳ Opening short positions...")
+
+                whitelist = self._rpc._rpc_whitelist()["whitelist"]
+                success_pairs = []
+                failed_pairs = []
+
+                for pair in whitelist:
+                    try:
+
+                        @safe_async_db
+                        def _force_short():
+                            self._rpc._rpc_force_entry(
+                                pair, None, order_side=SignalDirection.SHORT
+                            )
+
+                        loop = asyncio.get_running_loop()
+                        await loop.run_in_executor(None, _force_short)
+                        success_pairs.append(pair)
+                    except RPCException as e:
+                        failed_pairs.append(f"{pair}: {str(e)}")
+
+                msg = ""
+                if success_pairs:
+                    msg += f"✅ Opened short positions for: {', '.join(success_pairs)}\n"
+                if failed_pairs:
+                    msg += f"❌ Failed to open:\n" + "\n".join(failed_pairs)
+
+                await query.edit_message_text(text=msg or "No positions opened")
 
     @authorized_only
     async def _closelong(self, update: Update, context: CallbackContext) -> None:
         """
         Handler for /closelong - Close all long trades
         """
-        try:
-            loop = asyncio.get_running_loop()
-            # Workaround to avoid nested loops - run the close long operation in executor
-            msg = await loop.run_in_executor(None, safe_async_db(self._closelong_sync))
-            await self._send_msg(msg, ParseMode.HTML)
-        except RPCException as e:
-            await self._send_msg(str(e))
+        trades = Trade.get_open_trades()
+        long_trades = [t for t in trades if not t.is_short]
+
+        if not long_trades:
+            await self._send_msg("No open long trades to close")
+            return
+
+        # Show confirmation dialog
+        msg = f"⚠️ **Confirm Close Long**\n\n"
+        msg += f"Close **{len(long_trades)} long trades**?\n\n"
+        trade_list = [f"{t.pair} (#{t.id})" for t in long_trades[:5]]
+        msg += f"Trades: {', '.join(trade_list)}"
+        if len(long_trades) > 5:
+            msg += f" and {len(long_trades) - 5} more..."
+
+        keyboard = [
+            [
+                InlineKeyboardButton(text="✅ Yes", callback_data="confirm_closelong__yes"),
+                InlineKeyboardButton(text="❌ No", callback_data="confirm_closelong__no"),
+            ]
+        ]
+        await self._send_msg(msg, keyboard=keyboard, parse_mode=ParseMode.MARKDOWN)
+
+    async def _closelong_callback(self, update: Update, context: CallbackContext) -> None:
+        """Callback handler for /closelong confirmation"""
+        if update.callback_query:
+            query = update.callback_query
+            await query.answer()
+
+            if query.data and "__" in query.data:
+                action = query.data.split("__")[1]
+
+                if action == "no":
+                    await query.edit_message_text(text="❌ Close long canceled.")
+                    return
+
+                # User confirmed - execute closelong
+                await query.edit_message_text(text="⏳ Closing long trades...")
+
+                try:
+                    loop = asyncio.get_running_loop()
+                    msg = await loop.run_in_executor(None, safe_async_db(self._closelong_sync))
+                    await query.edit_message_text(text=msg)
+                except RPCException as e:
+                    await query.edit_message_text(text=str(e))
 
     def _closelong_sync(self) -> str:
         """
@@ -1812,13 +1936,51 @@ class Telegram(RPCHandler):
         """
         Handler for /closeshort - Close all short trades
         """
-        try:
-            loop = asyncio.get_running_loop()
-            # Workaround to avoid nested loops - run the close short operation in executor
-            msg = await loop.run_in_executor(None, safe_async_db(self._closeshort_sync))
-            await self._send_msg(msg, ParseMode.HTML)
-        except RPCException as e:
-            await self._send_msg(str(e))
+        trades = Trade.get_open_trades()
+        short_trades = [t for t in trades if t.is_short]
+
+        if not short_trades:
+            await self._send_msg("No open short trades to close")
+            return
+
+        # Show confirmation dialog
+        msg = f"⚠️ **Confirm Close Short**\n\n"
+        msg += f"Close **{len(short_trades)} short trades**?\n\n"
+        trade_list = [f"{t.pair} (#{t.id})" for t in short_trades[:5]]
+        msg += f"Trades: {', '.join(trade_list)}"
+        if len(short_trades) > 5:
+            msg += f" and {len(short_trades) - 5} more..."
+
+        keyboard = [
+            [
+                InlineKeyboardButton(text="✅ Yes", callback_data="confirm_closeshort__yes"),
+                InlineKeyboardButton(text="❌ No", callback_data="confirm_closeshort__no"),
+            ]
+        ]
+        await self._send_msg(msg, keyboard=keyboard, parse_mode=ParseMode.MARKDOWN)
+
+    async def _closeshort_callback(self, update: Update, context: CallbackContext) -> None:
+        """Callback handler for /closeshort confirmation"""
+        if update.callback_query:
+            query = update.callback_query
+            await query.answer()
+
+            if query.data and "__" in query.data:
+                action = query.data.split("__")[1]
+
+                if action == "no":
+                    await query.edit_message_text(text="❌ Close short canceled.")
+                    return
+
+                # User confirmed - execute closeshort
+                await query.edit_message_text(text="⏳ Closing short trades...")
+
+                try:
+                    loop = asyncio.get_running_loop()
+                    msg = await loop.run_in_executor(None, safe_async_db(self._closeshort_sync))
+                    await query.edit_message_text(text=msg)
+                except RPCException as e:
+                    await query.edit_message_text(text=str(e))
 
     def _closeshort_sync(self) -> str:
         """
@@ -4481,34 +4643,96 @@ class Telegram(RPCHandler):
         """
         Handler for /longall - Quick set to bull trend for 24h
         """
-        controller = get_trend_controller()
-        success = controller.set_trend_direction("bull", 24)
+        # Show confirmation dialog
+        msg = "⚠️ **Confirm Bull Trend**\n\n"
+        msg += "Set trend to **BULL** for 24 hours?\n"
+        msg += "Only LONG positions will be allowed."
 
-        if success:
-            msg = "📈 **BULL TREND ACTIVATED**\n\n"
-            msg += "✅ Only LONG positions allowed\n"
-            msg += "⏰ Duration: 24 hours\n\n"
-            msg += "Use `/trendstatus` to check settings"
-            await self._send_msg(msg, ParseMode.MARKDOWN)
-        else:
-            await self._send_msg("❌ Failed to set bull trend.")
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    text="✅ Yes", callback_data="confirm_trend_longall__yes"
+                ),
+                InlineKeyboardButton(text="❌ No", callback_data="confirm_trend_longall__no"),
+            ]
+        ]
+        await self._send_msg(msg, keyboard=keyboard, parse_mode=ParseMode.MARKDOWN)
+
+    async def _trend_longall_callback(
+        self, update: Update, context: CallbackContext
+    ) -> None:
+        """Callback handler for /trend_longall confirmation"""
+        if update.callback_query:
+            query = update.callback_query
+            await query.answer()
+
+            if query.data and "__" in query.data:
+                action = query.data.split("__")[1]
+
+                if action == "no":
+                    await query.edit_message_text(text="❌ Bull trend canceled.")
+                    return
+
+                # User confirmed - execute trend_longall
+                controller = get_trend_controller()
+                success = controller.set_trend_direction("bull", 24)
+
+                if success:
+                    msg = "📈 **BULL TREND ACTIVATED**\n\n"
+                    msg += "✅ Only LONG positions allowed\n"
+                    msg += "⏰ Duration: 24 hours\n\n"
+                    msg += "Use `/trendstatus` to check settings"
+                    await query.edit_message_text(text=msg)
+                else:
+                    await query.edit_message_text(text="❌ Failed to set bull trend.")
 
     @authorized_only
     async def _trend_shortall(self, update: Update, context: CallbackContext) -> None:
         """
         Handler for /shortall - Quick set to bear trend for 24h
         """
-        controller = get_trend_controller()
-        success = controller.set_trend_direction("bear", 24)
+        # Show confirmation dialog
+        msg = "⚠️ **Confirm Bear Trend**\n\n"
+        msg += "Set trend to **BEAR** for 24 hours?\n"
+        msg += "Only SHORT positions will be allowed."
 
-        if success:
-            msg = "📉 **BEAR TREND ACTIVATED**\n\n"
-            msg += "✅ Only SHORT positions allowed\n"
-            msg += "⏰ Duration: 24 hours\n\n"
-            msg += "Use `/trendstatus` to check settings"
-            await self._send_msg(msg, ParseMode.MARKDOWN)
-        else:
-            await self._send_msg("❌ Failed to set bear trend.")
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    text="✅ Yes", callback_data="confirm_trend_shortall__yes"
+                ),
+                InlineKeyboardButton(text="❌ No", callback_data="confirm_trend_shortall__no"),
+            ]
+        ]
+        await self._send_msg(msg, keyboard=keyboard, parse_mode=ParseMode.MARKDOWN)
+
+    async def _trend_shortall_callback(
+        self, update: Update, context: CallbackContext
+    ) -> None:
+        """Callback handler for /trend_shortall confirmation"""
+        if update.callback_query:
+            query = update.callback_query
+            await query.answer()
+
+            if query.data and "__" in query.data:
+                action = query.data.split("__")[1]
+
+                if action == "no":
+                    await query.edit_message_text(text="❌ Bear trend canceled.")
+                    return
+
+                # User confirmed - execute trend_shortall
+                controller = get_trend_controller()
+                success = controller.set_trend_direction("bear", 24)
+
+                if success:
+                    msg = "📉 **BEAR TREND ACTIVATED**\n\n"
+                    msg += "✅ Only SHORT positions allowed\n"
+                    msg += "⏰ Duration: 24 hours\n\n"
+                    msg += "Use `/trendstatus` to check settings"
+                    await query.edit_message_text(text=msg)
+                else:
+                    await query.edit_message_text(text="❌ Failed to set bear trend.")
 
     @authorized_only
     async def _trend_neutral(self, update: Update, context: CallbackContext) -> None:
@@ -4972,6 +5196,106 @@ class Telegram(RPCHandler):
                 "Invalid usage of command /marketdir. \n"
                 "Usage: */marketdir [short |  long | even | none]*"
             )
+
+    @authorized_only
+    async def _enablelong(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /enablelong.
+        Enables long positions.
+        """
+        current_dir = self._rpc._get_market_direction()
+        
+        if current_dir == MarketDirection.LONG or current_dir == MarketDirection.EVEN:
+            await self._send_msg("✅ Long positions are already enabled.")
+            return
+        
+        # If currently SHORT, switch to EVEN (both enabled)
+        # If currently NONE, switch to LONG (only long enabled)
+        if current_dir == MarketDirection.SHORT:
+            new_dir = MarketDirection.EVEN
+        else:  # NONE
+            new_dir = MarketDirection.LONG
+        
+        self._rpc._update_market_direction(new_dir)
+        await self._send_msg(
+            f"✅ Long positions enabled.\n"
+            f"Market direction: *{current_dir}* → *{new_dir}*"
+        )
+
+    @authorized_only
+    async def _enableshort(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /enableshort.
+        Enables short positions.
+        """
+        current_dir = self._rpc._get_market_direction()
+        
+        if current_dir == MarketDirection.SHORT or current_dir == MarketDirection.EVEN:
+            await self._send_msg("✅ Short positions are already enabled.")
+            return
+        
+        # If currently LONG, switch to EVEN (both enabled)
+        # If currently NONE, switch to SHORT (only short enabled)
+        if current_dir == MarketDirection.LONG:
+            new_dir = MarketDirection.EVEN
+        else:  # NONE
+            new_dir = MarketDirection.SHORT
+        
+        self._rpc._update_market_direction(new_dir)
+        await self._send_msg(
+            f"✅ Short positions enabled.\n"
+            f"Market direction: *{current_dir}* → *{new_dir}*"
+        )
+
+    @authorized_only
+    async def _disablelong(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /disablelong.
+        Disables long positions.
+        """
+        current_dir = self._rpc._get_market_direction()
+        
+        if current_dir == MarketDirection.SHORT or current_dir == MarketDirection.NONE:
+            await self._send_msg("✅ Long positions are already disabled.")
+            return
+        
+        # If currently LONG, switch to NONE (all disabled)
+        # If currently EVEN, switch to SHORT (only short enabled)
+        if current_dir == MarketDirection.LONG:
+            new_dir = MarketDirection.NONE
+        else:  # EVEN
+            new_dir = MarketDirection.SHORT
+        
+        self._rpc._update_market_direction(new_dir)
+        await self._send_msg(
+            f"⛔ Long positions disabled.\n"
+            f"Market direction: *{current_dir}* → *{new_dir}*"
+        )
+
+    @authorized_only
+    async def _disableshort(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /disableshort.
+        Disables short positions.
+        """
+        current_dir = self._rpc._get_market_direction()
+        
+        if current_dir == MarketDirection.LONG or current_dir == MarketDirection.NONE:
+            await self._send_msg("✅ Short positions are already disabled.")
+            return
+        
+        # If currently SHORT, switch to NONE (all disabled)
+        # If currently EVEN, switch to LONG (only long enabled)
+        if current_dir == MarketDirection.SHORT:
+            new_dir = MarketDirection.NONE
+        else:  # EVEN
+            new_dir = MarketDirection.LONG
+        
+        self._rpc._update_market_direction(new_dir)
+        await self._send_msg(
+            f"⛔ Short positions disabled.\n"
+            f"Market direction: *{current_dir}* → *{new_dir}*"
+        )
 
     async def _tg_info(self, update: Update, context: CallbackContext) -> None:
         """
