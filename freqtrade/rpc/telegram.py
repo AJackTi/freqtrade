@@ -172,7 +172,7 @@ class Telegram(RPCHandler):
             ["📅 /daily", "💰 /profit", "💼 /balance"],
             ["📊 /status table", "📈 /performance"],
             ["📈 /longall", "📉 /shortall", "❌ /closelong", "❌ /closeshort"],
-            ["⛔ /disablelong", "✅ /enablelong", "⛔ /disableshort", "✅ /enableshort"],
+            ["✅ /enable", "⛔ /disablelong", "✅ /enablelong", "⛔ /disableshort", "✅ /enableshort"],
             ["🔢 /count", "▶️ /start", "⏹️ /stop", "❓ /help"],
         ]
         # do not allow commands with mandatory arguments and critical cmds
@@ -304,8 +304,10 @@ class Telegram(RPCHandler):
         if cust_keyboard:
             combined = "(" + ")|(".join(valid_keys) + ")"
             # check for valid shortcuts
+            # Strip emojis and extra whitespace before validation
             invalid_keys = [
-                b for b in chain.from_iterable(cust_keyboard) if not re.match(combined, b)
+                b for b in chain.from_iterable(cust_keyboard) 
+                if not re.match(combined, re.sub(r'^[^\w\s/]+\s*', '', b))
             ]
             if len(invalid_keys):
                 err_msg = (
@@ -376,7 +378,8 @@ class Telegram(RPCHandler):
             CommandHandler("whitelist", self._whitelist),
             CommandHandler("blacklist", self._blacklist),
             CommandHandler(["blacklist_delete", "bl_delete"], self._blacklist_delete),
-            CommandHandler(["enable_pairs", "enable"], self._enable_pairs),
+            CommandHandler("enable_pairs", self._enable_pairs),
+            CommandHandler("enable", self._enable),
             CommandHandler(["disable_pairs", "disable"], self._disable_pairs),
             CommandHandler("logs", self._logs),
             CommandHandler("health", self._health),
@@ -2348,6 +2351,31 @@ class Telegram(RPCHandler):
         Deletes pair(s) from current blacklist
         """
         await self.send_blacklist_msg(self._rpc._rpc_blacklist_delete(context.args or []))
+
+    @authorized_only
+    async def _enable(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /enable - Enable trading entries for both long and short
+        If arguments are provided, delegates to _enable_pairs for backward compatibility
+        Usage: /enable (enables both long/short)
+               /enable BTC/USDT ETH/USDT (enables specific pairs)
+        """
+        # Backward compatibility: if args provided, delegate to _enable_pairs
+        if context.args:
+            return await self._enable_pairs(update, context)
+        
+        # No args: enable both long and short entries
+        old_dir = self._rpc._get_market_direction()
+        
+        if old_dir == MarketDirection.EVEN:
+            await self._send_msg("✅ Both long and short entries are already enabled (market direction: even).")
+            return
+        
+        self._rpc._update_market_direction(MarketDirection.EVEN)
+        await self._send_msg(
+            f"✅ Entries enabled for both long and short positions.\n"
+            f"Market direction: *{old_dir}* → *{MarketDirection.EVEN}*"
+        )
 
     @authorized_only
     async def _enable_pairs(self, update: Update, context: CallbackContext) -> None:
