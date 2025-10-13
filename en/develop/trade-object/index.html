@@ -1329,6 +1329,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Trade - Available attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stop-loss-related-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stop Loss related attributes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#futuresmargin-trading-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Futures/Margin trading attributes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1377,10 +1401,34 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-methods-not-supported-in-backtestinghyperopt" class="md-nav__link">
+    <span class="md-ellipsis">
+      Class methods not supported in backtesting/hyperopt
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Class methods not supported in backtesting/hyperopt">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
   <a href="#get_overall_performance" class="md-nav__link">
     <span class="md-ellipsis">
       get_overall_performance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_trading_volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_trading_volume
     </span>
   </a>
   
@@ -1746,6 +1794,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Trade - Available attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stop-loss-related-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stop Loss related attributes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#futuresmargin-trading-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Futures/Margin trading attributes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1794,10 +1866,34 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-methods-not-supported-in-backtestinghyperopt" class="md-nav__link">
+    <span class="md-ellipsis">
+      Class methods not supported in backtesting/hyperopt
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Class methods not supported in backtesting/hyperopt">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
   <a href="#get_overall_performance" class="md-nav__link">
     <span class="md-ellipsis">
       get_overall_performance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_trading_volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_trading_volume
     </span>
   </a>
   
@@ -1878,9 +1974,24 @@ It's a core concept of freqtrade - and something you'll come across in many sect
 <td>Pair of this trade.</td>
 </tr>
 <tr>
+<td><code>safe_base_currency</code></td>
+<td>string</td>
+<td>Compatibility layer for base currency .</td>
+</tr>
+<tr>
+<td><code>safe_quote_currency</code></td>
+<td>string</td>
+<td>Compatibility layer for quote currency.</td>
+</tr>
+<tr>
 <td><code>is_open</code></td>
 <td>boolean</td>
 <td>Is the trade currently open, or has it been concluded.</td>
+</tr>
+<tr>
+<td><code>exchange</code></td>
+<td>string</td>
+<td>Exchange where this trade was executed.</td>
 </tr>
 <tr>
 <td><code>open_rate</code></td>
@@ -1888,9 +1999,29 @@ It's a core concept of freqtrade - and something you'll come across in many sect
 <td>Rate this trade was entered at (Avg. entry rate in case of trade-adjustments).</td>
 </tr>
 <tr>
+<td><code>open_rate_requested</code></td>
+<td>float</td>
+<td>The rate that was requested when the trade was opened.</td>
+</tr>
+<tr>
+<td><code>open_trade_value</code></td>
+<td>float</td>
+<td>Value of the open trade including fees.</td>
+</tr>
+<tr>
 <td><code>close_rate</code></td>
 <td>float</td>
 <td>Close rate - only set when is_open = False.</td>
+</tr>
+<tr>
+<td><code>close_rate_requested</code></td>
+<td>float</td>
+<td>The close rate that was requested.</td>
+</tr>
+<tr>
+<td><code>safe_close_rate</code></td>
+<td>float</td>
+<td>Close rate or <code>close_rate_requested</code> or 0.0 if neither is available. Only makes sense once the trade is closed.</td>
 </tr>
 <tr>
 <td><code>stake_amount</code></td>
@@ -1898,9 +2029,19 @@ It's a core concept of freqtrade - and something you'll come across in many sect
 <td>Amount in Stake (or Quote) currency.</td>
 </tr>
 <tr>
+<td><code>max_stake_amount</code></td>
+<td>float</td>
+<td>Maximum stake amount that was used in this trade (sum of all filled Entry orders).</td>
+</tr>
+<tr>
 <td><code>amount</code></td>
 <td>float</td>
 <td>Amount in Asset / Base currency that is currently owned. Will be 0.0 until the initial order fills.</td>
+</tr>
+<tr>
+<td><code>amount_requested</code></td>
+<td>float</td>
+<td>Amount that was originally requested for this trade as part of the first entry order.</td>
 </tr>
 <tr>
 <td><code>open_date</code></td>
@@ -1948,6 +2089,26 @@ It's a core concept of freqtrade - and something you'll come across in many sect
 <td>Tag provided on entry via the <code>enter_tag</code> column in the dataframe.</td>
 </tr>
 <tr>
+<td><code>exit_reason</code></td>
+<td>string</td>
+<td>Reason why the trade was exited.</td>
+</tr>
+<tr>
+<td><code>exit_order_status</code></td>
+<td>string</td>
+<td>Status of the exit order.</td>
+</tr>
+<tr>
+<td><code>strategy</code></td>
+<td>string</td>
+<td>Strategy name that was used for this trade.</td>
+</tr>
+<tr>
+<td><code>timeframe</code></td>
+<td>int</td>
+<td>Timeframe used for this trade.</td>
+</tr>
+<tr>
 <td><code>is_short</code></td>
 <td>boolean</td>
 <td>True for short trades, False otherwise.</td>
@@ -1961,6 +2122,11 @@ It's a core concept of freqtrade - and something you'll come across in many sect
 <td><code>date_last_filled_utc</code></td>
 <td>datetime</td>
 <td>Time of the last filled order.</td>
+</tr>
+<tr>
+<td><code>date_entry_fill_utc</code></td>
+<td>datetime</td>
+<td>Date of the first filled entry order.</td>
 </tr>
 <tr>
 <td><code>entry_side</code></td>
@@ -1978,6 +2144,16 @@ It's a core concept of freqtrade - and something you'll come across in many sect
 <td>Trade direction in text - long or short.</td>
 </tr>
 <tr>
+<td><code>max_rate</code></td>
+<td>float</td>
+<td>Highest price reached during this trade. Not 100% accurate.</td>
+</tr>
+<tr>
+<td><code>min_rate</code></td>
+<td>float</td>
+<td>Lowest price reached during this trade. Not 100% accurate.</td>
+</tr>
+<tr>
 <td><code>nr_of_successful_entries</code></td>
 <td>int</td>
 <td>Number of successful (filled) entry orders.</td>
@@ -1988,9 +2164,108 @@ It's a core concept of freqtrade - and something you'll come across in many sect
 <td>Number of successful (filled) exit orders.</td>
 </tr>
 <tr>
+<td><code>has_open_position</code></td>
+<td>boolean</td>
+<td>True if there is an open position (amount &gt; 0) for this trade. Only false while the initial entry order is unfilled.</td>
+</tr>
+<tr>
 <td><code>has_open_orders</code></td>
 <td>boolean</td>
 <td>Has the trade open orders (excluding stoploss orders).</td>
+</tr>
+<tr>
+<td><code>has_open_sl_orders</code></td>
+<td>boolean</td>
+<td>True if there are open stoploss orders for this trade.</td>
+</tr>
+<tr>
+<td><code>open_orders</code></td>
+<td>Order[]</td>
+<td>All open orders for this trade excluding stoploss orders.</td>
+</tr>
+<tr>
+<td><code>open_sl_orders</code></td>
+<td>Order[]</td>
+<td>All open stoploss orders for this trade.</td>
+</tr>
+<tr>
+<td><code>fully_canceled_entry_order_count</code></td>
+<td>int</td>
+<td>Number of fully canceled entry orders.</td>
+</tr>
+<tr>
+<td><code>canceled_exit_order_count</code></td>
+<td>int</td>
+<td>Number of canceled exit orders.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="stop-loss-related-attributes">Stop Loss related attributes<a class="headerlink" href="#stop-loss-related-attributes" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>DataType</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stop_loss</code></td>
+<td>float</td>
+<td>Absolute value of the stop loss.</td>
+</tr>
+<tr>
+<td><code>stop_loss_pct</code></td>
+<td>float</td>
+<td>Relative value of the stop loss.</td>
+</tr>
+<tr>
+<td><code>initial_stop_loss</code></td>
+<td>float</td>
+<td>Absolute value of the initial stop loss.</td>
+</tr>
+<tr>
+<td><code>initial_stop_loss_pct</code></td>
+<td>float</td>
+<td>Relative value of the initial stop loss.</td>
+</tr>
+<tr>
+<td><code>stoploss_last_update_utc</code></td>
+<td>datetime</td>
+<td>Timestamp of the last stoploss on exchange order update.</td>
+</tr>
+<tr>
+<td><code>stoploss_or_liquidation</code></td>
+<td>float</td>
+<td>Returns the more restrictive of stoploss or liquidation price and corresponds to the price a stoploss would trigger at.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="futuresmargin-trading-attributes">Futures/Margin trading attributes<a class="headerlink" href="#futuresmargin-trading-attributes" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>DataType</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>liquidation_price</code></td>
+<td>float</td>
+<td>Liquidation price for leveraged trades.</td>
+</tr>
+<tr>
+<td><code>interest_rate</code></td>
+<td>float</td>
+<td>Interest rate for margin trades.</td>
+</tr>
+<tr>
+<td><code>funding_fees</code></td>
+<td>float</td>
+<td>Total funding fees for futures trades.</td>
 </tr>
 </tbody>
 </table>
@@ -2039,6 +2314,8 @@ Aggregates <code>close_profit_abs</code> for all closed trades.</p>
 <span class="c1"># ...</span>
 <span class="n">profit</span> <span class="o">=</span> <span class="n">Trade</span><span class="o">.</span><span class="n">total_open_trades_stakes</span><span class="p">()</span>
 </code></pre></div>
+<h2 id="class-methods-not-supported-in-backtestinghyperopt">Class methods not supported in backtesting/hyperopt<a class="headerlink" href="#class-methods-not-supported-in-backtestinghyperopt" title="Permanent link">&para;</a></h2>
+<p>The following class methods are not supported in backtesting/hyperopt mode.</p>
 <h3 id="get_overall_performance">get_overall_performance<a class="headerlink" href="#get_overall_performance" title="Permanent link">&para;</a></h3>
 <p>Retrieve the overall performance - similar to the <code>/performance</code> telegram command.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">freqtrade.persistence</span><span class="w"> </span><span class="kn">import</span> <span class="n">Trade</span>
@@ -2049,6 +2326,13 @@ Aggregates <code>close_profit_abs</code> for all closed trades.</p>
 </code></pre></div>
 <p>Sample return value: ETH/BTC had 5 trades, with a total profit of 1.5% (ratio of 0.015).</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;pair&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ETH/BTC&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;profit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.015</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">}</span>
+</code></pre></div>
+<h3 id="get_trading_volume">get_trading_volume<a class="headerlink" href="#get_trading_volume" title="Permanent link">&para;</a></h3>
+<p>Get total trading volume based on orders.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">freqtrade.persistence</span><span class="w"> </span><span class="kn">import</span> <span class="n">Trade</span>
+
+<span class="c1"># ...</span>
+<span class="n">volume</span> <span class="o">=</span> <span class="n">Trade</span><span class="o">.</span><span class="n">get_trading_volume</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="order-object">Order Object<a class="headerlink" href="#order-object" title="Permanent link">&para;</a></h2>
 <p>An <code>Order</code> object represents an order on the exchange (or a simulated order in dry-run mode).
@@ -2079,6 +2363,26 @@ Most properties here can be None as they are dependent on the exchange response.
 <td><code>ft_is_open</code></td>
 <td>boolean</td>
 <td>is the order still open?</td>
+</tr>
+<tr>
+<td><code>ft_order_side</code></td>
+<td>string</td>
+<td>Order side ('buy', 'sell', or 'stoploss')</td>
+</tr>
+<tr>
+<td><code>ft_cancel_reason</code></td>
+<td>string</td>
+<td>Reason why the order was canceled</td>
+</tr>
+<tr>
+<td><code>ft_order_tag</code></td>
+<td>string</td>
+<td>Custom order tag</td>
+</tr>
+<tr>
+<td><code>order_id</code></td>
+<td>string</td>
+<td>Exchange order ID</td>
 </tr>
 <tr>
 <td><code>order_type</code></td>
@@ -2121,6 +2425,21 @@ Most properties here can be None as they are dependent on the exchange response.
 <td>Filled amount (in base currency) - guaranteed to not be None</td>
 </tr>
 <tr>
+<td><code>safe_amount</code></td>
+<td>float</td>
+<td>Amount - falls back to ft_amount if None</td>
+</tr>
+<tr>
+<td><code>safe_price</code></td>
+<td>float</td>
+<td>Price - falls back through average, price, stop_price, ft_price</td>
+</tr>
+<tr>
+<td><code>safe_placement_price</code></td>
+<td>float</td>
+<td>Price at which the order was placed</td>
+</tr>
+<tr>
 <td><code>remaining</code></td>
 <td>float</td>
 <td>Remaining amount (use <code>safe_remaining</code> instead)</td>
@@ -2131,19 +2450,39 @@ Most properties here can be None as they are dependent on the exchange response.
 <td>Remaining amount - either taken from the exchange or calculated.</td>
 </tr>
 <tr>
+<td><code>safe_cost</code></td>
+<td>float</td>
+<td>Cost of the order - guaranteed to not be None</td>
+</tr>
+<tr>
+<td><code>safe_fee_base</code></td>
+<td>float</td>
+<td>Fee in base currency - guaranteed to not be None</td>
+</tr>
+<tr>
+<td><code>safe_amount_after_fee</code></td>
+<td>float</td>
+<td>Amount after deducting fees</td>
+</tr>
+<tr>
 <td><code>cost</code></td>
 <td>float</td>
-<td>Cost of the order - usually average * filled (<em>Exchange dependent on futures, may contain the cost with or without leverage and may be in contracts.</em>)</td>
+<td>Cost of the order - usually average * filled (<em>Exchange dependent on futures trading, may contain the cost with or without leverage and may be in contracts.</em>)</td>
+</tr>
+<tr>
+<td><code>stop_price</code></td>
+<td>float</td>
+<td>Stop price for stop orders. Empty for non-stoploss orders.</td>
 </tr>
 <tr>
 <td><code>stake_amount</code></td>
 <td>float</td>
-<td>Stake amount used for this order. <em>Added in 2023.7.</em></td>
+<td>Stake amount used for this order.</td>
 </tr>
 <tr>
 <td><code>stake_amount_filled</code></td>
 <td>float</td>
-<td>Filled Stake amount used for this order. <em>Added in 2024.11.</em></td>
+<td>Filled Stake amount used for this order.</td>
 </tr>
 <tr>
 <td><code>order_date</code></td>
@@ -2156,14 +2495,19 @@ Most properties here can be None as they are dependent on the exchange response.
 <td>Order creation date (in UTC)</td>
 </tr>
 <tr>
-<td><code>order_fill_date</code></td>
+<td><code>order_filled_date</code></td>
 <td>datetime</td>
-<td>Order fill date <strong>use <code>order_fill_utc</code> instead</strong></td>
+<td>Order fill date <strong>use <code>order_filled_utc</code> instead</strong></td>
 </tr>
 <tr>
-<td><code>order_fill_date_utc</code></td>
+<td><code>order_filled_utc</code></td>
 <td>datetime</td>
 <td>Order fill date</td>
+</tr>
+<tr>
+<td><code>order_update_date</code></td>
+<td>datetime</td>
+<td>Last order update date</td>
 </tr>
 </tbody>
 </table>
