@@ -31,7 +31,14 @@ from telegram import (
 )
 from telegram.constants import MessageLimit, ParseMode
 from telegram.error import BadRequest, NetworkError, TelegramError
-from telegram.ext import Application, CallbackContext, CallbackQueryHandler, CommandHandler
+from telegram.ext import (
+    Application,
+    CallbackContext,
+    CallbackQueryHandler,
+    CommandHandler,
+    MessageHandler,
+    filters,
+)
 from telegram.helpers import escape_markdown
 
 from freqtrade.__init__ import __version__
@@ -323,6 +330,66 @@ class Telegram(RPCHandler):
     def _init_telegram_app(self):
         return Application.builder().token(self._config["telegram"]["token"]).build()
 
+    @authorized_only
+    async def _preprocess_emoji_commands(self, update: Update, context: CallbackContext) -> None:
+        """
+        Preprocesses messages with emoji prefixes to extract and route the actual command.
+        This allows keyboard buttons like "📅 /daily" to work properly.
+        """
+        if not update.message or not update.message.text:
+            return
+        
+        text = update.message.text
+        # Check if message starts with non-word, non-slash, non-whitespace characters (emojis)
+        if not re.match(r'^[^\w\s/]+\s*/', text):
+            # No emoji prefix, let normal handlers process it
+            return
+        
+        # Strip emojis and leading whitespace to get the clean command
+        cleaned_text = re.sub(r'^[^\w\s/]+\s*', '', text).strip()
+        
+        # Parse command and arguments
+        parts = cleaned_text.split()
+        if not parts or not parts[0].startswith('/'):
+            return
+        
+        command = parts[0][1:]  # Remove the leading '/'
+        context.args = parts[1:] if len(parts) > 1 else []
+        
+        # Map command names to handler methods
+        command_map = {
+            'status': self._status,
+            'profit': self._profit,
+            'balance': self._balance,
+            'start': self._start,
+            'stop': self._stop,
+            'daily': self._daily,
+            'weekly': self._weekly,
+            'monthly': self._monthly,
+            'count': self._count,
+            'performance': self._performance,
+            'longall': self._longall,
+            'shortall': self._shortall,
+            'closelong': self._closelong,
+            'closeshort': self._closeshort,
+            'enable': self._enable,
+            'enablelong': self._enablelong,
+            'enableshort': self._enableshort,
+            'disablelong': self._disablelong,
+            'disableshort': self._disableshort,
+            'help': self._help,
+        }
+        
+        # Handle special multi-word commands like "status table"
+        if command == 'status' and context.args and context.args[0] == 'table':
+            await self._status_table(update, context)
+            return
+        
+        # Route to the appropriate handler
+        handler = command_map.get(command)
+        if handler:
+            await handler(update, context)
+
     def _init(self) -> None:
         """
         Initializes this module with the given config,
@@ -495,6 +562,12 @@ class Telegram(RPCHandler):
                 self._trend_shortall_callback, pattern=r"confirm_trend_shortall__\S+"
             ),
         ]
+        
+        # Add emoji preprocessing handler with group=-1 to run before command handlers
+        # This allows keyboard buttons with emoji prefixes (e.g., "📅 /daily") to work
+        emoji_preprocessor = MessageHandler(filters.TEXT, self._preprocess_emoji_commands)
+        self._app.add_handler(emoji_preprocessor, group=-1)
+        
         for handle in handles:
             self._app.add_handler(handle)
 
