@@ -180,6 +180,7 @@ class Telegram(RPCHandler):
             ["📊 /status table", "📈 /performance"],
             ["📈 /longall", "📉 /shortall", "❌ /closelong", "❌ /closeshort"],
             ["✅ /enable", "⛔ /disablelong", "✅ /enablelong", "⛔ /disableshort", "✅ /enableshort"],
+            ["🎯 /enable_take_profit", "⛔ /disable_take_profit", "🛡️ /enable_stop_loss", "⛔ /disable_stop_loss"],
             ["🔢 /count", "▶️ /start", "⏹️ /stop", "❓ /help"],
         ]
         # do not allow commands with mandatory arguments and critical cmds
@@ -273,6 +274,10 @@ class Telegram(RPCHandler):
             r"/avg_down$",
             r"/take_profit$",
             r"/breakeven$",
+            r"/enable_take_profit$",
+            r"/disable_take_profit$",
+            r"/enable_stop_loss$",
+            r"/disable_stop_loss$",
             # Configuration Backup/Restore
             r"/config_backup$",
             r"/config_restore$",
@@ -377,6 +382,10 @@ class Telegram(RPCHandler):
             'enableshort': self._enableshort,
             'disablelong': self._disablelong,
             'disableshort': self._disableshort,
+            'enable_take_profit': self._enable_take_profit,
+            'disable_take_profit': self._disable_take_profit,
+            'enable_stop_loss': self._enable_stop_loss,
+            'disable_stop_loss': self._disable_stop_loss,
             'help': self._help,
         }
         
@@ -492,6 +501,10 @@ class Telegram(RPCHandler):
             CommandHandler("avg_down", self._avg_down),
             CommandHandler("take_profit", self._take_profit),
             CommandHandler("breakeven", self._breakeven),
+            CommandHandler("enable_take_profit", self._enable_take_profit),
+            CommandHandler("disable_take_profit", self._disable_take_profit),
+            CommandHandler("enable_stop_loss", self._enable_stop_loss),
+            CommandHandler("disable_stop_loss", self._disable_stop_loss),
             # Configuration Backup/Restore
             CommandHandler("config_backup", self._config_backup),
             CommandHandler("config_restore", self._config_restore),
@@ -3527,6 +3540,88 @@ class Telegram(RPCHandler):
 
         except ValueError:
             await self._send_msg("❌ Invalid trade ID")
+
+    @authorized_only
+    async def _enable_take_profit(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /enable_take_profit - Enable take profit for all trades
+        """
+        try:
+            # Enable take profit in config
+            if "telegram_take_profit_enabled" not in self._config:
+                self._config["telegram_take_profit_enabled"] = True
+            else:
+                self._config["telegram_take_profit_enabled"] = True
+            
+            if hasattr(self._rpc._freqtrade, "config"):
+                self._rpc._freqtrade.config["telegram_take_profit_enabled"] = True
+            
+            msg = "✅ Take profit enabled\n"
+            msg += "Take profit targets will now be applied to trades"
+            
+            await self._send_msg(msg)
+        except Exception as e:
+            await self._send_msg(f"❌ Error enabling take profit: {str(e)}")
+
+    @authorized_only
+    async def _disable_take_profit(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /disable_take_profit - Disable take profit for all trades
+        """
+        try:
+            # Disable take profit in config
+            self._config["telegram_take_profit_enabled"] = False
+            
+            if hasattr(self._rpc._freqtrade, "config"):
+                self._rpc._freqtrade.config["telegram_take_profit_enabled"] = False
+            
+            msg = "⛔ Take profit disabled\n"
+            msg += "Take profit targets will no longer be applied to new trades"
+            
+            await self._send_msg(msg)
+        except Exception as e:
+            await self._send_msg(f"❌ Error disabling take profit: {str(e)}")
+
+    @authorized_only
+    async def _enable_stop_loss(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /enable_stop_loss - Enable stop loss for all trades
+        """
+        try:
+            # Enable stop loss in config
+            if "telegram_stop_loss_enabled" not in self._config:
+                self._config["telegram_stop_loss_enabled"] = True
+            else:
+                self._config["telegram_stop_loss_enabled"] = True
+            
+            if hasattr(self._rpc._freqtrade, "config"):
+                self._rpc._freqtrade.config["telegram_stop_loss_enabled"] = True
+            
+            msg = "✅ Stop loss enabled\n"
+            msg += "Stop loss will now be applied to trades"
+            
+            await self._send_msg(msg)
+        except Exception as e:
+            await self._send_msg(f"❌ Error enabling stop loss: {str(e)}")
+
+    @authorized_only
+    async def _disable_stop_loss(self, update: Update, context: CallbackContext) -> None:
+        """
+        Handler for /disable_stop_loss - Disable stop loss for all trades
+        """
+        try:
+            # Disable stop loss in config
+            self._config["telegram_stop_loss_enabled"] = False
+            
+            if hasattr(self._rpc._freqtrade, "config"):
+                self._rpc._freqtrade.config["telegram_stop_loss_enabled"] = False
+            
+            msg = "⛔ Stop loss disabled\n"
+            msg += "⚠️ Warning: Trading without stop loss increases risk significantly!"
+            
+            await self._send_msg(msg)
+        except Exception as e:
+            await self._send_msg(f"❌ Error disabling stop loss: {str(e)}")
 
     # ====== CONFIGURATION BACKUP/RESTORE ======
 
