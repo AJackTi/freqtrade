@@ -2782,7 +2782,7 @@ Adding <code>--show-pair-list</code> outputs a sorted pair list you can easily c
                                   [--backtest-filename PATH]
                                   [--backtest-directory PATH]
                                   [--show-pair-list]
-                                  [--breakdown {day,week,month,year} [{day,week,month,year} ...]]
+                                  [--breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]]
 
 options:
   -h, --help            show this help message and exit
@@ -2796,9 +2796,9 @@ options:
                         Directory to use for backtest results. Example:
                         `--export-directory=user_data/backtest_results/`.
   --show-pair-list      Show backtesting pairlist sorted by profit.
-  --breakdown {day,week,month,year} [{day,week,month,year} ...]
+  --breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]
                         Show backtesting breakdown per [day, week, month,
-                        year].
+                        year, weekday].
 
 Common arguments:
   -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
@@ -2979,7 +2979,7 @@ You can override this using the <code>--hyperopt-filename</code> argument, and s
                                [--profitable] [-n INT] [--print-json]
                                [--hyperopt-filename FILENAME] [--no-header]
                                [--disable-param-export]
-                               [--breakdown {day,week,month,year} [{day,week,month,year} ...]]
+                               [--breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]]
 
 options:
   -h, --help            show this help message and exit
@@ -2993,9 +2993,9 @@ options:
   --no-header           Do not print epoch details header.
   --disable-param-export
                         Disable automatic hyperopt parameter export.
-  --breakdown {day,week,month,year} [{day,week,month,year} ...]
+  --breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]
                         Show backtesting breakdown per [day, week, month,
-                        year].
+                        year, weekday].
 
 Common arguments:
   -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
