@@ -1322,6 +1322,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Bybit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bybit-futures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bybit Futures
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1339,6 +1354,21 @@
       Bitget
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Bitget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bitget-futures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bitget Futures
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2146,6 +2176,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Bybit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bybit-futures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bybit Futures
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2163,6 +2208,21 @@
       Bitget
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Bitget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bitget-futures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bitget Futures
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2310,6 +2370,18 @@
 <td>spot</td>
 <td></td>
 <td>❌ (not supported)</td>
+</tr>
+<tr>
+<td><a href="./#bitget">Bitget</a></td>
+<td>spot</td>
+<td></td>
+<td>market, limit</td>
+</tr>
+<tr>
+<td><a href="./#bitget">Bitget</a></td>
+<td>futures</td>
+<td>isolated</td>
+<td>market, limit</td>
 </tr>
 <tr>
 <td><a href="./#bybit">Bybit</a></td>
@@ -2612,7 +2684,14 @@ The configuration parameter <code>exchange.unknown_fee_rate</code> can be used t
 On futures, Bybit supports both <code>stop-limit</code> as well as <code>stop-market</code> orders. You can use either <code>"limit"</code> or <code>"market"</code> in the <code>order_types.stoploss</code> configuration setting to decide which type to use.</p>
 </div>
 <p>Bybit supports <a href="../configuration/#understand-order_time_in_force">time_in_force</a> with settings "GTC" (good till cancelled), "FOK" (full-or-cancel), "IOC" (immediate-or-cancel) and "PO" (Post only) settings.</p>
-<p>Futures trading on bybit is currently supported for isolated futures mode.</p>
+<div class="admonition warning">
+<p class="admonition-title">Unified accounts</p>
+<p>Freqtrade assumes accounts to be dedicated to the bot.
+We therefore recommend the usage of one subaccount per bot. This is especially important when using unified accounts.<br />
+Other configurations (multiple bots on one account, manual non-bot trades on the bot account) are not supported and may lead to unexpected behavior.</p>
+</div>
+<h3 id="bybit-futures">Bybit Futures<a class="headerlink" href="#bybit-futures" title="Permanent link">&para;</a></h3>
+<p>Futures trading on bybit is supported for isolated futures mode.</p>
 <p>On startup, freqtrade will set the position mode to "One-way Mode" for the whole (sub)account. This avoids making this call over and over again (slowing down bot operations), but means that manual changes to this setting may result in exceptions and errors.</p>
 <p>As bybit doesn't provide funding rate history, the dry-run calculation is used for live trades as well.</p>
 <p>API Keys for live futures trading must have the following permissions:</p>
@@ -2622,12 +2701,6 @@ On futures, Bybit supports both <code>stop-limit</code> as well as <code>stop-ma
 <li>Contract - Positions</li>
 </ul>
 <p>We do strongly recommend to limit all API keys to the IP you're going to use it from.</p>
-<div class="admonition warning">
-<p class="admonition-title">Unified accounts</p>
-<p>Freqtrade assumes accounts to be dedicated to the bot.
-We therefore recommend the usage of one subaccount per bot. This is especially important when using unified accounts.<br />
-Other configurations (multiple bots on one account, manual non-bot trades on the bot account) are not supported and may lead to unexpected behavior.</p>
-</div>
 <h2 id="bitmart">Bitmart<a class="headerlink" href="#bitmart" title="Permanent link">&para;</a></h2>
 <p>Bitmart requires the API key Memo (the name you give the API key) to go along with the exchange key and secret.
 It's therefore required to pass the UID as well.</p>
@@ -2659,6 +2732,9 @@ It's therefore required to pass the UID as well.</p>
 <p>Bitget supports <code>stoploss_on_exchange</code> and can use both stop-loss-market and stop-loss-limit orders. It provides great advantages, so we recommend to benefit from it.
 You can use either <code>"limit"</code> or <code>"market"</code> in the <code>order_types.stoploss</code> configuration setting to decide which type of stoploss shall be used.</p>
 </div>
+<h3 id="bitget-futures">Bitget Futures<a class="headerlink" href="#bitget-futures" title="Permanent link">&para;</a></h3>
+<p>Futures trading on bitget is supported for isolated futures mode.</p>
+<p>On startup, freqtrade will set the position mode to "One-way Mode" for the whole (sub)account. This avoids making this call over and over again (slowing down bot operations), but means that manual changes to this setting may result in exceptions and errors.</p>
 <h2 id="hyperliquid">Hyperliquid<a class="headerlink" href="#hyperliquid" title="Permanent link">&para;</a></h2>
 <div class="admonition tip">
 <p class="admonition-title">Stoploss on Exchange</p>
@@ -2756,7 +2832,9 @@ By default, Freqtrade assumes that incomplete candle is fetched from the exchang
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Please make sure to fully understand the impacts of these settings before modifying them.</p>
+<p>Please make sure to fully understand the impacts of these settings before modifying them.
+Using <code>_ft_has_params</code> overrides may lead to unexpected behavior, and may even break your bot. 
+We will not be able to provide support for issues caused by custom settings in <code>_ft_has_params</code>.</p>
 </div>
 
 
