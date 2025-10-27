@@ -2028,7 +2028,7 @@ Also, never risk more than what you can afford to lose.</p>
 </div>
 <p>If you already have an existing strategy, please read the <a href="../strategy_migration/#strategy-migration-between-v2-and-v3">strategy migration guide</a> to migrate your strategy from a freqtrade v2 strategy, to strategy of version 3 which can short and trade futures.</p>
 <h2 id="shorting">Shorting<a class="headerlink" href="#shorting" title="Permanent link">&para;</a></h2>
-<p>Shorting is not possible when trading with <a href="#leverage-trading-modes"><code>trading_mode</code></a> set to <code>spot</code>. To short trade, <code>trading_mode</code> must be set to <code>margin</code>(currently unavailable) or <a href="#futures"><code>futures</code></a>, with <a href="#margin-mode"><code>margin_mode</code></a> set to <code>cross</code>(currently unavailable) or <a href="#isolated-margin-mode"><code>isolated</code></a></p>
+<p>Shorting is not possible when trading with <a href="#leverage-trading-modes"><code>trading_mode</code></a> set to <code>spot</code>. To short trade, <code>trading_mode</code> must be set to <code>margin</code>(currently unavailable) or <a href="#futures"><code>futures</code></a>, with <a href="#margin-mode"><code>margin_mode</code></a> set to <a href="#cross-margin-mode"><code>cross</code></a> or <a href="#isolated-margin-mode"><code>isolated</code></a></p>
 <p>For a strategy to short, the strategy class must set the class variable <code>can_short = True</code></p>
 <p>Please read <a href="../strategy-customization/#entry-signal-rules">strategy customization</a> for instructions on how to set signals to enter and exit short trades.</p>
 <h2 id="understand-trading_mode">Understand <code>trading_mode</code><a class="headerlink" href="#understand-trading_mode" title="Permanent link">&para;</a></h2>
@@ -2061,7 +2061,7 @@ A futures pair will therefore have the naming of <code>base/quote:settle</code> 
 <h3 id="margin-mode">Margin mode<a class="headerlink" href="#margin-mode" title="Permanent link">&para;</a></h3>
 <p>On top of <code>trading_mode</code> - you will also have to configure your <code>margin_mode</code>.
 While freqtrade currently only supports one margin mode, this will change, and by configuring it now you're all set for future updates.</p>
-<p>The possible values are: <code>isolated</code>, or <code>cross</code>(<em>currently unavailable</em>).</p>
+<p>The possible values are: <code>isolated</code>, or <code>cross</code>.</p>
 <h4 id="isolated-margin-mode">Isolated margin mode<a class="headerlink" href="#isolated-margin-mode" title="Permanent link">&para;</a></h4>
 <p>Each market(trading pair), keeps collateral in a separate account</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;margin_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;isolated&quot;</span>
