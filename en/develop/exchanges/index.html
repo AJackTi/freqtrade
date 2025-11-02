@@ -2776,17 +2776,22 @@ Unfortunately, hyperliquid only offers 5000 historic candles, so backtesting wil
 To use these with Freqtrade, you will need to use the following configuration pattern:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;exchange&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hyperliquid&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;walletAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your_vault_address&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1">// Vault or subaccount address</span>
-<span class="w">    </span><span class="nt">&quot;privateKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your_api_private_key&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;walletAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your_master_wallet_address&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Your master wallet address (not the API wallet address and not the vault/subaccount address).</span>
+<span class="w">    </span><span class="nt">&quot;privateKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your_api_private_key&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// API wallet private key (see https://app.hyperliquid.xyz/API). You&#39;ll only need the private key.</span>
 <span class="w">    </span><span class="nt">&quot;ccxt_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;options&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;vaultAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your_vault_address&quot;</span><span class="w"> </span><span class="c1">// Optional, only if you want to use a vault or subaccount</span>
+<span class="w">            </span><span class="nt">&quot;vaultAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your_vault_address&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Optional, only if you want to use a vault ...</span>
+<span class="w">            </span><span class="nt">&quot;subAccountAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your_subaccount_address&quot;</span><span class="w"> </span><span class="c1">// OR optional, only if you want to use a subaccount</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Your balance and trades will now be used from your vault / subaccount - and no longer from your main account.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can only use either a vault or a subaccount - not both at the same time.</p>
+</div>
 <h3 id="historic-hyperliquid-data">Historic Hyperliquid data<a class="headerlink" href="#historic-hyperliquid-data" title="Permanent link">&para;</a></h3>
 <p>The Hyperliquid API does not provide historic data beyond the single call to fetch current data, so downloading data is not possible, as the downloaded data would not constitute proper historic data.</p>
 <h2 id="bitvavo">Bitvavo<a class="headerlink" href="#bitvavo" title="Permanent link">&para;</a></h2>
