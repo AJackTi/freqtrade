@@ -18,6 +18,7 @@ from itertools import chain
 from math import isnan
 from threading import Thread
 from typing import Any, Literal
+from uuid import uuid4
 
 from tabulate import tabulate
 from telegram import (
@@ -161,6 +162,9 @@ class Telegram(RPCHandler):
         self._app: Application
         self._loop: asyncio.AbstractEventLoop
         self._init_keyboard()
+        # In-memory storage for multi-select sessions keyed by short session id
+        # Structure: { sid: { 'items': list[str], 'selected': set[int], 'action': str, 'title': str } }
+        self._ms_sessions: dict[str, dict[str, Any]] = {}
         self._start_thread()
 
     def _start_thread(self):
@@ -574,6 +578,8 @@ class Telegram(RPCHandler):
             CallbackQueryHandler(
                 self._trend_shortall_callback, pattern=r"confirm_trend_shortall__\S+"
             ),
+            # Multi-select callback handler
+            CallbackQueryHandler(self._multiselect_cb, pattern=r"^ms:"),
         ]
         
         # Add emoji preprocessing handler with group=-1 to run before command handlers
@@ -1768,6 +1774,195 @@ class Telegram(RPCHandler):
     ) -> list[list[InlineKeyboardButton]]:
         return [buttons[i : i + cols] for i in range(0, len(buttons), cols)]
 
+    # ---------- Multi-select helper methods ----------
+    def _ms_render_message(self, sid: str) -> str:
+        sess = self._ms_sessions.get(sid)
+        if not sess:
+            return "Session expired."
+        total = len(sess["items"]) if sess.get("items") else 0
+        selected = len(sess.get("selected", set()))
+        title = sess.get("title", "Select items")
+        lines = [
+            f"{title}",
+            f"Selected: {selected}/{total}",
+            "\nTap items to toggle selection. Use buttons below to Select All/Clear/Confirm.",
+        ]
+        return "\n".join(lines)
+
+    def _ms_render_keyboard(self, sid: str) -> list[list[InlineKeyboardButton]]:
+        sess = self._ms_sessions.get(sid)
+        if not sess:
+            return [[InlineKeyboardButton("Close", callback_data=f"ms:{sid}:x")]]
+        items: list[str] = sess["items"]
+        selected: set[int] = sess.get("selected", set())
+        btns: list[InlineKeyboardButton] = []
+        for i, item in enumerate(items):
+            mark = "✅" if i in selected else "▫️"
+            btns.append(InlineKeyboardButton(f"{mark} {item}", callback_data=f"ms:{sid}:t:{i}"))
+        rows = self._layout_inline_keyboard(btns, cols=2)
+        rows.append(
+            [
+                InlineKeyboardButton("Select All", callback_data=f"ms:{sid}:a"),
+                InlineKeyboardButton("Clear", callback_data=f"ms:{sid}:n"),
+            ]
+        )
+        rows.append(
+            [
+                InlineKeyboardButton("✔ Confirm", callback_data=f"ms:{sid}:c"),
+                InlineKeyboardButton("✖ Cancel", callback_data=f"ms:{sid}:x"),
+            ]
+        )
+        return rows
+
+    async def _multiselect_cb(self, update: Update, context: CallbackContext) -> None:
+        if not update.callback_query:
+            return
+        query = update.callback_query
+        data = query.data or ""
+        # data format: ms:<sid>:<action>[:<index>]
+        try:
+            _prefix, sid, action, *rest = data.split(":")
+        except ValueError:
+            await query.answer()
+            return
+        sess = self._ms_sessions.get(sid)
+        if not sess:
+            await query.answer("Session expired", show_alert=True)
+            try:
+                await query.edit_message_text("Session expired.")
+            except Exception:
+                pass
+            return
+
+        def redraw():
+            msg = self._ms_render_message(sid)
+            kb = self._ms_render_keyboard(sid)
+            try:
+                return query.edit_message_text(
+                    text=msg,
+                    parse_mode=ParseMode.MARKDOWN,
+                    reply_markup=InlineKeyboardMarkup(kb),
+                )
+            except BadRequest as e:
+                if "not modified" in str(e).lower():
+                    return None
+                raise
+
+        if action == "t":
+            # toggle index
+            if rest:
+                try:
+                    idx = int(rest[0])
+                except ValueError:
+                    idx = -1
+                if 0 <= idx < len(sess["items"]):
+                    selected: set[int] = sess.setdefault("selected", set())
+                    if idx in selected:
+                        selected.remove(idx)
+                    else:
+                        selected.add(idx)
+            await query.answer()
+            await redraw()
+            return
+        elif action == "a":
+            sess["selected"] = set(range(len(sess["items"])))
+            await query.answer("All selected")
+            await redraw()
+            return
+        elif action == "n":
+            sess["selected"] = set()
+            await query.answer("Cleared")
+            await redraw()
+            return
+        elif action == "x":
+            await query.answer("Canceled")
+            try:
+                await query.edit_message_text("❌ Selection canceled.")
+            except Exception:
+                pass
+            self._ms_sessions.pop(sid, None)
+            return
+        elif action == "c":
+            selected_idx: set[int] = sess.get("selected", set())
+            if not selected_idx:
+                await query.answer("Please select at least one item.", show_alert=True)
+                return
+            items = sess["items"]
+            chosen = [items[i] for i in sorted(selected_idx)]
+            op = sess.get("action")
+            # Execute operation
+            if op in ("long", "short"):
+                side = SignalDirection.LONG if op == "long" else SignalDirection.SHORT
+                success_pairs: list[str] = []
+                failed_pairs: list[str] = []
+                for pair in chosen:
+                    try:
+                        @safe_async_db
+                        def _force_entry():
+                            self._rpc._rpc_force_entry(pair, None, order_side=side)
+                        loop = asyncio.get_running_loop()
+                        await loop.run_in_executor(None, _force_entry)
+                        success_pairs.append(pair)
+                    except RPCException as e:
+                        failed_pairs.append(f"{pair}: {str(e)}")
+                msg = ""
+                if success_pairs:
+                    emoji = "📈" if op == "long" else "📉"
+                    action_txt = "Opened LONG" if op == "long" else "Opened SHORT"
+                    msg += f"{emoji} {action_txt} for: {', '.join(success_pairs)}\n"
+                if failed_pairs:
+                    msg += "❌ Failed:\n" + "\n".join(failed_pairs)
+                await query.edit_message_text(msg or "No positions opened")
+                self._ms_sessions.pop(sid, None)
+                return
+            elif op in ("closelong", "closeshort"):
+                is_short = (op == "closeshort")
+                selected_pairs = set(chosen)
+
+                @safe_async_db
+                def _close_trades_block():
+                    closed_local: list[str] = []
+                    failed_local: list[str] = []
+                    trades_local = Trade.get_open_trades()
+                    trades_local = [t for t in trades_local if t.is_short == is_short and t.pair in selected_pairs]
+                    if not trades_local:
+                        return closed_local, failed_local, True  # no trades, sentinel
+                    with self._rpc._freqtrade._exit_lock:
+                        for trade in trades_local:
+                            try:
+                                success = self._rpc._RPC__exec_force_exit(trade, None)
+                                if success:
+                                    closed_local.append(f"{trade.pair} (#{trade.id})")
+                                else:
+                                    failed_local.append(f"{trade.pair} (#{trade.id}): Failed to execute exit")
+                            except Exception as e:
+                                failed_local.append(f"{trade.pair} (#{trade.id}): {str(e)}")
+                        Trade.commit()
+                        self._rpc._freqtrade.wallets.update()
+                    return closed_local, failed_local, False
+
+                loop = asyncio.get_running_loop()
+                closed, failed, empty = await loop.run_in_executor(None, _close_trades_block)
+                if empty:
+                    await query.edit_message_text("No matching open trades to close")
+                    self._ms_sessions.pop(sid, None)
+                    return
+                msg = ""
+                if closed:
+                    msg += f"✅ Closed trades: {', '.join(closed)}\n"
+                if failed:
+                    msg += "❌ Failed to close:\n" + "\n".join(failed)
+                await query.edit_message_text(msg or "No trades closed")
+                self._ms_sessions.pop(sid, None)
+                return
+            else:
+                await query.edit_message_text("Unknown operation.")
+                self._ms_sessions.pop(sid, None)
+                return
+        else:
+            await query.answer()
+            return
+
     @authorized_only
     async def _force_enter(
         self, update: Update, context: CallbackContext, order_side: SignalDirection
@@ -1803,27 +1998,22 @@ class Telegram(RPCHandler):
     @authorized_only
     async def _longall(self, update: Update, context: CallbackContext) -> None:
         """
-        Handler for /longall - Long all coins in whitelist
+        Handler for /longall - Show selector to long selected coins from whitelist
         """
-        whitelist = self._rpc._rpc_whitelist()["whitelist"]
+        whitelist = sorted(self._rpc._rpc_whitelist()["whitelist"])
         if not whitelist:
             await self._send_msg("No pairs in whitelist")
             return
-
-        # Show confirmation dialog
-        msg = f"⚠️ **Confirm Long All**\n\n"
-        msg += f"Open long positions for **{len(whitelist)} pairs**?\n\n"
-        msg += f"Pairs: {', '.join(whitelist[:5])}"
-        if len(whitelist) > 5:
-            msg += f" and {len(whitelist) - 5} more..."
-
-        keyboard = [
-            [
-                InlineKeyboardButton(text="✅ Yes", callback_data="confirm_longall__yes"),
-                InlineKeyboardButton(text="❌ No", callback_data="confirm_longall__no"),
-            ]
-        ]
-        await self._send_msg(msg, keyboard=keyboard, parse_mode=ParseMode.MARKDOWN)
+        sid = uuid4().hex[:8]
+        self._ms_sessions[sid] = {
+            "items": whitelist,
+            "selected": set(),
+            "action": "long",
+            "title": "📈 Select pairs to open LONG positions",
+        }
+        msg = self._ms_render_message(sid)
+        kb = self._ms_render_keyboard(sid)
+        await self._send_msg(msg, keyboard=kb, parse_mode=ParseMode.MARKDOWN)
 
     async def _longall_callback(self, update: Update, context: CallbackContext) -> None:
         """Callback handler for /longall confirmation"""
@@ -1871,27 +2061,22 @@ class Telegram(RPCHandler):
     @authorized_only
     async def _shortall(self, update: Update, context: CallbackContext) -> None:
         """
-        Handler for /shortall - Short all coins in whitelist
+        Handler for /shortall - Show selector to short selected coins from whitelist
         """
-        whitelist = self._rpc._rpc_whitelist()["whitelist"]
+        whitelist = sorted(self._rpc._rpc_whitelist()["whitelist"])
         if not whitelist:
             await self._send_msg("No pairs in whitelist")
             return
-
-        # Show confirmation dialog
-        msg = f"⚠️ **Confirm Short All**\n\n"
-        msg += f"Open short positions for **{len(whitelist)} pairs**?\n\n"
-        msg += f"Pairs: {', '.join(whitelist[:5])}"
-        if len(whitelist) > 5:
-            msg += f" and {len(whitelist) - 5} more..."
-
-        keyboard = [
-            [
-                InlineKeyboardButton(text="✅ Yes", callback_data="confirm_shortall__yes"),
-                InlineKeyboardButton(text="❌ No", callback_data="confirm_shortall__no"),
-            ]
-        ]
-        await self._send_msg(msg, keyboard=keyboard, parse_mode=ParseMode.MARKDOWN)
+        sid = uuid4().hex[:8]
+        self._ms_sessions[sid] = {
+            "items": whitelist,
+            "selected": set(),
+            "action": "short",
+            "title": "📉 Select pairs to open SHORT positions",
+        }
+        msg = self._ms_render_message(sid)
+        kb = self._ms_render_keyboard(sid)
+        await self._send_msg(msg, keyboard=kb, parse_mode=ParseMode.MARKDOWN)
 
     async def _shortall_callback(self, update: Update, context: CallbackContext) -> None:
         """Callback handler for /shortall confirmation"""
@@ -1939,7 +2124,7 @@ class Telegram(RPCHandler):
     @authorized_only
     async def _closelong(self, update: Update, context: CallbackContext) -> None:
         """
-        Handler for /closelong - Close all long trades
+        Handler for /closelong - Show selector to close selected LONG trades (by pair)
         """
         trades = Trade.get_open_trades()
         long_trades = [t for t in trades if not t.is_short]
@@ -1948,21 +2133,18 @@ class Telegram(RPCHandler):
             await self._send_msg("No open long trades to close")
             return
 
-        # Show confirmation dialog
-        msg = f"⚠️ **Confirm Close Long**\n\n"
-        msg += f"Close **{len(long_trades)} long trades**?\n\n"
-        trade_list = [f"{t.pair} (#{t.id})" for t in long_trades[:5]]
-        msg += f"Trades: {', '.join(trade_list)}"
-        if len(long_trades) > 5:
-            msg += f" and {len(long_trades) - 5} more..."
-
-        keyboard = [
-            [
-                InlineKeyboardButton(text="✅ Yes", callback_data="confirm_closelong__yes"),
-                InlineKeyboardButton(text="❌ No", callback_data="confirm_closelong__no"),
-            ]
-        ]
-        await self._send_msg(msg, keyboard=keyboard, parse_mode=ParseMode.MARKDOWN)
+        # Build unique pair list for selection
+        pairs = sorted({t.pair for t in long_trades})
+        sid = uuid4().hex[:8]
+        self._ms_sessions[sid] = {
+            "items": pairs,
+            "selected": set(),
+            "action": "closelong",
+            "title": "❌ Select pairs to CLOSE LONG trades",
+        }
+        msg = self._ms_render_message(sid)
+        kb = self._ms_render_keyboard(sid)
+        await self._send_msg(msg, keyboard=kb, parse_mode=ParseMode.MARKDOWN)
 
     async def _closelong_callback(self, update: Update, context: CallbackContext) -> None:
         """Callback handler for /closelong confirmation"""
@@ -2027,7 +2209,7 @@ class Telegram(RPCHandler):
     @authorized_only
     async def _closeshort(self, update: Update, context: CallbackContext) -> None:
         """
-        Handler for /closeshort - Close all short trades
+        Handler for /closeshort - Show selector to close selected SHORT trades (by pair)
         """
         trades = Trade.get_open_trades()
         short_trades = [t for t in trades if t.is_short]
@@ -2036,21 +2218,18 @@ class Telegram(RPCHandler):
             await self._send_msg("No open short trades to close")
             return
 
-        # Show confirmation dialog
-        msg = f"⚠️ **Confirm Close Short**\n\n"
-        msg += f"Close **{len(short_trades)} short trades**?\n\n"
-        trade_list = [f"{t.pair} (#{t.id})" for t in short_trades[:5]]
-        msg += f"Trades: {', '.join(trade_list)}"
-        if len(short_trades) > 5:
-            msg += f" and {len(short_trades) - 5} more..."
-
-        keyboard = [
-            [
-                InlineKeyboardButton(text="✅ Yes", callback_data="confirm_closeshort__yes"),
-                InlineKeyboardButton(text="❌ No", callback_data="confirm_closeshort__no"),
-            ]
-        ]
-        await self._send_msg(msg, keyboard=keyboard, parse_mode=ParseMode.MARKDOWN)
+        # Build unique pair list for selection
+        pairs = sorted({t.pair for t in short_trades})
+        sid = uuid4().hex[:8]
+        self._ms_sessions[sid] = {
+            "items": pairs,
+            "selected": set(),
+            "action": "closeshort",
+            "title": "❌ Select pairs to CLOSE SHORT trades",
+        }
+        msg = self._ms_render_message(sid)
+        kb = self._ms_render_keyboard(sid)
+        await self._send_msg(msg, keyboard=kb, parse_mode=ParseMode.MARKDOWN)
 
     async def _closeshort_callback(self, update: Update, context: CallbackContext) -> None:
         """Callback handler for /closeshort confirmation"""
