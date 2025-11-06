@@ -2551,20 +2551,23 @@ Obviously in complex such configurations, the Producer may not provide data for 
 <p>In case of a server error the last received pairlist will be kept if <code>keep_pairlist_on_failure</code> is set to true, when set to false a empty pairlist is returned.</p>
 </div>
 <h4 id="marketcappairlist">MarketCapPairList<a class="headerlink" href="#marketcappairlist" title="Permanent link">&para;</a></h4>
-<p><code>MarketCapPairList</code> employs sorting/filtering of pairs by their marketcap rank based of CoinGecko. The returned pairlist will be sorted based of their marketcap ranks.</p>
+<p><code>MarketCapPairList</code> employs sorting/filtering of pairs by their marketcap rank based of CoinGecko. The returned pairlist will be sorted based of their marketcap ranks if used in whitelist <code>mode</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;pairlists&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MarketCapPairList&quot;</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;number_assets&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;max_rank&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;refresh_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">86400</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;whitelist&quot;</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;categories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;layer-1&quot;</span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">]</span>
 </code></pre></div>
-<p><code>number_assets</code> defines the maximum number of pairs returned by the pairlist. <code>max_rank</code> will determine the maximum rank used in creating/filtering the pairlist. It's expected that some coins within the top <code>max_rank</code> marketcap will not be included in the resulting pairlist since not all pairs will have active trading pairs in your preferred market/stake/exchange combination.<br />
+<p><code>number_assets</code> defines the maximum number of pairs returned by the pairlist if used in whitelist <code>mode</code>. In blacklist <code>mode</code>, this setting will be ignored.</p>
+<p><code>max_rank</code> will determine the maximum rank used in creating/filtering the pairlist. It's expected that some coins within the top <code>max_rank</code> marketcap will not be included in the resulting pairlist since not all pairs will have active trading pairs in your preferred market/stake/exchange combination.<br />
 While using a <code>max_rank</code> bigger than 250 is supported, it's not recommended, as it'll cause multiple API calls to CoinGecko, which can lead to rate limit issues.</p>
 <p>The <code>refresh_period</code> setting defines the interval (in seconds) at which the marketcap rank data will be refreshed. The default is 86,400 seconds (1 day). The pairlist cache (<code>refresh_period</code>) applies to both generating pairlists (when in the first position in the list) and filtering instances (when not in the first position in the list).</p>
+<p>The <code>mode</code> setting defines whether the plugin will filters in (whitelist <code>mode</code>) or filters out (blacklist <code>mode</code>) top marketcap ranked coins. By default, the plugin will be in whitelist mode.</p>
 <p>The <code>categories</code> setting specifies the <a href="https://www.coingecko.com/en/categories">coingecko categories</a> from which to select coins from. The default is an empty list <code>[]</code>, meaning no category filtering is applied.
 If an incorrect category string is chosen, the plugin will print the available categories from CoinGecko and fail. The category should be the ID of the category, for example, for <code>https://www.coingecko.com/en/categories/layer-1</code>, the category ID would be <code>layer-1</code>. You can pass multiple categories such as <code>["layer-1", "meme-token"]</code> to select from several categories.</p>
 <p>Coins like 1000PEPE/USDT or KPEPE/USDT:USDT are detected on a best effort basis, with the prefixes <code>1000</code> and <code>K</code> being used to identify them.</p>
