@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../images/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
     
     
       
@@ -2100,126 +2100,124 @@
 To learn how to get data for the pairs and exchange you're interested in, head over to the <a href="../data-download/">Data Downloading</a> section of the documentation.</p>
 <p>Backtesting is also available in <a href="../freq-ui/#backtesting">webserver mode</a>, which allows you to run backtests via the web interface.</p>
 <h2 id="backtesting-command-reference">Backtesting command reference<a class="headerlink" href="#backtesting-command-reference" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>usage: freqtrade backtesting [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                             [-c PATH] [-d PATH] [--userdir PATH] [-s NAME]
-                             [--strategy-path PATH]
-                             [--recursive-strategy-search]
-                             [--freqaimodel NAME] [--freqaimodel-path PATH]
-                             [-i TIMEFRAME] [--timerange TIMERANGE]
-                             [--data-format-ohlcv {json,jsongz,feather,parquet}]
-                             [--max-open-trades INT]
-                             [--stake-amount STAKE_AMOUNT] [--fee FLOAT]
-                             [-p PAIRS [PAIRS ...]] [--eps]
-                             [--enable-protections]
-                             [--enable-dynamic-pairlist]
-                             [--dry-run-wallet DRY_RUN_WALLET]
-                             [--timeframe-detail TIMEFRAME_DETAIL]
-                             [--strategy-list STRATEGY_LIST [STRATEGY_LIST ...]]
-                             [--export {none,trades,signals}]
-                             [--backtest-filename PATH]
-                             [--backtest-directory PATH]
-                             [--breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]]
-                             [--cache {none,day,week,month}]
-                             [--freqai-backtest-live-models] [--notes TEXT]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade backtesting [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
+<span class="go">                             [-c PATH] [-d PATH] [--userdir PATH] [-s NAME]</span>
+<span class="go">                             [--strategy-path PATH]</span>
+<span class="go">                             [--recursive-strategy-search]</span>
+<span class="go">                             [--freqaimodel NAME] [--freqaimodel-path PATH]</span>
+<span class="go">                             [-i TIMEFRAME] [--timerange TIMERANGE]</span>
+<span class="go">                             [--data-format-ohlcv {json,jsongz,feather,parquet}]</span>
+<span class="go">                             [--max-open-trades INT]</span>
+<span class="go">                             [--stake-amount STAKE_AMOUNT] [--fee FLOAT]</span>
+<span class="go">                             [-p PAIRS [PAIRS ...]] [--eps]</span>
+<span class="go">                             [--enable-protections]</span>
+<span class="go">                             [--enable-dynamic-pairlist]</span>
+<span class="go">                             [--dry-run-wallet DRY_RUN_WALLET]</span>
+<span class="go">                             [--timeframe-detail TIMEFRAME_DETAIL]</span>
+<span class="go">                             [--strategy-list STRATEGY_LIST [STRATEGY_LIST ...]]</span>
+<span class="go">                             [--export {none,trades,signals}]</span>
+<span class="go">                             [--backtest-filename PATH]</span>
+<span class="go">                             [--backtest-directory PATH]</span>
+<span class="go">                             [--breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]]</span>
+<span class="go">                             [--cache {none,day,week,month}]</span>
+<span class="go">                             [--freqai-backtest-live-models] [--notes TEXT]</span>
 
-options:
-  -h, --help            show this help message and exit
-  -i TIMEFRAME, --timeframe TIMEFRAME
-                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).
-  --timerange TIMERANGE
-                        Specify what timerange of data to use.
-  --data-format-ohlcv {json,jsongz,feather,parquet}
-                        Storage format for downloaded candle (OHLCV) data.
-                        (default: `feather`).
-  --max-open-trades INT
-                        Override the value of the `max_open_trades`
-                        configuration setting.
-  --stake-amount STAKE_AMOUNT
-                        Override the value of the `stake_amount` configuration
-                        setting.
-  --fee FLOAT           Specify fee ratio. Will be applied twice (on trade
-                        entry and exit).
-  -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
-                        Limit command to these pairs. Pairs are space-
-                        separated.
-  --eps, --enable-position-stacking
-                        Allow buying the same pair multiple times (position
-                        stacking).
-  --enable-protections, --enableprotections
-                        Enable protections for backtesting. Will slow
-                        backtesting down by a considerable amount, but will
-                        include configured protections
-  --enable-dynamic-pairlist
-                        Enables dynamic pairlist refreshes in backtesting. The
-                        pairlist will be generated for each new candle if
-                        you&#39;re using a pairlist handler that supports this
-                        feature, for example, ShuffleFilter.
-  --dry-run-wallet DRY_RUN_WALLET, --starting-balance DRY_RUN_WALLET
-                        Starting balance, used for backtesting / hyperopt and
-                        dry-runs.
-  --timeframe-detail TIMEFRAME_DETAIL
-                        Specify detail timeframe for backtesting (`1m`, `5m`,
-                        `30m`, `1h`, `1d`).
-  --strategy-list STRATEGY_LIST [STRATEGY_LIST ...]
-                        Provide a space-separated list of strategies to
-                        backtest. Please note that timeframe needs to be set
-                        either in config or via command line. When using this
-                        together with `--export trades`, the strategy-name is
-                        injected into the filename (so `backtest-data.json`
-                        becomes `backtest-data-SampleStrategy.json`
-  --export {none,trades,signals}
-                        Export backtest results (default: trades).
-  --backtest-filename PATH, --export-filename PATH
-                        Use this filename for backtest results.Example:
-                        `--backtest-
-                        filename=backtest_results_2020-09-27_16-20-48.json`.
-                        Assumes either `user_data/backtest_results/` or
-                        `--export-directory` as base directory.
-  --backtest-directory PATH, --export-directory PATH
-                        Directory to use for backtest results. Example:
-                        `--export-directory=user_data/backtest_results/`.
-  --breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]
-                        Show backtesting breakdown per [day, week, month,
-                        year, weekday].
-  --cache {none,day,week,month}
-                        Load a cached backtest result no older than specified
-                        age (default: day).
-  --freqai-backtest-live-models
-                        Run backtest with ready models.
-  --notes TEXT          Add notes to the backtest results.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -i, --timeframe TIMEFRAME</span>
+<span class="go">                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).</span>
+<span class="go">  --timerange TIMERANGE</span>
+<span class="go">                        Specify what timerange of data to use.</span>
+<span class="go">  --data-format-ohlcv {json,jsongz,feather,parquet}</span>
+<span class="go">                        Storage format for downloaded candle (OHLCV) data.</span>
+<span class="go">                        (default: `feather`).</span>
+<span class="go">  --max-open-trades INT</span>
+<span class="go">                        Override the value of the `max_open_trades`</span>
+<span class="go">                        configuration setting.</span>
+<span class="go">  --stake-amount STAKE_AMOUNT</span>
+<span class="go">                        Override the value of the `stake_amount` configuration</span>
+<span class="go">                        setting.</span>
+<span class="go">  --fee FLOAT           Specify fee ratio. Will be applied twice (on trade</span>
+<span class="go">                        entry and exit).</span>
+<span class="go">  -p, --pairs PAIRS [PAIRS ...]</span>
+<span class="go">                        Limit command to these pairs. Pairs are space-</span>
+<span class="go">                        separated.</span>
+<span class="go">  --eps, --enable-position-stacking</span>
+<span class="go">                        Allow buying the same pair multiple times (position</span>
+<span class="go">                        stacking).</span>
+<span class="go">  --enable-protections, --enableprotections</span>
+<span class="go">                        Enable protections for backtesting. Will slow</span>
+<span class="go">                        backtesting down by a considerable amount, but will</span>
+<span class="go">                        include configured protections</span>
+<span class="go">  --enable-dynamic-pairlist</span>
+<span class="go">                        Enables dynamic pairlist refreshes in backtesting. The</span>
+<span class="go">                        pairlist will be generated for each new candle if</span>
+<span class="go">                        you&#39;re using a pairlist handler that supports this</span>
+<span class="go">                        feature, for example, ShuffleFilter.</span>
+<span class="go">  --dry-run-wallet, --starting-balance DRY_RUN_WALLET</span>
+<span class="go">                        Starting balance, used for backtesting / hyperopt and</span>
+<span class="go">                        dry-runs.</span>
+<span class="go">  --timeframe-detail TIMEFRAME_DETAIL</span>
+<span class="go">                        Specify detail timeframe for backtesting (`1m`, `5m`,</span>
+<span class="go">                        `30m`, `1h`, `1d`).</span>
+<span class="go">  --strategy-list STRATEGY_LIST [STRATEGY_LIST ...]</span>
+<span class="go">                        Provide a space-separated list of strategies to</span>
+<span class="go">                        backtest. Please note that timeframe needs to be set</span>
+<span class="go">                        either in config or via command line. When using this</span>
+<span class="go">                        together with `--export trades`, the strategy-name is</span>
+<span class="go">                        injected into the filename (so `backtest-data.json`</span>
+<span class="go">                        becomes `backtest-data-SampleStrategy.json`</span>
+<span class="go">  --export {none,trades,signals}</span>
+<span class="go">                        Export backtest results (default: trades).</span>
+<span class="go">  --backtest-filename, --export-filename PATH</span>
+<span class="go">                        Use this filename for backtest results.Example:</span>
+<span class="go">                        `--backtest-</span>
+<span class="go">                        filename=backtest_results_2020-09-27_16-20-48.json`.</span>
+<span class="go">                        Assumes either `user_data/backtest_results/` or</span>
+<span class="go">                        `--export-directory` as base directory.</span>
+<span class="go">  --backtest-directory, --export-directory PATH</span>
+<span class="go">                        Directory to use for backtest results. Example:</span>
+<span class="go">                        `--export-directory=user_data/backtest_results/`.</span>
+<span class="go">  --breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]</span>
+<span class="go">                        Show backtesting breakdown per [day, week, month,</span>
+<span class="go">                        year, weekday].</span>
+<span class="go">  --cache {none,day,week,month}</span>
+<span class="go">                        Load a cached backtest result no older than specified</span>
+<span class="go">                        age (default: day).</span>
+<span class="go">  --freqai-backtest-live-models</span>
+<span class="go">                        Run backtest with ready models.</span>
+<span class="go">  --notes TEXT          Add notes to the backtest results.</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 
-Strategy arguments:
-  -s NAME, --strategy NAME
-                        Specify strategy class name which will be used by the
-                        bot.
-  --strategy-path PATH  Specify additional strategy lookup path.
-  --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
-  --freqaimodel NAME    Specify a custom freqaimodels.
-  --freqaimodel-path PATH
-                        Specify additional lookup path for freqaimodels.
+<span class="go">Strategy arguments:</span>
+<span class="go">  -s, --strategy NAME   Specify strategy class name which will be used by the</span>
+<span class="go">                        bot.</span>
+<span class="go">  --strategy-path PATH  Specify additional strategy lookup path.</span>
+<span class="go">  --recursive-strategy-search</span>
+<span class="go">                        Recursively search for a strategy in the strategies</span>
+<span class="go">                        folder.</span>
+<span class="go">  --freqaimodel NAME    Specify a custom freqaimodels.</span>
+<span class="go">  --freqaimodel-path PATH</span>
+<span class="go">                        Specify additional lookup path for freqaimodels.</span>
 </code></pre></div>
 <h2 id="test-your-strategy-with-backtesting">Test your strategy with Backtesting<a class="headerlink" href="#test-your-strategy-with-backtesting" title="Permanent link">&para;</a></h2>
 <p>Now you have good Entry and exit strategies and some historic data, you want to test it against

@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../images/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
     
     
       
@@ -2525,132 +2525,131 @@ The legacy method was supported up to 2021.8 and has been removed in 2021.9.</p>
 pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements-hyperopt.txt
 </code></pre></div>
 <h2 id="hyperopt-command-reference">Hyperopt command reference<a class="headerlink" href="#hyperopt-command-reference" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>usage: freqtrade hyperopt [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                          [-c PATH] [-d PATH] [--userdir PATH] [-s NAME]
-                          [--strategy-path PATH] [--recursive-strategy-search]
-                          [--freqaimodel NAME] [--freqaimodel-path PATH]
-                          [-i TIMEFRAME] [--timerange TIMERANGE]
-                          [--data-format-ohlcv {json,jsongz,feather,parquet}]
-                          [--max-open-trades INT]
-                          [--stake-amount STAKE_AMOUNT] [--fee FLOAT]
-                          [-p PAIRS [PAIRS ...]] [--hyperopt-path PATH]
-                          [--eps] [--enable-protections]
-                          [--dry-run-wallet DRY_RUN_WALLET]
-                          [--timeframe-detail TIMEFRAME_DETAIL] [-e INT]
-                          [--spaces SPACES [SPACES ...]] [--print-all]
-                          [--print-json] [-j JOBS] [--random-state INT]
-                          [--min-trades INT] [--hyperopt-loss NAME]
-                          [--disable-param-export] [--ignore-missing-spaces]
-                          [--analyze-per-epoch] [--early-stop INT]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade hyperopt [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
+<span class="go">                          [-c PATH] [-d PATH] [--userdir PATH] [-s NAME]</span>
+<span class="go">                          [--strategy-path PATH] [--recursive-strategy-search]</span>
+<span class="go">                          [--freqaimodel NAME] [--freqaimodel-path PATH]</span>
+<span class="go">                          [-i TIMEFRAME] [--timerange TIMERANGE]</span>
+<span class="go">                          [--data-format-ohlcv {json,jsongz,feather,parquet}]</span>
+<span class="go">                          [--max-open-trades INT]</span>
+<span class="go">                          [--stake-amount STAKE_AMOUNT] [--fee FLOAT]</span>
+<span class="go">                          [-p PAIRS [PAIRS ...]] [--hyperopt-path PATH]</span>
+<span class="go">                          [--eps] [--enable-protections]</span>
+<span class="go">                          [--dry-run-wallet DRY_RUN_WALLET]</span>
+<span class="go">                          [--timeframe-detail TIMEFRAME_DETAIL] [-e INT]</span>
+<span class="go">                          [--spaces SPACES [SPACES ...]] [--print-all]</span>
+<span class="go">                          [--print-json] [-j JOBS] [--random-state INT]</span>
+<span class="go">                          [--min-trades INT] [--hyperopt-loss NAME]</span>
+<span class="go">                          [--disable-param-export] [--ignore-missing-spaces]</span>
+<span class="go">                          [--analyze-per-epoch] [--early-stop INT]</span>
 
-options:
-  -h, --help            show this help message and exit
-  -i TIMEFRAME, --timeframe TIMEFRAME
-                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).
-  --timerange TIMERANGE
-                        Specify what timerange of data to use.
-  --data-format-ohlcv {json,jsongz,feather,parquet}
-                        Storage format for downloaded candle (OHLCV) data.
-                        (default: `feather`).
-  --max-open-trades INT
-                        Override the value of the `max_open_trades`
-                        configuration setting.
-  --stake-amount STAKE_AMOUNT
-                        Override the value of the `stake_amount` configuration
-                        setting.
-  --fee FLOAT           Specify fee ratio. Will be applied twice (on trade
-                        entry and exit).
-  -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
-                        Limit command to these pairs. Pairs are space-
-                        separated.
-  --hyperopt-path PATH  Specify additional lookup path for Hyperopt Loss
-                        functions.
-  --eps, --enable-position-stacking
-                        Allow buying the same pair multiple times (position
-                        stacking).
-  --enable-protections, --enableprotections
-                        Enable protections for backtesting. Will slow
-                        backtesting down by a considerable amount, but will
-                        include configured protections
-  --dry-run-wallet DRY_RUN_WALLET, --starting-balance DRY_RUN_WALLET
-                        Starting balance, used for backtesting / hyperopt and
-                        dry-runs.
-  --timeframe-detail TIMEFRAME_DETAIL
-                        Specify detail timeframe for backtesting (`1m`, `5m`,
-                        `30m`, `1h`, `1d`).
-  -e INT, --epochs INT  Specify number of epochs (default: 100).
-  --spaces SPACES [SPACES ...]
-                        Specify which parameters to hyperopt. Space-separated
-                        list. Available options: all, buy, sell, roi,
-                        stoploss, trailing, protection, trades, default.
-                        Default: `default` - which includes all spaces except
-                        for &#39;trailing&#39;, &#39;protection&#39;, and &#39;trades&#39;.
-  --print-all           Print all results, not only the best ones.
-  --print-json          Print output in JSON format.
-  -j JOBS, --job-workers JOBS
-                        The number of concurrently running jobs for
-                        hyperoptimization (hyperopt worker processes). If -1
-                        (default), all CPUs are used, for -2, all CPUs but one
-                        are used, etc. If 1 is given, no parallel computing
-                        code is used at all.
-  --random-state INT    Set random state to some positive integer for
-                        reproducible hyperopt results.
-  --min-trades INT      Set minimal desired number of trades for evaluations
-                        in the hyperopt optimization path (default: 1).
-  --hyperopt-loss NAME, --hyperoptloss NAME
-                        Specify the class name of the hyperopt loss function
-                        class (IHyperOptLoss). Different functions can
-                        generate completely different results, since the
-                        target for optimization is different. Built-in
-                        Hyperopt-loss-functions are:
-                        ShortTradeDurHyperOptLoss, OnlyProfitHyperOptLoss,
-                        SharpeHyperOptLoss, SharpeHyperOptLossDaily,
-                        SortinoHyperOptLoss, SortinoHyperOptLossDaily,
-                        CalmarHyperOptLoss, MaxDrawDownHyperOptLoss,
-                        MaxDrawDownRelativeHyperOptLoss,
-                        MaxDrawDownPerPairHyperOptLoss,
-                        ProfitDrawDownHyperOptLoss, MultiMetricHyperOptLoss
-  --disable-param-export
-                        Disable automatic hyperopt parameter export.
-  --ignore-missing-spaces, --ignore-unparameterized-spaces
-                        Suppress errors for any requested Hyperopt spaces that
-                        do not contain any parameters.
-  --analyze-per-epoch   Run populate_indicators once per epoch.
-  --early-stop INT      Early stop hyperopt if no improvement after (default:
-                        0) epochs.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -i, --timeframe TIMEFRAME</span>
+<span class="go">                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).</span>
+<span class="go">  --timerange TIMERANGE</span>
+<span class="go">                        Specify what timerange of data to use.</span>
+<span class="go">  --data-format-ohlcv {json,jsongz,feather,parquet}</span>
+<span class="go">                        Storage format for downloaded candle (OHLCV) data.</span>
+<span class="go">                        (default: `feather`).</span>
+<span class="go">  --max-open-trades INT</span>
+<span class="go">                        Override the value of the `max_open_trades`</span>
+<span class="go">                        configuration setting.</span>
+<span class="go">  --stake-amount STAKE_AMOUNT</span>
+<span class="go">                        Override the value of the `stake_amount` configuration</span>
+<span class="go">                        setting.</span>
+<span class="go">  --fee FLOAT           Specify fee ratio. Will be applied twice (on trade</span>
+<span class="go">                        entry and exit).</span>
+<span class="go">  -p, --pairs PAIRS [PAIRS ...]</span>
+<span class="go">                        Limit command to these pairs. Pairs are space-</span>
+<span class="go">                        separated.</span>
+<span class="go">  --hyperopt-path PATH  Specify additional lookup path for Hyperopt Loss</span>
+<span class="go">                        functions.</span>
+<span class="go">  --eps, --enable-position-stacking</span>
+<span class="go">                        Allow buying the same pair multiple times (position</span>
+<span class="go">                        stacking).</span>
+<span class="go">  --enable-protections, --enableprotections</span>
+<span class="go">                        Enable protections for backtesting. Will slow</span>
+<span class="go">                        backtesting down by a considerable amount, but will</span>
+<span class="go">                        include configured protections</span>
+<span class="go">  --dry-run-wallet, --starting-balance DRY_RUN_WALLET</span>
+<span class="go">                        Starting balance, used for backtesting / hyperopt and</span>
+<span class="go">                        dry-runs.</span>
+<span class="go">  --timeframe-detail TIMEFRAME_DETAIL</span>
+<span class="go">                        Specify detail timeframe for backtesting (`1m`, `5m`,</span>
+<span class="go">                        `30m`, `1h`, `1d`).</span>
+<span class="go">  -e, --epochs INT      Specify number of epochs (default: 100).</span>
+<span class="go">  --spaces SPACES [SPACES ...]</span>
+<span class="go">                        Specify which parameters to hyperopt. Space-separated</span>
+<span class="go">                        list. Available builtin options (custom spaces will</span>
+<span class="go">                        not be listed here): default, all, buy, sell, enter,</span>
+<span class="go">                        exit, roi, stoploss, trailing, protection, trades.</span>
+<span class="go">                        Default: `default` - which includes all spaces except</span>
+<span class="go">                        for &#39;trailing&#39;, &#39;protection&#39;, and &#39;trades&#39;.</span>
+<span class="go">  --print-all           Print all results, not only the best ones.</span>
+<span class="go">  --print-json          Print output in JSON format.</span>
+<span class="go">  -j, --job-workers JOBS</span>
+<span class="go">                        The number of concurrently running jobs for</span>
+<span class="go">                        hyperoptimization (hyperopt worker processes). If -1</span>
+<span class="go">                        (default), all CPUs are used, for -2, all CPUs but one</span>
+<span class="go">                        are used, etc. If 1 is given, no parallel computing</span>
+<span class="go">                        code is used at all.</span>
+<span class="go">  --random-state INT    Set random state to some positive integer for</span>
+<span class="go">                        reproducible hyperopt results.</span>
+<span class="go">  --min-trades INT      Set minimal desired number of trades for evaluations</span>
+<span class="go">                        in the hyperopt optimization path (default: 1).</span>
+<span class="go">  --hyperopt-loss, --hyperoptloss NAME</span>
+<span class="go">                        Specify the class name of the hyperopt loss function</span>
+<span class="go">                        class (IHyperOptLoss). Different functions can</span>
+<span class="go">                        generate completely different results, since the</span>
+<span class="go">                        target for optimization is different. Built-in</span>
+<span class="go">                        Hyperopt-loss-functions are:</span>
+<span class="go">                        ShortTradeDurHyperOptLoss, OnlyProfitHyperOptLoss,</span>
+<span class="go">                        SharpeHyperOptLoss, SharpeHyperOptLossDaily,</span>
+<span class="go">                        SortinoHyperOptLoss, SortinoHyperOptLossDaily,</span>
+<span class="go">                        CalmarHyperOptLoss, MaxDrawDownHyperOptLoss,</span>
+<span class="go">                        MaxDrawDownRelativeHyperOptLoss,</span>
+<span class="go">                        MaxDrawDownPerPairHyperOptLoss,</span>
+<span class="go">                        ProfitDrawDownHyperOptLoss, MultiMetricHyperOptLoss</span>
+<span class="go">  --disable-param-export</span>
+<span class="go">                        Disable automatic hyperopt parameter export.</span>
+<span class="go">  --ignore-missing-spaces, --ignore-unparameterized-spaces</span>
+<span class="go">                        Suppress errors for any requested Hyperopt spaces that</span>
+<span class="go">                        do not contain any parameters.</span>
+<span class="go">  --analyze-per-epoch   Run populate_indicators once per epoch.</span>
+<span class="go">  --early-stop INT      Early stop hyperopt if no improvement after (default:</span>
+<span class="go">                        0) epochs.</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 
-Strategy arguments:
-  -s NAME, --strategy NAME
-                        Specify strategy class name which will be used by the
-                        bot.
-  --strategy-path PATH  Specify additional strategy lookup path.
-  --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
-  --freqaimodel NAME    Specify a custom freqaimodels.
-  --freqaimodel-path PATH
-                        Specify additional lookup path for freqaimodels.
+<span class="go">Strategy arguments:</span>
+<span class="go">  -s, --strategy NAME   Specify strategy class name which will be used by the</span>
+<span class="go">                        bot.</span>
+<span class="go">  --strategy-path PATH  Specify additional strategy lookup path.</span>
+<span class="go">  --recursive-strategy-search</span>
+<span class="go">                        Recursively search for a strategy in the strategies</span>
+<span class="go">                        folder.</span>
+<span class="go">  --freqaimodel NAME    Specify a custom freqaimodels.</span>
+<span class="go">  --freqaimodel-path PATH</span>
+<span class="go">                        Specify additional lookup path for freqaimodels.</span>
 </code></pre></div>
 <h3 id="hyperopt-checklist">Hyperopt checklist<a class="headerlink" href="#hyperopt-checklist" title="Permanent link">&para;</a></h3>
 <p>Checklist on all tasks / possibilities in hyperopt</p>
@@ -2658,7 +2657,12 @@ Strategy arguments:
 <ul>
 <li>define parameters with <code>space='buy'</code> - for entry signal optimization</li>
 <li>define parameters with <code>space='sell'</code> - for exit signal optimization</li>
+<li>define parameters with <code>space='enter'</code> - for entry signal optimization</li>
+<li>define parameters with <code>space='exit'</code> - for exit signal optimization</li>
+<li>define parameters with <code>space='protection'</code> - for protection optimization</li>
+<li>define parameters with <code>space='random_spacename'</code> - for better control over which parameters are optimized together</li>
 </ul>
+<p>Pick the space name that suits the parameter best. We recommend to use either <code>buy</code> / <code>sell</code> or <code>enter</code> / <code>exit</code> for clarity (however there's no technical limitation in this regard).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code>populate_indicators</code> needs to create all indicators any of the spaces may use, otherwise hyperopt will not work.</p>
@@ -2685,15 +2689,15 @@ freqtrade<span class="w"> </span>hyperopt<span class="w"> </span>--hyperopt-loss
 <p>After backtesting, the results are passed into the <a href="#loss-functions">loss function</a>, which will evaluate if this result was better or worse than previous results.<br />
 Based on the loss function result, hyperopt will determine the next set of parameters to try in the next round of backtesting.</p>
 <h3 id="configure-your-guards-and-triggers">Configure your Guards and Triggers<a class="headerlink" href="#configure-your-guards-and-triggers" title="Permanent link">&para;</a></h3>
-<p>There are two places you need to change in your strategy file to add a new buy hyperopt for testing:</p>
+<p>There are two places you need to change in your strategy file to add a new hyperopt parameter for optimization:</p>
 <ul>
 <li>Define the parameters at the class level hyperopt shall be optimizing.</li>
 <li>Within <code>populate_entry_trend()</code> - use defined parameter values instead of raw constants.</li>
 </ul>
 <p>There you have two different types of indicators: 1. <code>guards</code> and 2. <code>triggers</code>.</p>
 <ol>
-<li>Guards are conditions like "never buy if ADX &lt; 10", or never buy if current price is over EMA10.</li>
-<li>Triggers are ones that actually trigger buy in specific moment, like "buy when EMA5 crosses over EMA10" or "buy when close price touches lower Bollinger band".</li>
+<li>Guards are conditions like "never enter if ADX &lt; 10", or never enter if current price is over EMA10.</li>
+<li>Triggers are ones that actually trigger entry in specific moment, like "enter when EMA5 crosses over EMA10" or "enter when close price touches lower Bollinger band".</li>
 </ol>
 <div class="admonition hint">
 <p class="admonition-title">Guards and Triggers</p>
@@ -2753,9 +2757,13 @@ We use these to either enable or disable the ADX and RSI guards.
 The last one we call <code>trigger</code> and use it to decide which buy trigger we want to use.</p>
 <div class="admonition note">
 <p class="admonition-title">Parameter space assignment</p>
-<p>Parameters must either be assigned to a variable named <code>buy_*</code> or <code>sell_*</code> - or contain <code>space='buy'</code> | <code>space='sell'</code> to be assigned to a space correctly.
-If no parameter is available for a space, you'll receive the error that no space was found when running hyperopt.<br />
-Parameters with unclear space (e.g. <code>adx_period = IntParameter(4, 24, default=14)</code> - no explicit nor implicit space) will not be detected and will therefore be ignored.</p>
+<ul>
+<li>Parameters must either be assigned to a variable named <code>buy_*</code>, <code>sell_*</code>, <code>enter_*</code> or <code>exit_*</code> or <code>protection_*</code> - or contain have a space assigned explicitly via parameter (<code>space='buy'</code>, <code>space='sell'</code>, <code>space='protection'</code>).  </li>
+<li>Parameters with conflicting assignments (e.g. <code>buy_adx = IntParameter(4, 24, default=14, space='sell')</code>) will use the explicit space assignment.  </li>
+<li>If no parameter is available for a space, you'll receive the error that no space was found when running hyperopt.<br />
+Parameters with unclear space (e.g. <code>adx_period = IntParameter(4, 24, default=14)</code> - no explicit nor implicit space) will not be detected and will therefore be ignored.
+Spaces can also be custom named (e.g. <code>space='my_custom_space'</code>), with the only limitation that the space name cannot be <code>all</code>, <code>default</code> - and must result in a valid python identifier.</li>
+</ul>
 </div>
 <p>So let's write the buy strategy using these values:</p>
 <div class="highlight"><pre><span></span><code>    <span class="k">def</span><span class="w"> </span><span class="nf">populate_entry_trend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
@@ -3068,20 +3076,23 @@ For example, to use one month of data, pass <code>--timerange 20210101-20210201<
 </code></pre></div>
 <h3 id="running-hyperopt-with-smaller-search-space">Running Hyperopt with Smaller Search Space<a class="headerlink" href="#running-hyperopt-with-smaller-search-space" title="Permanent link">&para;</a></h3>
 <p>Use the <code>--spaces</code> option to limit the search space used by hyperopt.
-Letting Hyperopt optimize everything is a huuuuge search space.
-Often it might make more sense to start by just searching for initial buy algorithm.
-Or maybe you just want to optimize your stoploss or roi table for that awesome new buy strategy you have.</p>
+Letting Hyperopt optimize everything is often a huuuuge search space.
+Often it might make more sense to start by just searching for initial entry algorithm.
+Or maybe you just want to optimize your stoploss or roi table for that awesome new strategy you have.</p>
 <p>Legal values are:</p>
 <ul>
-<li><code>all</code>: optimize everything</li>
+<li><code>all</code>: optimize everything (including custom spaces)</li>
 <li><code>buy</code>: just search for a new buy strategy</li>
 <li><code>sell</code>: just search for a new sell strategy</li>
+<li><code>enter</code>: just search for a new entry logic</li>
+<li><code>exit</code>: just search for a new entry logic</li>
 <li><code>roi</code>: just optimize the minimal profit table for your strategy</li>
 <li><code>stoploss</code>: search for the best stoploss value</li>
 <li><code>trailing</code>: search for the best trailing stop values</li>
 <li><code>trades</code>: search for the best max open trades values</li>
 <li><code>protection</code>: search for the best protection parameters (read the <a href="#optimizing-protections">protections section</a> on how to properly define these)</li>
 <li><code>default</code>: <code>all</code> except <code>trailing</code>, <code>trades</code> and <code>protection</code></li>
+<li><code>custom_space_name</code>: any custom space used by any parameter in your strategy</li>
 <li>space-separated list of any of the above values for example <code>--spaces roi stoploss</code></li>
 </ul>
 <p>The default Hyperopt Search Space, used when no <code>--space</code> command line option is specified, does not include the <code>trailing</code> hyperspace. We recommend you to run optimization for the <code>trailing</code> hyperspace separately, when the best parameters for other hyperspaces were found, validated and pasted into your custom strategy.</p>

@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../images/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
     
     
       
@@ -1804,89 +1804,87 @@ This is mostly for the performance problems even medium sized plots can cause, b
 </ul>
 <p><img alt="plot-dataframe" src="../assets/plot-dataframe.png" /></p>
 <p>Possible arguments:</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade plot-dataframe [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                                [-c PATH] [-d PATH] [--userdir PATH] [-s NAME]
-                                [--strategy-path PATH]
-                                [--recursive-strategy-search]
-                                [--freqaimodel NAME] [--freqaimodel-path PATH]
-                                [-p PAIRS [PAIRS ...]]
-                                [--indicators1 INDICATORS1 [INDICATORS1 ...]]
-                                [--indicators2 INDICATORS2 [INDICATORS2 ...]]
-                                [--plot-limit INT] [--db-url PATH]
-                                [--trade-source {DB,file}]
-                                [--export {none,trades,signals}]
-                                [--backtest-filename PATH]
-                                [--timerange TIMERANGE] [-i TIMEFRAME]
-                                [--no-trades]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade plot-dataframe [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
+<span class="go">                                [-c PATH] [-d PATH] [--userdir PATH] [-s NAME]</span>
+<span class="go">                                [--strategy-path PATH]</span>
+<span class="go">                                [--recursive-strategy-search]</span>
+<span class="go">                                [--freqaimodel NAME] [--freqaimodel-path PATH]</span>
+<span class="go">                                [-p PAIRS [PAIRS ...]]</span>
+<span class="go">                                [--indicators1 INDICATORS1 [INDICATORS1 ...]]</span>
+<span class="go">                                [--indicators2 INDICATORS2 [INDICATORS2 ...]]</span>
+<span class="go">                                [--plot-limit INT] [--db-url PATH]</span>
+<span class="go">                                [--trade-source {DB,file}]</span>
+<span class="go">                                [--export {none,trades,signals}]</span>
+<span class="go">                                [--backtest-filename PATH]</span>
+<span class="go">                                [--timerange TIMERANGE] [-i TIMEFRAME]</span>
+<span class="go">                                [--no-trades]</span>
 
-options:
-  -h, --help            show this help message and exit
-  -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
-                        Limit command to these pairs. Pairs are space-
-                        separated.
-  --indicators1 INDICATORS1 [INDICATORS1 ...]
-                        Set indicators from your strategy you want in the
-                        first row of the graph. Space-separated list. Example:
-                        `ema3 ema5`. Default: `[&#39;sma&#39;, &#39;ema3&#39;, &#39;ema5&#39;]`.
-  --indicators2 INDICATORS2 [INDICATORS2 ...]
-                        Set indicators from your strategy you want in the
-                        third row of the graph. Space-separated list. Example:
-                        `fastd fastk`. Default: `[&#39;macd&#39;, &#39;macdsignal&#39;]`.
-  --plot-limit INT      Specify tick limit for plotting. Notice: too high
-                        values cause huge files. Default: 750.
-  --db-url PATH         Override trades database URL, this is useful in custom
-                        deployments (default: `sqlite:///tradesv3.sqlite` for
-                        Live Run mode, `sqlite:///tradesv3.dryrun.sqlite` for
-                        Dry Run).
-  --trade-source {DB,file}
-                        Specify the source for trades (Can be DB or file
-                        (backtest file)) Default: file
-  --export {none,trades,signals}
-                        Export backtest results (default: trades).
-  --backtest-filename PATH, --export-filename PATH
-                        Use this filename for backtest results.Example:
-                        `--backtest-
-                        filename=backtest_results_2020-09-27_16-20-48.json`.
-                        Assumes either `user_data/backtest_results/` or
-                        `--export-directory` as base directory.
-  --timerange TIMERANGE
-                        Specify what timerange of data to use.
-  -i TIMEFRAME, --timeframe TIMEFRAME
-                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).
-  --no-trades           Skip using trades from backtesting file and DB.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -p, --pairs PAIRS [PAIRS ...]</span>
+<span class="go">                        Limit command to these pairs. Pairs are space-</span>
+<span class="go">                        separated.</span>
+<span class="go">  --indicators1 INDICATORS1 [INDICATORS1 ...]</span>
+<span class="go">                        Set indicators from your strategy you want in the</span>
+<span class="go">                        first row of the graph. Space-separated list. Example:</span>
+<span class="go">                        `ema3 ema5`. Default: `[&#39;sma&#39;, &#39;ema3&#39;, &#39;ema5&#39;]`.</span>
+<span class="go">  --indicators2 INDICATORS2 [INDICATORS2 ...]</span>
+<span class="go">                        Set indicators from your strategy you want in the</span>
+<span class="go">                        third row of the graph. Space-separated list. Example:</span>
+<span class="go">                        `fastd fastk`. Default: `[&#39;macd&#39;, &#39;macdsignal&#39;]`.</span>
+<span class="go">  --plot-limit INT      Specify tick limit for plotting. Notice: too high</span>
+<span class="go">                        values cause huge files. Default: 750.</span>
+<span class="go">  --db-url PATH         Override trades database URL, this is useful in custom</span>
+<span class="go">                        deployments (default: `sqlite:///tradesv3.sqlite` for</span>
+<span class="go">                        Live Run mode, `sqlite:///tradesv3.dryrun.sqlite` for</span>
+<span class="go">                        Dry Run).</span>
+<span class="go">  --trade-source {DB,file}</span>
+<span class="go">                        Specify the source for trades (Can be DB or file</span>
+<span class="go">                        (backtest file)) Default: file</span>
+<span class="go">  --export {none,trades,signals}</span>
+<span class="go">                        Export backtest results (default: trades).</span>
+<span class="go">  --backtest-filename, --export-filename PATH</span>
+<span class="go">                        Use this filename for backtest results.Example:</span>
+<span class="go">                        `--backtest-</span>
+<span class="go">                        filename=backtest_results_2020-09-27_16-20-48.json`.</span>
+<span class="go">                        Assumes either `user_data/backtest_results/` or</span>
+<span class="go">                        `--export-directory` as base directory.</span>
+<span class="go">  --timerange TIMERANGE</span>
+<span class="go">                        Specify what timerange of data to use.</span>
+<span class="go">  -i, --timeframe TIMEFRAME</span>
+<span class="go">                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).</span>
+<span class="go">  --no-trades           Skip using trades from backtesting file and DB.</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 
-Strategy arguments:
-  -s NAME, --strategy NAME
-                        Specify strategy class name which will be used by the
-                        bot.
-  --strategy-path PATH  Specify additional strategy lookup path.
-  --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
-  --freqaimodel NAME    Specify a custom freqaimodels.
-  --freqaimodel-path PATH
-                        Specify additional lookup path for freqaimodels.
+<span class="go">Strategy arguments:</span>
+<span class="go">  -s, --strategy NAME   Specify strategy class name which will be used by the</span>
+<span class="go">                        bot.</span>
+<span class="go">  --strategy-path PATH  Specify additional strategy lookup path.</span>
+<span class="go">  --recursive-strategy-search</span>
+<span class="go">                        Recursively search for a strategy in the strategies</span>
+<span class="go">                        folder.</span>
+<span class="go">  --freqaimodel NAME    Specify a custom freqaimodels.</span>
+<span class="go">  --freqaimodel-path PATH</span>
+<span class="go">                        Specify additional lookup path for freqaimodels.</span>
 </code></pre></div>
 <p>Example:</p>
 <div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>plot-dataframe<span class="w"> </span>-p<span class="w"> </span>BTC/ETH<span class="w"> </span>--strategy<span class="w"> </span>AwesomeStrategy
@@ -2058,75 +2056,73 @@ This graph will also highlight the start (and end) of the Max drawdown period.</
 <p>The third graph can be useful to spot outliers, events in pairs that cause profit spikes.</p>
 <p>The forth graph can help you analyze trade parallelism, showing how often max_open_trades have been maxed out.</p>
 <p>Possible options for the <code>freqtrade plot-profit</code> subcommand:</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade plot-profit [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                             [-c PATH] [-d PATH] [--userdir PATH] [-s NAME]
-                             [--strategy-path PATH]
-                             [--recursive-strategy-search]
-                             [--freqaimodel NAME] [--freqaimodel-path PATH]
-                             [-p PAIRS [PAIRS ...]] [--timerange TIMERANGE]
-                             [--export {none,trades,signals}]
-                             [--backtest-filename PATH] [--db-url PATH]
-                             [--trade-source {DB,file}] [-i TIMEFRAME]
-                             [--auto-open]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade plot-profit [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
+<span class="go">                             [-c PATH] [-d PATH] [--userdir PATH] [-s NAME]</span>
+<span class="go">                             [--strategy-path PATH]</span>
+<span class="go">                             [--recursive-strategy-search]</span>
+<span class="go">                             [--freqaimodel NAME] [--freqaimodel-path PATH]</span>
+<span class="go">                             [-p PAIRS [PAIRS ...]] [--timerange TIMERANGE]</span>
+<span class="go">                             [--export {none,trades,signals}]</span>
+<span class="go">                             [--backtest-filename PATH] [--db-url PATH]</span>
+<span class="go">                             [--trade-source {DB,file}] [-i TIMEFRAME]</span>
+<span class="go">                             [--auto-open]</span>
 
-options:
-  -h, --help            show this help message and exit
-  -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
-                        Limit command to these pairs. Pairs are space-
-                        separated.
-  --timerange TIMERANGE
-                        Specify what timerange of data to use.
-  --export {none,trades,signals}
-                        Export backtest results (default: trades).
-  --backtest-filename PATH, --export-filename PATH
-                        Use this filename for backtest results.Example:
-                        `--backtest-
-                        filename=backtest_results_2020-09-27_16-20-48.json`.
-                        Assumes either `user_data/backtest_results/` or
-                        `--export-directory` as base directory.
-  --db-url PATH         Override trades database URL, this is useful in custom
-                        deployments (default: `sqlite:///tradesv3.sqlite` for
-                        Live Run mode, `sqlite:///tradesv3.dryrun.sqlite` for
-                        Dry Run).
-  --trade-source {DB,file}
-                        Specify the source for trades (Can be DB or file
-                        (backtest file)) Default: file
-  -i TIMEFRAME, --timeframe TIMEFRAME
-                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).
-  --auto-open           Automatically open generated plot.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -p, --pairs PAIRS [PAIRS ...]</span>
+<span class="go">                        Limit command to these pairs. Pairs are space-</span>
+<span class="go">                        separated.</span>
+<span class="go">  --timerange TIMERANGE</span>
+<span class="go">                        Specify what timerange of data to use.</span>
+<span class="go">  --export {none,trades,signals}</span>
+<span class="go">                        Export backtest results (default: trades).</span>
+<span class="go">  --backtest-filename, --export-filename PATH</span>
+<span class="go">                        Use this filename for backtest results.Example:</span>
+<span class="go">                        `--backtest-</span>
+<span class="go">                        filename=backtest_results_2020-09-27_16-20-48.json`.</span>
+<span class="go">                        Assumes either `user_data/backtest_results/` or</span>
+<span class="go">                        `--export-directory` as base directory.</span>
+<span class="go">  --db-url PATH         Override trades database URL, this is useful in custom</span>
+<span class="go">                        deployments (default: `sqlite:///tradesv3.sqlite` for</span>
+<span class="go">                        Live Run mode, `sqlite:///tradesv3.dryrun.sqlite` for</span>
+<span class="go">                        Dry Run).</span>
+<span class="go">  --trade-source {DB,file}</span>
+<span class="go">                        Specify the source for trades (Can be DB or file</span>
+<span class="go">                        (backtest file)) Default: file</span>
+<span class="go">  -i, --timeframe TIMEFRAME</span>
+<span class="go">                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).</span>
+<span class="go">  --auto-open           Automatically open generated plot.</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 
-Strategy arguments:
-  -s NAME, --strategy NAME
-                        Specify strategy class name which will be used by the
-                        bot.
-  --strategy-path PATH  Specify additional strategy lookup path.
-  --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
-  --freqaimodel NAME    Specify a custom freqaimodels.
-  --freqaimodel-path PATH
-                        Specify additional lookup path for freqaimodels.
+<span class="go">Strategy arguments:</span>
+<span class="go">  -s, --strategy NAME   Specify strategy class name which will be used by the</span>
+<span class="go">                        bot.</span>
+<span class="go">  --strategy-path PATH  Specify additional strategy lookup path.</span>
+<span class="go">  --recursive-strategy-search</span>
+<span class="go">                        Recursively search for a strategy in the strategies</span>
+<span class="go">                        folder.</span>
+<span class="go">  --freqaimodel NAME    Specify a custom freqaimodels.</span>
+<span class="go">  --freqaimodel-path PATH</span>
+<span class="go">                        Specify additional lookup path for freqaimodels.</span>
 </code></pre></div>
 <p>The <code>-p/--pairs</code>  argument, can be used to limit the pairs that are considered for this calculation.</p>
 <p>Examples:</p>

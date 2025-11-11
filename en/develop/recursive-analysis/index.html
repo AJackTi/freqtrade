@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../images/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
     
     
       
@@ -1772,65 +1772,63 @@ This does not backtest the strategy itself, but rather only calculates the indic
 </ul>
 <p>In addition to the recursive formula check, this command also carries out a simple lookahead bias check on the indicator values only. For a full lookahead check, use <a href="../lookahead-analysis/">Lookahead-analysis</a>.</p>
 <h2 id="recursive-analysis-command-reference">Recursive-analysis command reference<a class="headerlink" href="#recursive-analysis-command-reference" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>usage: freqtrade recursive-analysis [-h] [-v] [--no-color] [--logfile FILE]
-                                    [-V] [-c PATH] [-d PATH] [--userdir PATH]
-                                    [-s NAME] [--strategy-path PATH]
-                                    [--recursive-strategy-search]
-                                    [--freqaimodel NAME]
-                                    [--freqaimodel-path PATH] [-i TIMEFRAME]
-                                    [--timerange TIMERANGE]
-                                    [--data-format-ohlcv {json,jsongz,feather,parquet}]
-                                    [-p PAIRS [PAIRS ...]]
-                                    [--startup-candle STARTUP_CANDLE [STARTUP_CANDLE ...]]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade recursive-analysis [-h] [-v] [--no-color] [--logfile FILE]</span>
+<span class="go">                                    [-V] [-c PATH] [-d PATH] [--userdir PATH]</span>
+<span class="go">                                    [-s NAME] [--strategy-path PATH]</span>
+<span class="go">                                    [--recursive-strategy-search]</span>
+<span class="go">                                    [--freqaimodel NAME]</span>
+<span class="go">                                    [--freqaimodel-path PATH] [-i TIMEFRAME]</span>
+<span class="go">                                    [--timerange TIMERANGE]</span>
+<span class="go">                                    [--data-format-ohlcv {json,jsongz,feather,parquet}]</span>
+<span class="go">                                    [-p PAIRS [PAIRS ...]]</span>
+<span class="go">                                    [--startup-candle STARTUP_CANDLE [STARTUP_CANDLE ...]]</span>
 
-options:
-  -h, --help            show this help message and exit
-  -i TIMEFRAME, --timeframe TIMEFRAME
-                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).
-  --timerange TIMERANGE
-                        Specify what timerange of data to use.
-  --data-format-ohlcv {json,jsongz,feather,parquet}
-                        Storage format for downloaded candle (OHLCV) data.
-                        (default: `feather`).
-  -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
-                        Limit command to these pairs. Pairs are space-
-                        separated.
-  --startup-candle STARTUP_CANDLE [STARTUP_CANDLE ...]
-                        Specify startup candles to be checked (`199`, `499`,
-                        `999`, `1999`).
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -i, --timeframe TIMEFRAME</span>
+<span class="go">                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).</span>
+<span class="go">  --timerange TIMERANGE</span>
+<span class="go">                        Specify what timerange of data to use.</span>
+<span class="go">  --data-format-ohlcv {json,jsongz,feather,parquet}</span>
+<span class="go">                        Storage format for downloaded candle (OHLCV) data.</span>
+<span class="go">                        (default: `feather`).</span>
+<span class="go">  -p, --pairs PAIRS [PAIRS ...]</span>
+<span class="go">                        Limit command to these pairs. Pairs are space-</span>
+<span class="go">                        separated.</span>
+<span class="go">  --startup-candle STARTUP_CANDLE [STARTUP_CANDLE ...]</span>
+<span class="go">                        Specify startup candles to be checked (`199`, `499`,</span>
+<span class="go">                        `999`, `1999`).</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 
-Strategy arguments:
-  -s NAME, --strategy NAME
-                        Specify strategy class name which will be used by the
-                        bot.
-  --strategy-path PATH  Specify additional strategy lookup path.
-  --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
-  --freqaimodel NAME    Specify a custom freqaimodels.
-  --freqaimodel-path PATH
-                        Specify additional lookup path for freqaimodels.
+<span class="go">Strategy arguments:</span>
+<span class="go">  -s, --strategy NAME   Specify strategy class name which will be used by the</span>
+<span class="go">                        bot.</span>
+<span class="go">  --strategy-path PATH  Specify additional strategy lookup path.</span>
+<span class="go">  --recursive-strategy-search</span>
+<span class="go">                        Recursively search for a strategy in the strategies</span>
+<span class="go">                        folder.</span>
+<span class="go">  --freqaimodel NAME    Specify a custom freqaimodels.</span>
+<span class="go">  --freqaimodel-path PATH</span>
+<span class="go">                        Specify additional lookup path for freqaimodels.</span>
 </code></pre></div>
 <h3 id="why-are-odd-numbered-default-startup-candles-used">Why are odd-numbered default startup candles used?<a class="headerlink" href="#why-are-odd-numbered-default-startup-candles-used" title="Permanent link">&para;</a></h3>
 <p>The default value for startup candles are odd numbers. When the bot fetches candle data from the exchange's API, the last candle is the one being checked by the bot and the rest of the data are the "startup candles".</p>

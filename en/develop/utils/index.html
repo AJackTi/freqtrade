@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../images/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
     
     
       
@@ -2238,13 +2238,13 @@
 <p>Creates the directory structure to hold your files for freqtrade.
 Will also create strategy and hyperopt examples for you to get started.
 Can be used multiple times - using <code>--reset</code> will reset the sample strategy and hyperopt files to their default state.</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade create-userdir [-h] [--userdir PATH] [--reset]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade create-userdir [-h] [--userdir PATH] [--reset]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
-  --reset               Reset sample files to their original state.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
+<span class="go">  --reset               Reset sample files to their original state.</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -2263,15 +2263,14 @@ options:
 </code></pre></div>
 <h2 id="create-new-config">Create new config<a class="headerlink" href="#create-new-config" title="Permanent link">&para;</a></h2>
 <p>Creates a new configuration file, asking some questions which are important selections for a configuration.</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade new-config [-h] [-c PATH]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade new-config [-h] [-c PATH]</span>
 
-options:
-  -h, --help            show this help message and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+<span class="go">options:</span>
+<span class="go">  -h, --help         show this help message and exit</span>
+<span class="go">  -c, --config PATH  Specify configuration file (default:</span>
+<span class="go">                     `userdir/config.json` or `config.json` whichever exists).</span>
+<span class="go">                     Multiple --config options may be used. Can be set to `-`</span>
+<span class="go">                     to read config from stdin.</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -2293,19 +2292,18 @@ options:
 <p>Show configuration file (with sensitive values redacted by default).
 Especially useful with <a href="../configuration/#multiple-configuration-files">split configuration files</a> or <a href="../configuration/#environment-variables">environment variables</a>, where this command will show the merged configuration.</p>
 <p><img alt="Show config output" src="../assets/show-config-output.png" /></p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade show-config [-h] [--userdir PATH] [-c PATH]
-                             [--show-sensitive]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade show-config [-h] [--userdir PATH] [-c PATH]</span>
+<span class="go">                             [--show-sensitive]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  --show-sensitive      Show secrets in the output.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  --show-sensitive      Show secrets in the output.</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="go">Your combined configuration is:</span>
 <span class="go">{</span>
@@ -2334,22 +2332,21 @@ Yet, please do double-check for sensitive values in your output to make sure you
 <p>Creates a new strategy from a template similar to SampleStrategy.
 The file will be named inline with your class name, and will not overwrite existing files.</p>
 <p>Results will be located in <code>user_data/strategies/&lt;strategyclassname&gt;.py</code>.</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade new-strategy [-h] [--userdir PATH] [-s NAME]
-                              [--strategy-path PATH]
-                              [--template {full,minimal,advanced}]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade new-strategy [-h] [--userdir PATH] [-s NAME]</span>
+<span class="go">                              [--strategy-path PATH]</span>
+<span class="go">                              [--template {full,minimal,advanced}]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
-  -s NAME, --strategy NAME
-                        Specify strategy class name which will be used by the
-                        bot.
-  --strategy-path PATH  Specify additional strategy lookup path.
-  --template {full,minimal,advanced}
-                        Use a template which is either `minimal`, `full`
-                        (containing multiple sample indicators) or `advanced`.
-                        Default: `full`.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
+<span class="go">  -s, --strategy NAME   Specify strategy class name which will be used by the</span>
+<span class="go">                        bot.</span>
+<span class="go">  --strategy-path PATH  Specify additional strategy lookup path.</span>
+<span class="go">  --template {full,minimal,advanced}</span>
+<span class="go">                        Use a template which is either `minimal`, `full`</span>
+<span class="go">                        (containing multiple sample indicators) or `advanced`.</span>
+<span class="go">                        Default: `full`.</span>
 </code></pre></div>
 <h3 id="sample-usage-of-new-strategy">Sample usage of new-strategy<a class="headerlink" href="#sample-usage-of-new-strategy" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>new-strategy<span class="w"> </span>--strategy<span class="w"> </span>AwesomeStrategy
@@ -2363,39 +2360,38 @@ options:
 <h2 id="list-strategies">List Strategies<a class="headerlink" href="#list-strategies" title="Permanent link">&para;</a></h2>
 <p>Use the <code>list-strategies</code> subcommand to see all strategies in one particular directory.</p>
 <p>This subcommand is useful for finding problems in your environment with loading strategies: modules with strategies that contain errors and failed to load are printed in red (LOAD FAILED), while strategies with duplicate names are printed in yellow (DUPLICATE NAME).</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade list-strategies [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                                 [-c PATH] [-d PATH] [--userdir PATH]
-                                 [--strategy-path PATH] [-1]
-                                 [--recursive-strategy-search]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade list-strategies [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
+<span class="go">                                 [-c PATH] [-d PATH] [--userdir PATH]</span>
+<span class="go">                                 [--strategy-path PATH] [-1]</span>
+<span class="go">                                 [--recursive-strategy-search]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --strategy-path PATH  Specify additional strategy lookup path.
-  -1, --one-column      Print output in one column.
-  --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --strategy-path PATH  Specify additional strategy lookup path.</span>
+<span class="go">  -1, --one-column      Print output in one column.</span>
+<span class="go">  --recursive-strategy-search</span>
+<span class="go">                        Recursively search for a strategy in the strategies</span>
+<span class="go">                        folder.</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -2414,106 +2410,103 @@ Common arguments:
 <p>Use the <code>list-hyperoptloss</code> subcommand to see all hyperopt loss functions available.</p>
 <p>It provides a quick list of all available loss functions in your environment.</p>
 <p>This subcommand can be useful for finding problems in your environment with loading loss functions: modules with Hyperopt-Loss functions that contain errors and failed to load are printed in red (LOAD FAILED), while hyperopt-Loss functions with duplicate names are printed in yellow (DUPLICATE NAME).</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade list-hyperoptloss [-h] [-v] [--no-color] [--logfile FILE]
-                                   [-V] [-c PATH] [-d PATH] [--userdir PATH]
-                                   [--hyperopt-path PATH] [-1]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade list-hyperoptloss [-h] [-v] [--no-color] [--logfile FILE]</span>
+<span class="go">                                   [-V] [-c PATH] [-d PATH] [--userdir PATH]</span>
+<span class="go">                                   [--hyperopt-path PATH] [-1]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --hyperopt-path PATH  Specify additional lookup path for Hyperopt Loss
-                        functions.
-  -1, --one-column      Print output in one column.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --hyperopt-path PATH  Specify additional lookup path for Hyperopt Loss</span>
+<span class="go">                        functions.</span>
+<span class="go">  -1, --one-column      Print output in one column.</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 </code></pre></div>
 <h2 id="list-freqai-models">List freqAI models<a class="headerlink" href="#list-freqai-models" title="Permanent link">&para;</a></h2>
 <p>Use the <code>list-freqaimodels</code> subcommand to see all freqAI models available.</p>
 <p>This subcommand is useful for finding problems in your environment with loading freqAI models: modules with models that contain errors and failed to load are printed in red (LOAD FAILED), while models with duplicate names are printed in yellow (DUPLICATE NAME).</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade list-freqaimodels [-h] [-v] [--no-color] [--logfile FILE]
-                                   [-V] [-c PATH] [-d PATH] [--userdir PATH]
-                                   [--freqaimodel-path PATH] [-1]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade list-freqaimodels [-h] [-v] [--no-color] [--logfile FILE]</span>
+<span class="go">                                   [-V] [-c PATH] [-d PATH] [--userdir PATH]</span>
+<span class="go">                                   [--freqaimodel-path PATH] [-1]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --freqaimodel-path PATH
-                        Specify additional lookup path for freqaimodels.
-  -1, --one-column      Print output in one column.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --freqaimodel-path PATH</span>
+<span class="go">                        Specify additional lookup path for freqaimodels.</span>
+<span class="go">  -1, --one-column      Print output in one column.</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 </code></pre></div>
 <h2 id="list-exchanges">List Exchanges<a class="headerlink" href="#list-exchanges" title="Permanent link">&para;</a></h2>
 <p>Use the <code>list-exchanges</code> subcommand to see the exchanges available for the bot.</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade list-exchanges [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                                [-c PATH] [-d PATH] [--userdir PATH] [-1] [-a]
-                                [--trading-mode {spot,margin,futures}]
-                                [--dex-exchanges]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade list-exchanges [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
+<span class="go">                                [-c PATH] [-d PATH] [--userdir PATH] [-1] [-a]</span>
+<span class="go">                                [--trading-mode {spot,margin,futures}]</span>
+<span class="go">                                [--dex-exchanges]</span>
 
-options:
-  -h, --help            show this help message and exit
-  -1, --one-column      Print output in one column.
-  -a, --all             Print all exchanges known to the ccxt library.
-  --trading-mode {spot,margin,futures}, --tradingmode {spot,margin,futures}
-                        Select Trading mode
-  --dex-exchanges       Print only DEX exchanges.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -1, --one-column      Print output in one column.</span>
+<span class="go">  -a, --all             Print all exchanges known to the ccxt library.</span>
+<span class="go">  --trading-mode, --tradingmode {spot,margin,futures}</span>
+<span class="go">                        Select Trading mode</span>
+<span class="go">  --dex-exchanges       Print only DEX exchanges.</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 </code></pre></div>
 <p>Example: see exchanges available for the bot:</p>
 <div class="highlight"><pre><span></span><code>$ freqtrade list-exchanges
@@ -2555,35 +2548,34 @@ okx                 True     Official     spot, isolated futures
 </div>
 <h2 id="list-timeframes">List Timeframes<a class="headerlink" href="#list-timeframes" title="Permanent link">&para;</a></h2>
 <p>Use the <code>list-timeframes</code> subcommand to see the list of timeframes available for the exchange.</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade list-timeframes [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                                 [-c PATH] [-d PATH] [--userdir PATH]
-                                 [--exchange EXCHANGE] [-1]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade list-timeframes [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
+<span class="go">                                 [-c PATH] [-d PATH] [--userdir PATH]</span>
+<span class="go">                                 [--exchange EXCHANGE] [-1]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --exchange EXCHANGE   Exchange name. Only valid if no config is provided.
-  -1, --one-column      Print output in one column.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --exchange EXCHANGE   Exchange name. Only valid if no config is provided.</span>
+<span class="go">  -1, --one-column      Print output in one column.</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 </code></pre></div>
 <ul>
 <li>Example: see the timeframes for the 'binance' exchange, set in the configuration file:</li>
@@ -2604,51 +2596,50 @@ For example, in the 'ETH/BTC' pair 'ETH' is the base currency, while 'BTC' is th
 <p>For pairs traded by Freqtrade the pair quote currency is defined by the value of the <code>stake_currency</code> configuration setting.</p>
 <p>You can print info about any pair/market with these subcommands - and you can filter output by quote-currency using <code>--quote BTC</code>, or by base-currency using <code>--base ETH</code> options correspondingly.</p>
 <p>These subcommands have same usage and same set of available options:</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade list-pairs [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                            [-c PATH] [-d PATH] [--userdir PATH]
-                            [--exchange EXCHANGE] [--print-list]
-                            [--print-json] [-1] [--print-csv]
-                            [--base BASE_CURRENCY [BASE_CURRENCY ...]]
-                            [--quote QUOTE_CURRENCY [QUOTE_CURRENCY ...]] [-a]
-                            [--trading-mode {spot,margin,futures}]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade list-pairs [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
+<span class="go">                            [-c PATH] [-d PATH] [--userdir PATH]</span>
+<span class="go">                            [--exchange EXCHANGE] [--print-list]</span>
+<span class="go">                            [--print-json] [-1] [--print-csv]</span>
+<span class="go">                            [--base BASE_CURRENCY [BASE_CURRENCY ...]]</span>
+<span class="go">                            [--quote QUOTE_CURRENCY [QUOTE_CURRENCY ...]] [-a]</span>
+<span class="go">                            [--trading-mode {spot,margin,futures}]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --exchange EXCHANGE   Exchange name. Only valid if no config is provided.
-  --print-list          Print list of pairs or market symbols. By default data
-                        is printed in the tabular format.
-  --print-json          Print list of pairs or market symbols in JSON format.
-  -1, --one-column      Print output in one column.
-  --print-csv           Print exchange pair or market data in the csv format.
-  --base BASE_CURRENCY [BASE_CURRENCY ...]
-                        Specify base currency(-ies). Space-separated list.
-  --quote QUOTE_CURRENCY [QUOTE_CURRENCY ...]
-                        Specify quote currency(-ies). Space-separated list.
-  -a, --all             Print all pairs or market symbols. By default only
-                        active ones are shown.
-  --trading-mode {spot,margin,futures}, --tradingmode {spot,margin,futures}
-                        Select Trading mode
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --exchange EXCHANGE   Exchange name. Only valid if no config is provided.</span>
+<span class="go">  --print-list          Print list of pairs or market symbols. By default data</span>
+<span class="go">                        is printed in the tabular format.</span>
+<span class="go">  --print-json          Print list of pairs or market symbols in JSON format.</span>
+<span class="go">  -1, --one-column      Print output in one column.</span>
+<span class="go">  --print-csv           Print exchange pair or market data in the csv format.</span>
+<span class="go">  --base BASE_CURRENCY [BASE_CURRENCY ...]</span>
+<span class="go">                        Specify base currency(-ies). Space-separated list.</span>
+<span class="go">  --quote QUOTE_CURRENCY [QUOTE_CURRENCY ...]</span>
+<span class="go">                        Specify quote currency(-ies). Space-separated list.</span>
+<span class="go">  -a, --all             Print all pairs or market symbols. By default only</span>
+<span class="go">                        active ones are shown.</span>
+<span class="go">  --trading-mode, --tradingmode {spot,margin,futures}</span>
+<span class="go">                        Select Trading mode</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 </code></pre></div>
 <p>By default, only active pairs/markets are shown. Active pairs/markets are those that can currently be traded on the exchange.
 You can use the <code>-a</code>/<code>-all</code> option to see the list of all pairs/markets, including the inactive ones.
@@ -2677,25 +2668,24 @@ human-readable list with summary:</li>
 <p>Use the <code>test-pairlist</code> subcommand to test the configuration of <a href="../plugins/#pairlists">dynamic pairlists</a>.</p>
 <p>Requires a configuration with specified <code>pairlists</code> attribute.
 Can be used to generate static pairlists to be used during backtesting / hyperopt.</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade test-pairlist [-h] [--userdir PATH] [-v] [-c PATH]
-                               [--quote QUOTE_CURRENCY [QUOTE_CURRENCY ...]]
-                               [-1] [--print-json] [--exchange EXCHANGE]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade test-pairlist [-h] [--userdir PATH] [-v] [-c PATH]</span>
+<span class="go">                               [--quote QUOTE_CURRENCY [QUOTE_CURRENCY ...]]</span>
+<span class="go">                               [-1] [--print-json] [--exchange EXCHANGE]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  --quote QUOTE_CURRENCY [QUOTE_CURRENCY ...]
-                        Specify quote currency(-ies). Space-separated list.
-  -1, --one-column      Print output in one column.
-  --print-json          Print list of pairs or market symbols in JSON format.
-  --exchange EXCHANGE   Exchange name. Only valid if no config is provided.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  --quote QUOTE_CURRENCY [QUOTE_CURRENCY ...]</span>
+<span class="go">                        Specify quote currency(-ies). Space-separated list.</span>
+<span class="go">  -1, --one-column      Print output in one column.</span>
+<span class="go">  --print-json          Print list of pairs or market symbols in JSON format.</span>
+<span class="go">  --exchange EXCHANGE   Exchange name. Only valid if no config is provided.</span>
 </code></pre></div>
 <h3 id="examples_1">Examples<a class="headerlink" href="#examples_1" title="Permanent link">&para;</a></h3>
 <p>Show whitelist when using a <a href="../plugins/#pairlists">dynamic pairlist</a>.</p>
@@ -2704,15 +2694,15 @@ options:
 <h2 id="convert-database">Convert database<a class="headerlink" href="#convert-database" title="Permanent link">&para;</a></h2>
 <p><code>freqtrade convert-db</code> can be used to convert your database from one system to another (sqlite -&gt; postgres, postgres -&gt; other postgres), migrating all trades, orders and Pairlocks.</p>
 <p>Please refer to the <a href="../advanced-setup/#use-a-different-database-system">corresponding documentation</a> to learn about requirements for different database systems.</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade convert-db [-h] [--db-url PATH] [--db-url-from PATH]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade convert-db [-h] [--db-url PATH] [--db-url-from PATH]</span>
 
-options:
-  -h, --help          show this help message and exit
-  --db-url PATH       Override trades database URL, this is useful in custom
-                      deployments (default: `sqlite:///tradesv3.sqlite` for
-                      Live Run mode, `sqlite:///tradesv3.dryrun.sqlite` for
-                      Dry Run).
-  --db-url-from PATH  Source db url to use when migrating a database.
+<span class="go">options:</span>
+<span class="go">  -h, --help          show this help message and exit</span>
+<span class="go">  --db-url PATH       Override trades database URL, this is useful in custom</span>
+<span class="go">                      deployments (default: `sqlite:///tradesv3.sqlite` for</span>
+<span class="go">                      Live Run mode, `sqlite:///tradesv3.dryrun.sqlite` for</span>
+<span class="go">                      Dry Run).</span>
+<span class="go">  --db-url-from PATH  Source db url to use when migrating a database.</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -2728,32 +2718,31 @@ There may still be bugs - so if you happen to stumble across these, please repor
 Freqtrade will start the webserver and allow FreqUI to start and control backtesting processes.
 This has the advantage that data will not be reloaded between backtesting runs (as long as timeframe and timerange remain identical).
 FreqUI will also show the backtesting results.</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade webserver [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                           [-c PATH] [-d PATH] [--userdir PATH]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade webserver [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
+<span class="go">                           [-c PATH] [-d PATH] [--userdir PATH]</span>
 
-options:
-  -h, --help            show this help message and exit
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 </code></pre></div>
 <h3 id="webserver-mode-docker">Webserver mode - docker<a class="headerlink" href="#webserver-mode-docker" title="Permanent link">&para;</a></h3>
 <p>You can also use webserver mode via docker.
@@ -2777,188 +2766,185 @@ Adding <code>--show-pair-list</code> outputs a sorted pair list you can easily c
 <summary>Strategy overfitting</summary>
 <p>Only using winning pairs can lead to an overfitted strategy, which will not work well on future data. Make sure to extensively test your strategy in dry-run before risking real money.</p>
 </details>
-<div class="highlight"><pre><span></span><code>usage: freqtrade backtesting-show [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                                  [-c PATH] [-d PATH] [--userdir PATH]
-                                  [--backtest-filename PATH]
-                                  [--backtest-directory PATH]
-                                  [--show-pair-list]
-                                  [--breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade backtesting-show [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
+<span class="go">                                  [-c PATH] [-d PATH] [--userdir PATH]</span>
+<span class="go">                                  [--backtest-filename PATH]</span>
+<span class="go">                                  [--backtest-directory PATH]</span>
+<span class="go">                                  [--show-pair-list]</span>
+<span class="go">                                  [--breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --backtest-filename PATH, --export-filename PATH
-                        Use this filename for backtest results.Example:
-                        `--backtest-
-                        filename=backtest_results_2020-09-27_16-20-48.json`.
-                        Assumes either `user_data/backtest_results/` or
-                        `--export-directory` as base directory.
-  --backtest-directory PATH, --export-directory PATH
-                        Directory to use for backtest results. Example:
-                        `--export-directory=user_data/backtest_results/`.
-  --show-pair-list      Show backtesting pairlist sorted by profit.
-  --breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]
-                        Show backtesting breakdown per [day, week, month,
-                        year, weekday].
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --backtest-filename, --export-filename PATH</span>
+<span class="go">                        Use this filename for backtest results.Example:</span>
+<span class="go">                        `--backtest-</span>
+<span class="go">                        filename=backtest_results_2020-09-27_16-20-48.json`.</span>
+<span class="go">                        Assumes either `user_data/backtest_results/` or</span>
+<span class="go">                        `--export-directory` as base directory.</span>
+<span class="go">  --backtest-directory, --export-directory PATH</span>
+<span class="go">                        Directory to use for backtest results. Example:</span>
+<span class="go">                        `--export-directory=user_data/backtest_results/`.</span>
+<span class="go">  --show-pair-list      Show backtesting pairlist sorted by profit.</span>
+<span class="go">  --breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]</span>
+<span class="go">                        Show backtesting breakdown per [day, week, month,</span>
+<span class="go">                        year, weekday].</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 </code></pre></div>
 <h2 id="detailed-backtest-analysis">Detailed backtest analysis<a class="headerlink" href="#detailed-backtest-analysis" title="Permanent link">&para;</a></h2>
 <p>Advanced backtest result analysis.</p>
 <p>More details in the <a href="../advanced-backtesting/#analyze-the-buyentry-and-sellexit-tags">Backtesting analysis</a> Section.</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade backtesting-analysis [-h] [-v] [--no-color] [--logfile FILE]
-                                      [-V] [-c PATH] [-d PATH]
-                                      [--userdir PATH]
-                                      [--backtest-filename PATH]
-                                      [--backtest-directory PATH]
-                                      [--analysis-groups {0,1,2,3,4,5} [{0,1,2,3,4,5} ...]]
-                                      [--enter-reason-list ENTER_REASON_LIST [ENTER_REASON_LIST ...]]
-                                      [--exit-reason-list EXIT_REASON_LIST [EXIT_REASON_LIST ...]]
-                                      [--indicator-list INDICATOR_LIST [INDICATOR_LIST ...]]
-                                      [--entry-only] [--exit-only]
-                                      [--timerange TIMERANGE]
-                                      [--rejected-signals] [--analysis-to-csv]
-                                      [--analysis-csv-path ANALYSIS_CSV_PATH]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade backtesting-analysis [-h] [-v] [--no-color] [--logfile FILE]</span>
+<span class="go">                                      [-V] [-c PATH] [-d PATH]</span>
+<span class="go">                                      [--userdir PATH]</span>
+<span class="go">                                      [--backtest-filename PATH]</span>
+<span class="go">                                      [--backtest-directory PATH]</span>
+<span class="go">                                      [--analysis-groups {0,1,2,3,4,5} [{0,1,2,3,4,5} ...]]</span>
+<span class="go">                                      [--enter-reason-list ENTER_REASON_LIST [ENTER_REASON_LIST ...]]</span>
+<span class="go">                                      [--exit-reason-list EXIT_REASON_LIST [EXIT_REASON_LIST ...]]</span>
+<span class="go">                                      [--indicator-list INDICATOR_LIST [INDICATOR_LIST ...]]</span>
+<span class="go">                                      [--entry-only] [--exit-only]</span>
+<span class="go">                                      [--timerange TIMERANGE]</span>
+<span class="go">                                      [--rejected-signals] [--analysis-to-csv]</span>
+<span class="go">                                      [--analysis-csv-path ANALYSIS_CSV_PATH]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --backtest-filename PATH, --export-filename PATH
-                        Use this filename for backtest results.Example:
-                        `--backtest-
-                        filename=backtest_results_2020-09-27_16-20-48.json`.
-                        Assumes either `user_data/backtest_results/` or
-                        `--export-directory` as base directory.
-  --backtest-directory PATH, --export-directory PATH
-                        Directory to use for backtest results. Example:
-                        `--export-directory=user_data/backtest_results/`.
-  --analysis-groups {0,1,2,3,4,5} [{0,1,2,3,4,5} ...]
-                        grouping output - 0: simple wins/losses by enter tag,
-                        1: by enter_tag, 2: by enter_tag and exit_tag, 3: by
-                        pair and enter_tag, 4: by pair, enter_ and exit_tag
-                        (this can get quite large), 5: by exit_tag
-  --enter-reason-list ENTER_REASON_LIST [ENTER_REASON_LIST ...]
-                        Space separated list of entry signals to analyse.
-                        Default: all. e.g. &#39;entry_tag_a entry_tag_b&#39;
-  --exit-reason-list EXIT_REASON_LIST [EXIT_REASON_LIST ...]
-                        Space separated list of exit signals to analyse.
-                        Default: all. e.g. &#39;exit_tag_a roi stop_loss
-                        trailing_stop_loss&#39;
-  --indicator-list INDICATOR_LIST [INDICATOR_LIST ...]
-                        Space separated list of indicators to analyse. e.g.
-                        &#39;close rsi bb_lowerband profit_abs&#39;
-  --entry-only          Only analyze entry signals.
-  --exit-only           Only analyze exit signals.
-  --timerange TIMERANGE
-                        Specify what timerange of data to use.
-  --rejected-signals    Analyse rejected signals
-  --analysis-to-csv     Save selected analysis tables to individual CSVs
-  --analysis-csv-path ANALYSIS_CSV_PATH
-                        Specify a path to save the analysis CSVs if
-                        --analysis-to-csv is enabled. Default:
-                        user_data/basktesting_results/
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --backtest-filename, --export-filename PATH</span>
+<span class="go">                        Use this filename for backtest results.Example:</span>
+<span class="go">                        `--backtest-</span>
+<span class="go">                        filename=backtest_results_2020-09-27_16-20-48.json`.</span>
+<span class="go">                        Assumes either `user_data/backtest_results/` or</span>
+<span class="go">                        `--export-directory` as base directory.</span>
+<span class="go">  --backtest-directory, --export-directory PATH</span>
+<span class="go">                        Directory to use for backtest results. Example:</span>
+<span class="go">                        `--export-directory=user_data/backtest_results/`.</span>
+<span class="go">  --analysis-groups {0,1,2,3,4,5} [{0,1,2,3,4,5} ...]</span>
+<span class="go">                        grouping output - 0: simple wins/losses by enter tag,</span>
+<span class="go">                        1: by enter_tag, 2: by enter_tag and exit_tag, 3: by</span>
+<span class="go">                        pair and enter_tag, 4: by pair, enter_ and exit_tag</span>
+<span class="go">                        (this can get quite large), 5: by exit_tag</span>
+<span class="go">  --enter-reason-list ENTER_REASON_LIST [ENTER_REASON_LIST ...]</span>
+<span class="go">                        Space separated list of entry signals to analyse.</span>
+<span class="go">                        Default: all. e.g. &#39;entry_tag_a entry_tag_b&#39;</span>
+<span class="go">  --exit-reason-list EXIT_REASON_LIST [EXIT_REASON_LIST ...]</span>
+<span class="go">                        Space separated list of exit signals to analyse.</span>
+<span class="go">                        Default: all. e.g. &#39;exit_tag_a roi stop_loss</span>
+<span class="go">                        trailing_stop_loss&#39;</span>
+<span class="go">  --indicator-list INDICATOR_LIST [INDICATOR_LIST ...]</span>
+<span class="go">                        Space separated list of indicators to analyse. e.g.</span>
+<span class="go">                        &#39;close rsi bb_lowerband profit_abs&#39;</span>
+<span class="go">  --entry-only          Only analyze entry signals.</span>
+<span class="go">  --exit-only           Only analyze exit signals.</span>
+<span class="go">  --timerange TIMERANGE</span>
+<span class="go">                        Specify what timerange of data to use.</span>
+<span class="go">  --rejected-signals    Analyse rejected signals</span>
+<span class="go">  --analysis-to-csv     Save selected analysis tables to individual CSVs</span>
+<span class="go">  --analysis-csv-path ANALYSIS_CSV_PATH</span>
+<span class="go">                        Specify a path to save the analysis CSVs if</span>
+<span class="go">                        --analysis-to-csv is enabled. Default:</span>
+<span class="go">                        user_data/basktesting_results/</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 </code></pre></div>
 <h2 id="list-hyperopt-results">List Hyperopt results<a class="headerlink" href="#list-hyperopt-results" title="Permanent link">&para;</a></h2>
 <p>You can list the hyperoptimization epochs the Hyperopt module evaluated previously with the <code>hyperopt-list</code> sub-command.</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade hyperopt-list [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                               [-c PATH] [-d PATH] [--userdir PATH] [--best]
-                               [--profitable] [--min-trades INT]
-                               [--max-trades INT] [--min-avg-time FLOAT]
-                               [--max-avg-time FLOAT] [--min-avg-profit FLOAT]
-                               [--max-avg-profit FLOAT]
-                               [--min-total-profit FLOAT]
-                               [--max-total-profit FLOAT]
-                               [--min-objective FLOAT] [--max-objective FLOAT]
-                               [--print-json] [--no-details]
-                               [--hyperopt-filename FILENAME]
-                               [--export-csv FILE]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade hyperopt-list [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
+<span class="go">                               [-c PATH] [-d PATH] [--userdir PATH] [--best]</span>
+<span class="go">                               [--profitable] [--min-trades INT]</span>
+<span class="go">                               [--max-trades INT] [--min-avg-time FLOAT]</span>
+<span class="go">                               [--max-avg-time FLOAT] [--min-avg-profit FLOAT]</span>
+<span class="go">                               [--max-avg-profit FLOAT]</span>
+<span class="go">                               [--min-total-profit FLOAT]</span>
+<span class="go">                               [--max-total-profit FLOAT]</span>
+<span class="go">                               [--min-objective FLOAT] [--max-objective FLOAT]</span>
+<span class="go">                               [--print-json] [--no-details]</span>
+<span class="go">                               [--hyperopt-filename FILENAME]</span>
+<span class="go">                               [--export-csv FILE]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --best                Select only best epochs.
-  --profitable          Select only profitable epochs.
-  --min-trades INT      Select epochs with more than INT trades.
-  --max-trades INT      Select epochs with less than INT trades.
-  --min-avg-time FLOAT  Select epochs above average time.
-  --max-avg-time FLOAT  Select epochs below average time.
-  --min-avg-profit FLOAT
-                        Select epochs above average profit.
-  --max-avg-profit FLOAT
-                        Select epochs below average profit.
-  --min-total-profit FLOAT
-                        Select epochs above total profit.
-  --max-total-profit FLOAT
-                        Select epochs below total profit.
-  --min-objective FLOAT
-                        Select epochs above objective.
-  --max-objective FLOAT
-                        Select epochs below objective.
-  --print-json          Print output in JSON format.
-  --no-details          Do not print best epoch details.
-  --hyperopt-filename FILENAME
-                        Hyperopt result filename.Example: `--hyperopt-
-                        filename=hyperopt_results_2020-09-27_16-20-48.pickle`
-  --export-csv FILE     Export to CSV-File. This will disable table print.
-                        Example: --export-csv hyperopt.csv
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --best                Select only best epochs.</span>
+<span class="go">  --profitable          Select only profitable epochs.</span>
+<span class="go">  --min-trades INT      Select epochs with more than INT trades.</span>
+<span class="go">  --max-trades INT      Select epochs with less than INT trades.</span>
+<span class="go">  --min-avg-time FLOAT  Select epochs above average time.</span>
+<span class="go">  --max-avg-time FLOAT  Select epochs below average time.</span>
+<span class="go">  --min-avg-profit FLOAT</span>
+<span class="go">                        Select epochs above average profit.</span>
+<span class="go">  --max-avg-profit FLOAT</span>
+<span class="go">                        Select epochs below average profit.</span>
+<span class="go">  --min-total-profit FLOAT</span>
+<span class="go">                        Select epochs above total profit.</span>
+<span class="go">  --max-total-profit FLOAT</span>
+<span class="go">                        Select epochs below total profit.</span>
+<span class="go">  --min-objective FLOAT</span>
+<span class="go">                        Select epochs above objective.</span>
+<span class="go">  --max-objective FLOAT</span>
+<span class="go">                        Select epochs below objective.</span>
+<span class="go">  --print-json          Print output in JSON format.</span>
+<span class="go">  --no-details          Do not print best epoch details.</span>
+<span class="go">  --hyperopt-filename FILENAME</span>
+<span class="go">                        Hyperopt result filename.Example: `--hyperopt-</span>
+<span class="go">                        filename=hyperopt_results_2020-09-27_16-20-48.pickle`</span>
+<span class="go">  --export-csv FILE     Export to CSV-File. This will disable table print.</span>
+<span class="go">                        Example: --export-csv hyperopt.csv</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2974,49 +2960,48 @@ You can override this using the <code>--hyperopt-filename</code> argument, and s
 </code></pre></div></p>
 <h2 id="show-details-of-hyperopt-results">Show details of Hyperopt results<a class="headerlink" href="#show-details-of-hyperopt-results" title="Permanent link">&para;</a></h2>
 <p>You can show the details of any hyperoptimization epoch previously evaluated by the Hyperopt module with the <code>hyperopt-show</code> subcommand.</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade hyperopt-show [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                               [-c PATH] [-d PATH] [--userdir PATH] [--best]
-                               [--profitable] [-n INT] [--print-json]
-                               [--hyperopt-filename FILENAME] [--no-header]
-                               [--disable-param-export]
-                               [--breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade hyperopt-show [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
+<span class="go">                               [-c PATH] [-d PATH] [--userdir PATH] [--best]</span>
+<span class="go">                               [--profitable] [-n INT] [--print-json]</span>
+<span class="go">                               [--hyperopt-filename FILENAME] [--no-header]</span>
+<span class="go">                               [--disable-param-export]</span>
+<span class="go">                               [--breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --best                Select only best epochs.
-  --profitable          Select only profitable epochs.
-  -n INT, --index INT   Specify the index of the epoch to print details for.
-  --print-json          Print output in JSON format.
-  --hyperopt-filename FILENAME
-                        Hyperopt result filename.Example: `--hyperopt-
-                        filename=hyperopt_results_2020-09-27_16-20-48.pickle`
-  --no-header           Do not print epoch details header.
-  --disable-param-export
-                        Disable automatic hyperopt parameter export.
-  --breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]
-                        Show backtesting breakdown per [day, week, month,
-                        year, weekday].
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --best                Select only best epochs.</span>
+<span class="go">  --profitable          Select only profitable epochs.</span>
+<span class="go">  -n, --index INT       Specify the index of the epoch to print details for.</span>
+<span class="go">  --print-json          Print output in JSON format.</span>
+<span class="go">  --hyperopt-filename FILENAME</span>
+<span class="go">                        Hyperopt result filename.Example: `--hyperopt-</span>
+<span class="go">                        filename=hyperopt_results_2020-09-27_16-20-48.pickle`</span>
+<span class="go">  --no-header           Do not print epoch details header.</span>
+<span class="go">  --disable-param-export</span>
+<span class="go">                        Disable automatic hyperopt parameter export.</span>
+<span class="go">  --breakdown {day,week,month,year,weekday} [{day,week,month,year,weekday} ...]</span>
+<span class="go">                        Show backtesting breakdown per [day, week, month,</span>
+<span class="go">                        year, weekday].</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -3032,42 +3017,41 @@ You can override this using the <code>--hyperopt-filename</code> argument, and s
 </code></pre></div>
 <h2 id="show-trades">Show trades<a class="headerlink" href="#show-trades" title="Permanent link">&para;</a></h2>
 <p>Print selected (or all) trades from database to screen.</p>
-<div class="highlight"><pre><span></span><code>usage: freqtrade show-trades [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                             [-c PATH] [-d PATH] [--userdir PATH]
-                             [--db-url PATH]
-                             [--trade-ids TRADE_IDS [TRADE_IDS ...]]
-                             [--print-json]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade show-trades [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
+<span class="go">                             [-c PATH] [-d PATH] [--userdir PATH]</span>
+<span class="go">                             [--db-url PATH]</span>
+<span class="go">                             [--trade-ids TRADE_IDS [TRADE_IDS ...]]</span>
+<span class="go">                             [--print-json]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --db-url PATH         Override trades database URL, this is useful in custom
-                        deployments (default: `sqlite:///tradesv3.sqlite` for
-                        Live Run mode, `sqlite:///tradesv3.dryrun.sqlite` for
-                        Dry Run).
-  --trade-ids TRADE_IDS [TRADE_IDS ...]
-                        Specify the list of trade ids.
-  --print-json          Print output in JSON format.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --db-url PATH         Override trades database URL, this is useful in custom</span>
+<span class="go">                        deployments (default: `sqlite:///tradesv3.sqlite` for</span>
+<span class="go">                        Live Run mode, `sqlite:///tradesv3.dryrun.sqlite` for</span>
+<span class="go">                        Dry Run).</span>
+<span class="go">  --trade-ids TRADE_IDS [TRADE_IDS ...]</span>
+<span class="go">                        Specify the list of trade ids.</span>
+<span class="go">  --print-json          Print output in JSON format.</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 </code></pre></div>
 <h3 id="examples_4">Examples<a class="headerlink" href="#examples_4" title="Permanent link">&para;</a></h3>
 <p>Print trades with id 2 and 3 as json</p>
@@ -3082,46 +3066,45 @@ Your original strategy will remain available in the <code>user_data/strategies_o
 <p>Strategy updater will work on a "best effort" approach. Please do your due diligence and verify the results of the conversion.
 We also recommend to run a python formatter (e.g. <code>black</code>) to format results in a sane manner.</p>
 </div>
-<div class="highlight"><pre><span></span><code>usage: freqtrade strategy-updater [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                                  [-c PATH] [-d PATH] [--userdir PATH]
-                                  [--strategy-list STRATEGY_LIST [STRATEGY_LIST ...]]
-                                  [--strategy-path PATH]
-                                  [--recursive-strategy-search]
+<div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade strategy-updater [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
+<span class="go">                                  [-c PATH] [-d PATH] [--userdir PATH]</span>
+<span class="go">                                  [--strategy-list STRATEGY_LIST [STRATEGY_LIST ...]]</span>
+<span class="go">                                  [--strategy-path PATH]</span>
+<span class="go">                                  [--recursive-strategy-search]</span>
 
-options:
-  -h, --help            show this help message and exit
-  --strategy-list STRATEGY_LIST [STRATEGY_LIST ...]
-                        Provide a space-separated list of strategies to
-                        backtest. Please note that timeframe needs to be set
-                        either in config or via command line. When using this
-                        together with `--export trades`, the strategy-name is
-                        injected into the filename (so `backtest-data.json`
-                        becomes `backtest-data-SampleStrategy.json`
-  --strategy-path PATH  Specify additional strategy lookup path.
-  --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
+<span class="go">options:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --strategy-list STRATEGY_LIST [STRATEGY_LIST ...]</span>
+<span class="go">                        Provide a space-separated list of strategies to</span>
+<span class="go">                        backtest. Please note that timeframe needs to be set</span>
+<span class="go">                        either in config or via command line. When using this</span>
+<span class="go">                        together with `--export trades`, the strategy-name is</span>
+<span class="go">                        injected into the filename (so `backtest-data.json`</span>
+<span class="go">                        becomes `backtest-data-SampleStrategy.json`</span>
+<span class="go">  --strategy-path PATH  Specify additional strategy lookup path.</span>
+<span class="go">  --recursive-strategy-search</span>
+<span class="go">                        Recursively search for a strategy in the strategies</span>
+<span class="go">                        folder.</span>
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
-  --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more
-                        details.
-  -V, --version         show program&#39;s version number and exit
-  -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  -d PATH, --datadir PATH, --data-dir PATH
-                        Path to the base directory of the exchange with
-                        historical backtesting data. To see futures data, use
-                        trading-mode additionally.
-  --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+<span class="go">Common arguments:</span>
+<span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
+<span class="go">  --no-color            Disable colorization of hyperopt results. May be</span>
+<span class="go">                        useful if you are redirecting output to a file.</span>
+<span class="go">  --logfile, --log-file FILE</span>
+<span class="go">                        Log to the file specified. Special values are:</span>
+<span class="go">                        &#39;syslog&#39;, &#39;journald&#39;. See the documentation for more</span>
+<span class="go">                        details.</span>
+<span class="go">  -V, --version         show program&#39;s version number and exit</span>
+<span class="go">  -c, --config PATH     Specify configuration file (default:</span>
+<span class="go">                        `userdir/config.json` or `config.json` whichever</span>
+<span class="go">                        exists). Multiple --config options may be used. Can be</span>
+<span class="go">                        set to `-` to read config from stdin.</span>
+<span class="go">  -d, --datadir, --data-dir PATH</span>
+<span class="go">                        Path to the base directory of the exchange with</span>
+<span class="go">                        historical backtesting data. To see futures data, use</span>
+<span class="go">                        trading-mode additionally.</span>
+<span class="go">  --userdir, --user-data-dir PATH</span>
+<span class="go">                        Path to userdata directory.</span>
 </code></pre></div>
 
 

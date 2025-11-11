@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../images/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
     
     
       
@@ -791,6 +791,15 @@
   <a href="#minimalistic-client-config" class="md-nav__link">
     <span class="md-ellipsis">
       Minimalistic client config
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#freqtrade-client-available-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Freqtrade client- available commands
     </span>
   </a>
   
@@ -1849,6 +1858,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#freqtrade-client-available-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Freqtrade client- available commands
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2067,6 +2085,7 @@ to do so, please use the following:</p>
 </code></pre></div>
 <p>For a full list of available commands, please refer to the list below.</p>
 </details>
+<h4 id="freqtrade-client-available-commands">Freqtrade client- available commands<a class="headerlink" href="#freqtrade-client-available-commands" title="Permanent link">&para;</a></h4>
 <p>Possible commands can be listed from the rest-client script using the <code>help</code> command.</p>
 <div class="highlight"><pre><span></span><code>freqtrade-client<span class="w"> </span><span class="nb">help</span>
 </code></pre></div>
@@ -2075,8 +2094,8 @@ to do so, please use the following:</p>
 <span class="go">available_pairs</span>
 <span class="go">    Return available pair (backtest data) based on timeframe / stake_currency selection</span>
 
-<span class="go">        :param timeframe: Only pairs with this timeframe available.</span>
-<span class="go">        :param stake_currency: Only pairs that include this timeframe</span>
+<span class="go">:param timeframe: Only pairs with this timeframe available.</span>
+<span class="go">:param stake_currency: Only pairs that include this stake currency.</span>
 
 <span class="go">balance</span>
 <span class="go">    Get the account balance.</span>
@@ -2084,12 +2103,12 @@ to do so, please use the following:</p>
 <span class="go">blacklist</span>
 <span class="go">    Show the current blacklist.</span>
 
-<span class="go">        :param add: List of coins to add (example: &quot;BNB/BTC&quot;)</span>
+<span class="go">:param add: List of coins to add (example: &quot;BNB/BTC&quot;)</span>
 
 <span class="go">cancel_open_order</span>
 <span class="go">    Cancel open order for trade.</span>
 
-<span class="go">        :param trade_id: Cancels open orders for this trade.</span>
+<span class="go">:param trade_id: Cancels open orders for this trade.</span>
 
 <span class="go">count</span>
 <span class="go">    Return the amount of open trades.</span>
@@ -2100,44 +2119,69 @@ to do so, please use the following:</p>
 <span class="go">delete_lock</span>
 <span class="go">    Delete (disable) lock from the database.</span>
 
-<span class="go">        :param lock_id: ID for the lock to delete</span>
+<span class="go">:param lock_id: ID for the lock to delete</span>
 
 <span class="go">delete_trade</span>
 <span class="go">    Delete trade from the database.</span>
-<span class="go">        Tries to close open orders. Requires manual handling of this asset on the exchange.</span>
+<span class="go">Tries to close open orders. Requires manual handling of this asset on the exchange.</span>
 
-<span class="go">        :param trade_id: Deletes the trade with this ID from the database.</span>
+<span class="go">:param trade_id: Deletes the trade with this ID from the database.</span>
+
+<span class="go">entries</span>
+<span class="go">    Returns List of dicts containing all Trades, based on buy tag performance</span>
+<span class="go">Can either be average for all pairs or a specific pair provided</span>
+
+<span class="go">exits</span>
+<span class="go">    Returns List of dicts containing all Trades, based on exit reason performance</span>
+<span class="go">Can either be average for all pairs or a specific pair provided</span>
 
 <span class="go">forcebuy</span>
 <span class="go">    Buy an asset.</span>
 
-<span class="go">        :param pair: Pair to buy (ETH/BTC)</span>
-<span class="go">        :param price: Optional - price to buy</span>
+<span class="go">:param pair: Pair to buy (ETH/BTC)</span>
+<span class="go">:param price: Optional - price to buy</span>
 
 <span class="go">forceenter</span>
 <span class="go">    Force entering a trade</span>
 
-<span class="go">        :param pair: Pair to buy (ETH/BTC)</span>
-<span class="go">        :param side: &#39;long&#39; or &#39;short&#39;</span>
-<span class="go">        :param price: Optional - price to buy</span>
+<span class="go">:param pair: Pair to buy (ETH/BTC)</span>
+<span class="go">:param side: &#39;long&#39; or &#39;short&#39;</span>
+<span class="go">:param price: Optional - price to buy</span>
+<span class="go">:param order_type: Optional keyword argument - &#39;limit&#39; or &#39;market&#39;</span>
+<span class="go">:param stake_amount: Optional keyword argument - stake amount (as float)</span>
+<span class="go">:param leverage: Optional keyword argument - leverage (as float)</span>
+<span class="go">:param enter_tag: Optional keyword argument - entry tag (as string, default: &#39;force_enter&#39;)</span>
 
 <span class="go">forceexit</span>
 <span class="go">    Force-exit a trade.</span>
 
-<span class="go">        :param tradeid: Id of the trade (can be received via status command)</span>
-<span class="go">        :param ordertype: Order type to use (must be market or limit)</span>
-<span class="go">        :param amount: Amount to sell. Full sell if not given</span>
+<span class="go">:param tradeid: Id of the trade (can be received via status command)</span>
+<span class="go">:param ordertype: Order type to use (must be market or limit)</span>
+<span class="go">:param amount: Amount to sell. Full sell if not given</span>
 
 <span class="go">health</span>
 <span class="go">    Provides a quick health check of the running bot.</span>
 
-<span class="go">lock_add</span>
-<span class="go">    Manually lock a specific pair</span>
+<span class="go">list_custom_data</span>
+<span class="go">    List custom-data of the running bot for a specific trade.</span>
 
-<span class="go">        :param pair: Pair to lock</span>
-<span class="go">        :param until: Lock until this date (format &quot;2024-03-30 16:00:00Z&quot;)</span>
-<span class="go">        :param side: Side to lock (long, short, *)</span>
-<span class="go">        :param reason: Reason for the lock        </span>
+<span class="go">:param trade_id: ID of the trade</span>
+<span class="go">:param key: str, optional - Key of the custom-data</span>
+
+<span class="go">list_open_trades_custom_data</span>
+<span class="go">    List open trades custom-data of the running bot.</span>
+
+<span class="go">:param key: str, optional - Key of the custom-data</span>
+<span class="go">:param limit: limit of trades</span>
+<span class="go">:param offset: trades offset for pagination</span>
+
+<span class="go">lock_add</span>
+<span class="go">    Lock pair</span>
+
+<span class="go">:param pair: Pair to lock</span>
+<span class="go">:param until: Lock until this date (format &quot;2024-03-30 16:00:00Z&quot;)</span>
+<span class="go">:param side: Side to lock (long, short, *)</span>
+<span class="go">:param reason: Reason for the lock</span>
 
 <span class="go">locks</span>
 <span class="go">    Return current locks</span>
@@ -2145,22 +2189,34 @@ to do so, please use the following:</p>
 <span class="go">logs</span>
 <span class="go">    Show latest logs.</span>
 
-<span class="go">        :param limit: Limits log messages to the last &lt;limit&gt; logs. No limit to get the entire log.</span>
+<span class="go">:param limit: Limits log messages to the last &lt;limit&gt; logs. No limit to get the entire log.</span>
+
+<span class="go">mix_tags</span>
+<span class="go">    Returns List of dicts containing all Trades, based on entry_tag + exit_reason performance</span>
+<span class="go">Can either be average for all pairs or a specific pair provided</span>
+
+<span class="go">monthly</span>
+<span class="go">    Return the profits for each month, and amount of trades.</span>
 
 <span class="go">pair_candles</span>
 <span class="go">    Return live dataframe for &lt;pair&gt;&lt;timeframe&gt;.</span>
 
-<span class="go">        :param pair: Pair to get data for</span>
-<span class="go">        :param timeframe: Only pairs with this timeframe available.</span>
-<span class="go">        :param limit: Limit result to the last n candles.</span>
+<span class="go">:param pair: Pair to get data for</span>
+<span class="go">:param timeframe: Only pairs with this timeframe available.</span>
+<span class="go">:param limit: Limit result to the last n candles.</span>
+<span class="go">:param columns: List of dataframe columns to return. Empty list will return OHLCV.</span>
 
 <span class="go">pair_history</span>
 <span class="go">    Return historic, analyzed dataframe</span>
 
-<span class="go">        :param pair: Pair to get data for</span>
-<span class="go">        :param timeframe: Only pairs with this timeframe available.</span>
-<span class="go">        :param strategy: Strategy to analyze and get values for</span>
-<span class="go">        :param timerange: Timerange to get data for (same format than --timerange endpoints)</span>
+<span class="go">:param pair: Pair to get data for</span>
+<span class="go">:param timeframe: Only pairs with this timeframe available.</span>
+<span class="go">:param strategy: Strategy to analyze and get values for</span>
+<span class="go">:param freqaimodel: FreqAI model to use for analysis</span>
+<span class="go">:param timerange: Timerange to get data for (same format than --timerange endpoints)</span>
+
+<span class="go">pairlists_available</span>
+<span class="go">    Lists available pairlist providers</span>
 
 <span class="go">performance</span>
 <span class="go">    Return the performance of the different coins.</span>
@@ -2183,9 +2239,6 @@ to do so, please use the following:</p>
 <span class="go">start</span>
 <span class="go">    Start the bot if it&#39;s in the stopped state.</span>
 
-<span class="go">pause</span>
-<span class="go">    Pause the bot if it&#39;s in the running state. If triggered on stopped state will handle open positions.</span>
-
 <span class="go">stats</span>
 <span class="go">    Return the stats report (durations, sell-reasons).</span>
 
@@ -2204,7 +2257,7 @@ to do so, please use the following:</p>
 <span class="go">strategy</span>
 <span class="go">    Get strategy details</span>
 
-<span class="go">        :param strategy: Strategy class name</span>
+<span class="go">:param strategy: Strategy class name</span>
 
 <span class="go">sysinfo</span>
 <span class="go">    Provides system information (CPU, RAM usage)</span>
@@ -2212,29 +2265,20 @@ to do so, please use the following:</p>
 <span class="go">trade</span>
 <span class="go">    Return specific trade</span>
 
-<span class="go">        :param trade_id: Specify which trade to get.</span>
+<span class="go">:param trade_id: Specify which trade to get.</span>
 
 <span class="go">trades</span>
-<span class="go">    Return trades history, sorted by id</span>
+<span class="go">    Return trades history, sorted by id (or by latest timestamp if order_by_id=False)</span>
 
-<span class="go">        :param limit: Limits trades to the X last trades. Max 500 trades.</span>
-<span class="go">        :param offset: Offset by this amount of trades.</span>
-
-<span class="go">list_open_trades_custom_data</span>
-<span class="go">    Return a dict containing open trades custom-datas</span>
-
-<span class="go">        :param key: str, optional - Key of the custom-data</span>
-<span class="go">        :param limit: Limits trades to X trades.</span>
-<span class="go">        :param offset: Offset by this amount of trades.</span>
-
-<span class="go">list_custom_data</span>
-<span class="go">    Return a dict containing custom-datas of a specified trade</span>
-
-<span class="go">        :param trade_id: int - ID of the trade</span>
-<span class="go">        :param key: str, optional - Key of the custom-data</span>
+<span class="go">:param limit: Limits trades to the X last trades. Max 500 trades.</span>
+<span class="go">:param offset: Offset by this amount of trades.</span>
+<span class="go">:param order_by_id: Sort trades by id (default: True). If False, sorts by latest timestamp.</span>
 
 <span class="go">version</span>
 <span class="go">    Return the version of the bot.</span>
+
+<span class="go">weekly</span>
+<span class="go">    Return the profits for each week, and amount of trades.</span>
 
 <span class="go">whitelist</span>
 <span class="go">    Show the current whitelist.</span>
@@ -2369,7 +2413,7 @@ All endpoints in the below table need to be prefixed with the base URL of the AP
 <tr>
 <td><code>/forceenter</code></td>
 <td>POST</td>
-<td>Instantly enters the given pair. Side is optional and is either <code>long</code> or <code>short</code> (default is <code>long</code>). Rate is optional. (<code>force_entry_enable</code> must be set to True)<br/><em>Params:</em><br/>- <code>&lt;pair&gt;</code> (<code>str</code>)<br/>- <code>&lt;side&gt;</code> (<code>str</code>)<br/>- <code>[rate]</code> (<code>float</code>)</td>
+<td>Instantly enters the given pair. Side is optional and is either <code>long</code> or <code>short</code> (default is <code>long</code>). Price, stake amount, entry tag and leverage are optional. Order type is optional and is either <code>market</code> or <code>long</code> (default using the value set in config). (<code>force_entry_enable</code> must be set to True)<br/><em>Params:</em><br/>- <code>&lt;pair&gt;</code> (<code>str</code>)<br/>- <code>&lt;side&gt;</code> (<code>str</code>)<br/>- <code>[price]</code> (<code>float</code>)<br/>- <code>[ordertype]</code> (<code>str</code>)<br/>- <code>[stakeamount]</code> (<code>float</code>)<br/>- <code>[entry_tag]</code> (<code>str</code>)<br/>- <code>[leverage]</code> (<code>float</code>)</td>
 </tr>
 <tr>
 <td><code>/performance</code></td>
