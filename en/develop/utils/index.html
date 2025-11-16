@@ -2551,11 +2551,14 @@ okx                 True     Official     spot, isolated futures
 <div class="highlight"><pre><span></span><code><span class="go">usage: freqtrade list-timeframes [-h] [-v] [--no-color] [--logfile FILE] [-V]</span>
 <span class="go">                                 [-c PATH] [-d PATH] [--userdir PATH]</span>
 <span class="go">                                 [--exchange EXCHANGE] [-1]</span>
+<span class="go">                                 [--trading-mode {spot,margin,futures}]</span>
 
 <span class="go">options:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
 <span class="go">  --exchange EXCHANGE   Exchange name. Only valid if no config is provided.</span>
 <span class="go">  -1, --one-column      Print output in one column.</span>
+<span class="go">  --trading-mode, --tradingmode {spot,margin,futures}</span>
+<span class="go">                        Select Trading mode</span>
 
 <span class="go">Common arguments:</span>
 <span class="go">  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).</span>
