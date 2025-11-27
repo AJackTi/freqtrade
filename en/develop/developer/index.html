@@ -2931,9 +2931,14 @@ mkdocs<span class="w"> </span>serve
 <p>To configure a development environment, you can either use the provided <a href="#devcontainer-setup">DevContainer</a>, or use the <code>setup.sh</code> script and answer "y" when asked "Do you want to install dependencies for dev [y/N]? ".
 Alternatively (e.g. if your system is not supported by the setup.sh script), follow the manual installation process and run <code>pip3 install -r requirements-dev.txt</code> - followed by <code>pip3 install -e .[all]</code>.</p>
 <p>This will install all required tools for development, including <code>pytest</code>, <code>ruff</code>, <code>mypy</code>, and <code>coveralls</code>.</p>
-<p>Then install the git hook scripts by running <code>pre-commit install</code>, so your changes will be verified locally before committing.
-This avoids a lot of waiting for CI already, as some basic formatting checks are done locally on your machine.</p>
-<p>Before opening a pull request, please familiarize yourself with our <a href="https://github.com/freqtrade/freqtrade/blob/develop/CONTRIBUTING.md">Contributing Guidelines</a>.</p>
+<p>Run the following command to install the git hook scripts:</p>
+<div class="highlight"><pre><span></span><code>pre-commit<span class="w"> </span>install
+</code></pre></div>
+<p>These pre-commit scripts check your changes automatically before each commit.<br />
+If any formatting issues are found, the commit will fail and will prompt for fixes.
+This reduces unnecessary CI failures, reduces maintenance burden, and improves code quality.</p>
+<p>You can run the checks manually when necessary with <code>pre-commit run -a</code>.  </p>
+<p>Before opening a pull request, please also familiarize yourself with our <a href="https://github.com/freqtrade/freqtrade/blob/develop/CONTRIBUTING.md">Contributing Guidelines</a>.</p>
 <h3 id="devcontainer-setup">Devcontainer setup<a class="headerlink" href="#devcontainer-setup" title="Permanent link">&para;</a></h3>
 <p>The fastest and easiest way to get started is to use <a href="https://code.visualstudio.com/">VSCode</a> with the Remote container extension.
 This gives developers the ability to start the bot with all required dependencies <em>without</em> needing to install any freqtrade specific dependencies on your local machine.</p>
