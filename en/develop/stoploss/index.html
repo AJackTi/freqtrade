@@ -2449,8 +2449,14 @@ The Order-type will be ignored if only one mode is available.</p>
 </details>
 <div class="admonition note">
 <p class="admonition-title">Tight stoploss</p>
-<p><ins>Do not set too low/tight stoploss value when using stop loss on exchange!</ins><br />
+<p>Do not set too low/tight stoploss value when using stop loss on exchange!<br />
 If set to low/tight you will have greater risk of missing fill on the order and stoploss will not work.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Loose stoploss</p>
+<p>Using stoploss on exchange with a very wide stoploss (e.g. -1) may fail to place the stoploss order on exchange due to exchange limitations.
+In that case, the bot will fallback to using the <code>emergency_exit</code> order type to place a market order as placing the stoploss order failed.
+Freqtrade currently does not implement a limitation to avoid this situation, so please ensure your stoploss values are within reasonable limits for your exchange or disable stoploss on exchange.</p>
 </div>
 <h3 id="stoploss_on_exchange-and-stoploss_on_exchange_limit_ratio">stoploss_on_exchange and stoploss_on_exchange_limit_ratio<a class="headerlink" href="#stoploss_on_exchange-and-stoploss_on_exchange_limit_ratio" title="Permanent link">&para;</a></h3>
 <p>Enable or Disable stop loss on exchange.
