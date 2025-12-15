@@ -29,15 +29,15 @@ pyarrow==22.0.0; platform_machine != 'armv7l'
 
 
 # Load ticker files 30% faster
-python-rapidjson==1.22
+python-rapidjson==1.23
 # Properly format api responses
-orjson==3.11.4
+orjson==3.11.5
 
 # Notify systemd
 sdnotify==0.3.2
 
 # API Server
-fastapi==0.123.0
+fastapi==0.124.0
 pydantic==2.12.5
 uvicorn==0.38.0
 pyjwt==2.10.1
