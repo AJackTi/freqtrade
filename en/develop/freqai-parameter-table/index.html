@@ -2520,6 +2520,10 @@
 <td><code>freqai.reduce_df_footprint</code></td>
 <td>Recast all numeric columns to float32/int32, with the objective of reducing ram/disk usage and decreasing train/inference timing. This parameter is set in the main level of the Freqtrade configuration file (not inside FreqAI). <br> <strong>Datatype:</strong> Boolean. <br> Default: <code>False</code>.</td>
 </tr>
+<tr>
+<td><code>freqai.override_exchange_check</code></td>
+<td>Override the exchange check to force FreqAI to use exchanges that may not have enough historic data. Turn this to True if you know your FreqAI model and strategy do not require historical data. <br> <strong>Datatype:</strong> Boolean. <br> Default: <code>False</code>.</td>
+</tr>
 </tbody>
 </table>
 

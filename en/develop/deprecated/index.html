@@ -2513,7 +2513,7 @@ All functionalities of edge have been removed, and having edge configured will r
 <p>With version 2025.12, the handling of dynamic funding rates has been adjusted to also support dynamic funding rates down to 1h funding intervals.
 As a consequence, the mark and funding rate timeframes have been changed to 1h for every supported futures exchange.</p>
 <p>As the timeframe for both mark and funding_fee candles has changed (usually from 8h to 1h) - already downloaded data will have to be adjusted or partially re-downloaded.
-You can either re-download everything (<code>freqtrade download-data [...] --erase</code> - <img alt="⚠" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/26a0.svg" title=":warning:" /> can take a long time) - or download the updated data selectively.</p>
+You can either re-download everything (<code>freqtrade download-data [...] --erase</code> - <img alt="⚠" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/26a0.svg" title=":warning:" /> can take a long time) - or download the updated data selectively.</p>
 <h3 id="strategy">Strategy<a class="headerlink" href="#strategy" title="Permanent link">&para;</a></h3>
 <p>Most strategies should not need adjustments to continue to work as expected - however, strategies using <code>@informative("8h", candle_type="funding_rate")</code> or similar will have to switch the timeframe to 1h.
 The same is true for <code>dp.get_pair_dataframe(metadata["pair"], "8h", candle_type="funding_rate")</code> - which will need to be switched to 1h.</p>
