@@ -3255,10 +3255,10 @@ git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </
 <p>Determine if crucial bugfixes have been made between this commit and the current state, and eventually cherry-pick these.</p>
 <ul>
 <li>Merge the release branch (stable) into this branch.</li>
-<li>Edit <code>freqtrade/__init__.py</code> and add the version matching the current date (for example <code>2019.7</code> for July 2019). Minor versions can be <code>2019.7.1</code> should we need to do a second release that month. Version numbers must follow allowed versions from PEP0440 to avoid failures pushing to pypi.</li>
+<li>Edit <code>freqtrade/__init__.py</code> and add the version matching the current date (for example <code>2025.7</code> for July 2025). Minor versions can be <code>2025.7.1</code> should we need to do a second release that month. Version numbers must follow allowed versions from PEP0440 to avoid failures pushing to pypi.</li>
 <li>Commit this part.</li>
 <li>Push that branch to the remote and create a PR against the <strong>stable branch</strong>.</li>
-<li>Update develop version to next version following the pattern <code>2019.8-dev</code>.</li>
+<li>Update develop version to next version following the pattern <code>2025.8-dev</code>.</li>
 </ul>
 <h3 id="create-changelog-from-git-commits">Create changelog from git commits<a class="headerlink" href="#create-changelog-from-git-commits" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Needs to be done before merging / pulling that branch.</span>
@@ -3286,31 +3286,31 @@ Make sure that freqUI CI on the release is finished and passed before merging th
 </ul>
 <details class="tip">
 <summary>Release template</summary>
-<div class="highlight"><pre><span></span><code>## Highlighted changes
+<div class="highlight"><pre><span></span><code># Highlighted changes
 
 - ...
 
-### How to update
+## How to update
 
 As always, you can update your bot using one of the following commands:
 
-#### docker-compose
+### docker-compose
 
 ```bash
 docker-compose pull
 docker-compose up -d
 ```
 
-#### Installation via setup script
+### Installation via setup script
 
-```
+``` bash
 # Deactivate venv and run 
 ./setup.sh --update
 ```
 
-#### Plain native installation
+### Plain native installation
 
-```
+``` bash
 git pull
 pip install -U -r requirements.txt
 ```

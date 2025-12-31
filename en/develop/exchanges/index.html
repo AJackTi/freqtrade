@@ -1638,6 +1638,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#hip-3-dexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HIP-3 DEXes
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2659,6 +2670,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#hip-3-dexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HIP-3 DEXes
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3210,6 +3232,32 @@ To use these with Freqtrade, you will need to use the following configuration pa
 </div>
 <h3 id="historic-hyperliquid-data">Historic Hyperliquid data<a class="headerlink" href="#historic-hyperliquid-data" title="Permanent link">&para;</a></h3>
 <p>The Hyperliquid API does not provide historic data beyond the single call to fetch current data, so downloading data is not possible, as the downloaded data would not constitute proper historic data.</p>
+<h3 id="hip-3-dexes">HIP-3 DEXes<a class="headerlink" href="#hip-3-dexes" title="Permanent link">&para;</a></h3>
+<p>Hyperliquid supports HIP-3 decentralized exchanges (DEXes), which are independent exchanges built on top of the Hyperliquid infrastructure.
+These DEXes operate similarly to the main Hyperliquid exchange but are community-created and managed.</p>
+<p>To trade on HIP-3 DEXes with Freqtrade, you need to add them to your configuration using the <code>hip3_dexes</code> parameter:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;exchange&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hyperliquid&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;walletAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your_master_wallet_address&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;privateKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your_api_private_key&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;hip3_dexes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;dex_name_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;dex_name_2&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Replace <code>"dex_name_1"</code> and <code>"dex_name_2"</code> with the actual names of the HIP-3 DEXes you want to trade on (e.g. <code>vntl</code> and <code>xyz</code>).</p>
+<div class="admonition warning">
+<p class="admonition-title">Performance and Rate Limit Impact</p>
+<p>Each HIP-3 DEX you add significantly impacts bot performance and rate limits.</p>
+<ul>
+<li><strong>Additional API Calls</strong>: For each HIP-3 DEX configured, Freqtrade needs to make additional API calls.</li>
+<li><strong>Rate Limit Pressure</strong>: Additional API calls contribute to Hyperliquid's strict rate limits. With multiple DEXes, you may hit rate limits faster, or rather, slow down bot operations due to enforced delays.</li>
+</ul>
+<p>Please only add HIP-3 DEXes that you actively trade on. Monitor your logs for rate limit warnings or signs of slowed operations, and adjust your configuration accordingly.<br />
+Different HIP-3 DEXes may also use different quote currencies - so make sure to only add DEXes that are compatible with your stake currency to avoid unnecessary delays.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>HIP-3 DEXes share the same wallet and free amount of collateral as your main Hyperliquid account. Trades on different DEXes will affect your overall account balance and margin.</p>
+</div>
 <h2 id="bitvavo">Bitvavo<a class="headerlink" href="#bitvavo" title="Permanent link">&para;</a></h2>
 <p>If your account is required to use an operatorId, you can set it in the configuration file as follows:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;exchange&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
