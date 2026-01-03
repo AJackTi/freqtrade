@@ -2521,7 +2521,9 @@ def test_api_strategy(botclient, tmp_path, mocker):
     assert_response(rc)
     assert rc.json()["strategy"] == CURRENT_TEST_STRATEGY
 
-    data = (Path(__file__).parents[1] / "strategy/strats/strategy_test_v3.py").read_text()
+    data = (Path(__file__).parents[1] / "strategy/strats/strategy_test_v3.py").read_text(
+        encoding="utf-8"
+    )
     assert rc.json()["code"] == data
 
     rc = client_get(client, f"{BASE_URI}/strategy/NoStrat")
@@ -2554,6 +2556,7 @@ def test_api_exchanges(botclient):
         "valid": True,
         "supported": True,
         "comment": "",
+        "comment_futures": ANY,
         "dex": False,
         "is_alias": False,
         "alias_for": None,
@@ -2571,6 +2574,7 @@ def test_api_exchanges(botclient):
         "supported": False,
         "dex": False,
         "comment": "",
+        "comment_futures": ANY,
         "is_alias": False,
         "alias_for": None,
         "trade_modes": [{"trading_mode": "spot", "margin_mode": ""}],
@@ -2583,6 +2587,7 @@ def test_api_exchanges(botclient):
         "supported": False,
         "dex": True,
         "comment": ANY,
+        "comment_futures": ANY,
         "is_alias": False,
         "alias_for": None,
         "trade_modes": [{"trading_mode": "spot", "margin_mode": ""}],

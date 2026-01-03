@@ -105,7 +105,6 @@ from freqtrade.misc import (
     file_dump_json,
     file_load_json,
     safe_value_fallback,
-    safe_value_fallback2,
 )
 from freqtrade.util import FtTTLCache, PeriodicCache, dt_from_ts, dt_now
 from freqtrade.util.datetime_helpers import dt_humanize_delta, dt_ts, format_ms_time
@@ -480,7 +479,7 @@ class Exchange:
     def _log_exchange_response(self, endpoint: str, response, *, add_info=None) -> None:
         """Log exchange responses"""
         if self.log_responses:
-            add_info_str = "" if add_info is None else f" {add_info}: "
+            add_info_str = "" if add_info is None else f"{add_info}: "
             logger.info(f"API {endpoint}: {add_info_str}{response}")
 
     def ohlcv_candle_limit(
@@ -2093,7 +2092,7 @@ class Exchange:
                     )
                     ticker = tickers_other.get(pair, None)
                 if ticker:
-                    rate: float | None = safe_value_fallback2(ticker, ticker, "last", "ask", None)
+                    rate: float | None = safe_value_fallback(ticker, "last", "ask", None)
                     if rate and pair.startswith(currency) and not pair.endswith(currency):
                         rate = 1.0 / rate
                     return rate
@@ -2393,6 +2392,16 @@ class Exchange:
             raise OperationalException(e) from e
 
     def get_order_id_conditional(self, order: CcxtOrder) -> str:
+        """
+        Return order id or id_stop (for conditional orders) based on exchange settings
+
+        :param order: ccxt order dict
+        :return: correct order id
+        """
+        if self.get_option("stoploss_query_requires_stop_flag") and (
+            order["type"] in ("stoploss", "stop")
+        ):
+            return safe_value_fallback(order, "id_stop", "id")
         return order["id"]
 
     @retrier
