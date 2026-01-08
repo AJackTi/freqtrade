@@ -199,24 +199,25 @@ class Exchange:
         # Due to funding fee fetching.
         self._loop_lock = Lock()
         self.loop = self._init_async_loop()
-        self._config: Config = {}
+        self._config: Config = config
 
         # Leverage properties
         self.trading_mode: TradingMode = TradingMode(
-            config.get("trading_mode", self._supported_trading_mode_margin_pairs[0][0])
+            self._config.get("trading_mode", self._supported_trading_mode_margin_pairs[0][0])
         )
         self.margin_mode: MarginMode = MarginMode(
-            MarginMode(config.get("margin_mode"))
-            if config.get("margin_mode")
+            MarginMode(self._config.get("margin_mode"))
+            if self._config.get("margin_mode")
             else self._supported_trading_mode_margin_pairs[0][1]
         )
-        config["trading_mode"] = self.trading_mode
-        config["margin_mode"] = self.margin_mode
-        config["candle_type_def"] = CandleType.get_default(self.trading_mode)
-        self._config.update(config)
-        self.liquidation_buffer = config.get("liquidation_buffer", 0.05)
+        self._config["trading_mode"] = self.trading_mode
+        self._config["margin_mode"] = self.margin_mode
+        self._config["candle_type_def"] = CandleType.get_default(self.trading_mode)
+        self.liquidation_buffer = self._config.get("liquidation_buffer", 0.05)
 
-        exchange_conf: ExchangeConfig = exchange_config if exchange_config else config["exchange"]
+        exchange_conf: ExchangeConfig = (
+            exchange_config if exchange_config else self._config["exchange"]
+        )
 
         # Deep merge ft_has with default ft_has options
         # Must be called before ft_has is used.
@@ -247,14 +248,14 @@ class Exchange:
         # Holds all open sell orders for dry_run
         self._dry_run_open_orders: dict[str, Any] = {}
 
-        if config["dry_run"]:
+        if self._config["dry_run"]:
             logger.info("Instance is running with dry_run enabled")
         logger.info(f"Using CCXT {ccxt.__version__}")
 
         # Don't remove exchange credentials for dry-run or if always_require_api_keys is set
         remove_exchange_credentials(
             exchange_conf,
-            not self._ft_has["always_require_api_keys"] and config.get("dry_run", False),
+            not self._ft_has["always_require_api_keys"] and self._config.get("dry_run", False),
         )
         self.log_responses = exchange_conf.get("log_responses", False)
 
@@ -295,7 +296,7 @@ class Exchange:
         if validate:
             # Initial markets load
             self.reload_markets(True, load_leverage_tiers=False)
-            self.validate_config(config)
+            self.validate_config(self._config)
 
         if self.trading_mode != TradingMode.SPOT and load_leverage_tiers:
             self.fill_leverage_tiers()
@@ -2061,12 +2062,13 @@ class Exchange:
         """
         return self._config["stake_currency"]
 
-    def get_conversion_rate(self, coin: str, currency: str) -> float | None:
+    def get_conversion_rate(self, coin: str, currency: str, *, cached=True) -> float | None:
         """
         Quick and cached way to get conversion rate one currency to the other.
         Can then be used as "rate * amount" to convert between currencies.
         :param coin: Coin to convert
         :param currency: Currency to convert to
+        :param cached: Allow cached tickers, default True
         :returns: Conversion rate from coin to currency
         :raises: ExchangeErrors
         """
@@ -2077,13 +2079,13 @@ class Exchange:
             currency = proxy_currency
         if coin == currency:
             return 1.0
-        tickers = self.get_tickers(cached=True)
+        tickers = self.get_tickers(cached=cached)
         try:
             for pair in self.get_valid_pair_combination(coin, currency):
                 ticker: Ticker | None = tickers.get(pair, None)
                 if not ticker:
                     tickers_other: Tickers = self.get_tickers(
-                        cached=True,
+                        cached=cached,
                         market_type=(
                             TradingMode.SPOT
                             if self.trading_mode != TradingMode.SPOT
