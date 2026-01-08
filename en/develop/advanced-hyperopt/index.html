@@ -2188,7 +2188,7 @@ For the sample below, you then need to add the command line parameter <code>--hy
         <span class="p">]</span>
 
         <span class="c1"># Define a custom max_open_trades space</span>
-        <span class="k">def</span><span class="w"> </span><span class="nf">max_open_trades_space</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dimension</span><span class="p">]:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">max_open_trades_space</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dimension</span><span class="p">]:</span>
             <span class="k">return</span> <span class="p">[</span>
                 <span class="n">Integer</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;max_open_trades&#39;</span><span class="p">),</span>
             <span class="p">]</span>
