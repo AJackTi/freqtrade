@@ -334,53 +334,6 @@
   
   
   
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Installation
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../installation/" class="md-nav__link">
         
@@ -389,7 +342,7 @@
   <span class="md-ellipsis">
     
   
-    Linux/MacOS/Raspberry
+    Installation
   
 
     
@@ -398,42 +351,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../windows_installation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Windows
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1672,10 +1589,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overriding pre-defined spaces">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#dynamic-parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1685,8 +1601,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#overriding-base-estimator" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1694,11 +1610,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1996,10 +1907,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overriding pre-defined spaces">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#dynamic-parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2009,8 +1919,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#overriding-base-estimator" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2018,11 +1928,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2197,7 +2102,7 @@ For the sample below, you then need to add the command line parameter <code>--hy
 <p class="admonition-title">Note</p>
 <p>All overrides are optional and can be mixed/matched as necessary.</p>
 </div>
-<h3 id="dynamic-parameters">Dynamic parameters<a class="headerlink" href="#dynamic-parameters" title="Permanent link">&para;</a></h3>
+<h2 id="dynamic-parameters">Dynamic parameters<a class="headerlink" href="#dynamic-parameters" title="Permanent link">&para;</a></h2>
 <p>Parameters can also be defined dynamically, but must be available to the instance once the <a href="../strategy-callbacks/#bot-start"><code>bot_start()</code> callback</a> has been called.</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MyAwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
 
@@ -2210,7 +2115,7 @@ For the sample below, you then need to add the command line parameter <code>--hy
 <p class="admonition-title">Warning</p>
 <p>Parameters created this way will not show up in the <code>list-strategies</code> parameter count.</p>
 </div>
-<h3 id="overriding-base-estimator">Overriding Base estimator<a class="headerlink" href="#overriding-base-estimator" title="Permanent link">&para;</a></h3>
+<h2 id="overriding-base-estimator">Overriding Base estimator<a class="headerlink" href="#overriding-base-estimator" title="Permanent link">&para;</a></h2>
 <p>You can define your own optuna sampler for Hyperopt by implementing <code>generate_estimator()</code> in the Hyperopt subclass.</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MyAwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
     <span class="k">class</span><span class="w"> </span><span class="nc">HyperOpt</span><span class="p">:</span>

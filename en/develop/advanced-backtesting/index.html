@@ -334,53 +334,6 @@
   
   
   
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Installation
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../installation/" class="md-nav__link">
         
@@ -389,7 +342,7 @@
   <span class="md-ellipsis">
     
   
-    Linux/MacOS/Raspberry
+    Installation
   
 
     
@@ -398,42 +351,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../windows_installation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Windows
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2194,24 +2111,23 @@ ranging from the simplest (0) to the most detailed per pair, per buy and per sel
 <li>1: profit summaries grouped by enter_tag</li>
 <li>2: profit summaries grouped by enter_tag and exit_tag</li>
 <li>3: profit summaries grouped by pair and enter_tag</li>
-<li>4: profit summaries grouped by pair, enter_ and exit_tag (this can get quite large)</li>
+<li>4: profit summaries grouped by pair, enter_tag and exit_tag (this can get quite large)</li>
 <li>5: profit summaries grouped by exit_tag</li>
 </ul>
 <p>More options are available by running with the <code>-h</code> option.</p>
 <h3 id="using-backtest-filename">Using backtest-filename<a class="headerlink" href="#using-backtest-filename" title="Permanent link">&para;</a></h3>
 <p>By default, <code>backtesting-analysis</code> processes the most recent backtest results in the <code>user_data/backtest_results</code> directory. 
 If you want to analyze results from an earlier backtest, use the <code>--backtest-filename</code> option to specify the desired file. This lets you revisit and re-analyze historical backtest outputs at any time by providing the filename of the relevant backtest result:</p>
-<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>backtesting-analysis<span class="w"> </span>-c<span class="w"> </span>&lt;config.json&gt;<span class="w"> </span>--timeframe<span class="w"> </span>&lt;tf&gt;<span class="w"> </span>--strategy<span class="w"> </span>&lt;strategy_name&gt;<span class="w"> </span>--timerange<span class="w"> </span>&lt;timerange&gt;<span class="w"> </span>--export<span class="w"> </span>signals<span class="w"> </span>--backtest-filename<span class="w"> </span>backtest-result-2025-03-05_20-38-34.zip
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>backtesting<span class="w"> </span>-c<span class="w"> </span>&lt;config.json&gt;<span class="w"> </span>--strategy<span class="w"> </span>&lt;strategy_name&gt;<span class="w"> </span>--timerange<span class="w"> </span>&lt;timerange&gt;<span class="w"> </span>--export<span class="w"> </span>signals<span class="w"> </span>--backtest-filename<span class="w"> </span>backtest-result-2025-03-05_20-38-34.zip
 </code></pre></div>
-<p>You should see some output similar to below in the logs with the name of the timestamped
-filename that was exported:</p>
+<p>You should see some output similar to below in the logs with the name of the timestamped filename that was exported:</p>
 <div class="highlight"><pre><span></span><code>2022-06-14 16:28:32,698 - freqtrade.misc - INFO - dumping json to &quot;mystrat_backtest-2022-06-14_16-28-32.json&quot;
 </code></pre></div>
 <p>You can then use that filename in <code>backtesting-analysis</code>:</p>
-<div class="highlight"><pre><span></span><code>freqtrade backtesting-analysis -c &lt;config.json&gt; --backtest-filename=mystrat_backtest-2022-06-14_16-28-32.json
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>backtesting-analysis<span class="w"> </span>-c<span class="w"> </span>&lt;config.json&gt;<span class="w"> </span>--backtest-filename<span class="o">=</span>backtest-result-2025-03-05_20-38-34.zip
 </code></pre></div>
 <p>To use a result from a different results directory, you can use  <code>--backtest-directory</code> to specify the directory</p>
-<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>backtesting-analysis<span class="w"> </span>-c<span class="w"> </span>&lt;config.json&gt;<span class="w"> </span>--backtest-directory<span class="w"> </span>custom_results/<span class="w"> </span>--backtest-filename<span class="w"> </span>mystrat_backtest-2022-06-14_16-28-32.json
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>backtesting-analysis<span class="w"> </span>-c<span class="w"> </span>&lt;config.json&gt;<span class="w"> </span>--backtest-directory<span class="w"> </span>custom_results/<span class="w"> </span>--backtest-filename<span class="w"> </span>backtest-result-2025-03-05_20-38-34.zip
 </code></pre></div>
 <h3 id="tuning-the-buy-tags-and-sell-tags-to-display">Tuning the buy tags and sell tags to display<a class="headerlink" href="#tuning-the-buy-tags-and-sell-tags-to-display" title="Permanent link">&para;</a></h3>
 <p>To show only certain buy and sell tags in the displayed output, use the following two options:</p>
@@ -2236,7 +2152,7 @@ output.</p>
 <p>The indicator values will be displayed for both entry and exit points. If <code>--indicator-list all</code> is specified, 
 only the indicators at the entry point will be shown to avoid excessively large lists, which could occur depending on the strategy.</p>
 </div>
-<p>There are a range of candle and trade-related fields that are included in the analysis so are 
+<p>There are a range of candle and trade-related fields that are included in the analysis so are
 automatically accessible by including them on the indicator-list, and these include:</p>
 <ul>
 <li><strong>open_date     :</strong> trade open datetime</li>

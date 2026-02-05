@@ -334,53 +334,6 @@
   
   
   
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Installation
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../installation/" class="md-nav__link">
         
@@ -389,7 +342,7 @@
   <span class="md-ellipsis">
     
   
-    Linux/MacOS/Raspberry
+    Installation
   
 
     
@@ -398,42 +351,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../windows_installation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Windows
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1824,6 +1741,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#why-update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why update?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#docker" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1854,10 +1782,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Plain native installation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#problems-updating" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1865,11 +1792,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1964,6 +1886,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#why-update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why update?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#docker" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1994,10 +1927,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Plain native installation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#problems-updating" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2005,11 +1937,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2045,6 +1972,10 @@
 <p>Breaking changes / changed behavior will be documented in the changelog that is posted alongside every release.
 For the develop branch, please follow PR's to avoid being surprised by changes.</p>
 </div>
+<h2 id="why-update">Why update?<a class="headerlink" href="#why-update" title="Permanent link">&para;</a></h2>
+<p>Keeping your bot updated not only ensures that you have the latest features and improvements, but is a requirement to keep your bot running smoothly.
+Freqtrade is heavily dependent on the underlying exchange API's, which change pretty frequently if considered across exchanges.
+To ensure ongoing compatibility, please make sure to update your bot regularly.</p>
 <h2 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Legacy installations using the <code>master</code> image</p>
@@ -2069,9 +2000,12 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <span class="c1"># Ensure freqUI is at the latest version</span>
 freqtrade<span class="w"> </span>install-ui<span class="w"> </span>
 </code></pre></div>
-<h3 id="problems-updating">Problems updating<a class="headerlink" href="#problems-updating" title="Permanent link">&para;</a></h3>
-<p>Update-problems usually come missing dependencies (you didn't follow the above instructions) - or from updated dependencies, which fail to install (for example TA-lib).
-Please refer to the corresponding installation sections (common problems linked below)</p>
+<h2 id="problems-updating">Problems updating<a class="headerlink" href="#problems-updating" title="Permanent link">&para;</a></h2>
+<p>Update-problems usually come missing dependencies (you didn't follow the above instructions) - or from dependencies which fail to install.
+We try to make sure that heavy dependencies have wheels available for major platforms, but sometimes this is not possible.</p>
+<p>Please refer to the corresponding installation sections (common problem sections linked below).</p>
+<p><a href="../installation/#troubleshooting">Common installation problems</a>
+<a href="../installation/#windows-installation-error">Common installation problems - windows</a></p>
 
 
 
