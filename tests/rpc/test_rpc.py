@@ -583,7 +583,8 @@ def test_rpc_balance_handle_error(default_conf, mocker, caplog):
 
 @pytest.mark.parametrize("proxy_coin", [None, "BNFCR"])
 @pytest.mark.parametrize("margin_mode", ["isolated", "cross"])
-def test_rpc_balance_handle(default_conf_usdt, mocker, tickers, proxy_coin, margin_mode):
+@pytest.mark.parametrize("is_short", [True, False])
+def test_rpc_balance_handle(default_conf_usdt, mocker, tickers, proxy_coin, margin_mode, is_short):
     mock_balance = {
         "BTC": {
             "free": 0.01,
@@ -608,6 +609,8 @@ def test_rpc_balance_handle(default_conf_usdt, mocker, tickers, proxy_coin, marg
             "used": 5.0,
         },
     }
+    # Fake ADA response
+    tickers.return_value["ADA/USDT"] = tickers.return_value["ETH/USDT"]
     if proxy_coin:
         default_conf_usdt["proxy_coin"] = proxy_coin
         mock_balance[proxy_coin] = {
@@ -616,12 +619,13 @@ def test_rpc_balance_handle(default_conf_usdt, mocker, tickers, proxy_coin, marg
             "used": 0.0,
         }
 
+    # Current ADA price based on Tickers is 530.21 USDT
     mock_pos = [
         {
-            "symbol": "ETH/USDT:USDT",
+            "symbol": "ADA/USDT:USDT",
             "timestamp": None,
             "datetime": None,
-            "initialMargin": 20,
+            "initialMargin": 50,
             "initialMarginPercentage": None,
             "maintenanceMargin": 0.0,
             "maintenanceMarginPercentage": 0.005,
@@ -629,15 +633,15 @@ def test_rpc_balance_handle(default_conf_usdt, mocker, tickers, proxy_coin, marg
             "notional": 10.0,
             "leverage": 5.0,
             "unrealizedPnl": 0.0,
-            "contracts": 1.0,
+            "contracts": 0.48,
             "contractSize": 1,
             "marginRatio": None,
             "liquidationPrice": 0.0,
-            "markPrice": 2896.41,
+            "markPrice": 520,  # Entry price ...
             # Collateral is in USDT - and can be higher than position size in cross mode
-            "collateral": 50,
+            "collateral": 100,
             "marginType": "cross",
-            "side": "short",
+            "side": "short" if is_short else "long",
             "percentage": None,
         }
     ]
@@ -652,6 +656,7 @@ def test_rpc_balance_handle(default_conf_usdt, mocker, tickers, proxy_coin, marg
         get_valid_pair_combination=MagicMock(
             side_effect=lambda a, b: [f"{b}/{a}" if a == "USDT" else f"{a}/{b}"]
         ),
+        _contracts_to_amount=MagicMock(side_effect=lambda c, cs: cs),
     )
     default_conf_usdt["dry_run"] = False
     default_conf_usdt["trading_mode"] = "futures"
@@ -664,7 +669,7 @@ def test_rpc_balance_handle(default_conf_usdt, mocker, tickers, proxy_coin, marg
     mocker.patch(
         "freqtrade.persistence.trade_model.Trade.get_open_trades",
         return_value=[
-            MagicMock(pair="ETH/USDT:USDT", safe_base_currency="ETH"),
+            MagicMock(pair="ADA/USDT:USDT", safe_base_currency="ADA"),
         ],
     )
     result = rpc._rpc_balance(
@@ -734,15 +739,15 @@ def test_rpc_balance_handle(default_conf_usdt, mocker, tickers, proxy_coin, marg
             "is_position": False,
         },
         {
-            "currency": "ETH/USDT:USDT",
+            "currency": "ADA/USDT:USDT",
             "free": 0,
             "balance": 0,
             "used": 0,
-            "position": 10.0,
-            "est_stake": 5222.1,
-            "est_stake_bot": 5222.1,
+            "position": 0.48,
+            "est_stake": pytest.approx(45.4992 if is_short else 54.5008),
+            "est_stake_bot": pytest.approx(45.4992 if is_short else 54.5008),
             "stake": "USDT",
-            "side": "short",
+            "side": "short" if is_short else "long",
             "is_bot_managed": True,
             "is_position": True,
         },
@@ -802,16 +807,103 @@ def test_rpc_balance_handle(default_conf_usdt, mocker, tickers, proxy_coin, marg
 
     assert result["currencies"] == expected_curr
     if proxy_coin and margin_mode == "cross":
-        assert pytest.approx(result["total_bot"]) == 6707.1
-        assert pytest.approx(result["total"]) == 7388.7972  # ETH stake is missing.
+        # only USDT and ADA position are bot-managed
+        assert pytest.approx(result["total_bot"]) == (1530.4992 if is_short else 1539.5008)
+        assert pytest.approx(result["total"]) == (2212.19640 if is_short else 2221.198)
         assert result["starting_capital"] == 1500 * default_conf_usdt["tradable_balance_ratio"]
-        assert result["starting_capital_ratio"] == pytest.approx(3.5165656)
+        assert result["starting_capital_ratio"] == pytest.approx(
+            0.03063919 if is_short else 0.03670087
+        )
     else:
-        assert pytest.approx(result["total_bot"]) == 5271.6
-        assert pytest.approx(result["total"]) == 5888.7972  # ETH stake is missing.
+        # only USDT and ADA position are bot-managed
+        assert pytest.approx(result["total_bot"]) == (94.9992 if is_short else 104.0008)
+        assert pytest.approx(result["total"]) == (712.1964 if is_short else 721.1980)
         assert result["starting_capital"] == 50 * default_conf_usdt["tradable_balance_ratio"]
-        assert result["starting_capital_ratio"] == pytest.approx(105.496969)
+        assert result["starting_capital_ratio"] == pytest.approx(0.919175 if is_short else 1.101026)
     assert pytest.approx(result["value"]) == result["total"] * 1.2
+
+
+def test_rpc_balance_futures(default_conf_usdt, mocker):
+    """Validate est_stake (equity) calculation for both short and long positions.
+
+    Short scenario:
+    - collateral = 100, leverage = 2, position = 2, rate = 50
+    - open_value = 200, current_value = 100 -> unlevered PnL = 100
+    - equity = collateral + PnL = 200
+
+    Long scenario:
+    - collateral = 150, leverage = 3, position = 3, rate = 200
+    - open_value = 450, current_value = 600 -> unlevered PnL = 150
+    - equity = collateral + PnL = 300
+    """
+    from freqtrade.wallets import PositionWallet, Wallet
+
+    mock_balance = {"USDT": {"free": 1000.0, "total": 1000.0, "used": 0.0}}
+
+    # Patch exchange and wallets with different rates per base currency
+    def _rate(base, stake):
+        if base == "FOO":
+            return 50.0
+        if base == "BAR":
+            return 200.0
+        return None
+
+    mocker.patch.multiple(
+        EXMS,
+        validate_trading_mode_and_margin_mode=MagicMock(),
+        get_balances=MagicMock(return_value=mock_balance),
+        get_tickers=MagicMock(return_value={}),
+        get_conversion_rate=MagicMock(side_effect=_rate),
+        get_pair_base_currency=MagicMock(side_effect=lambda pair: pair.split("/")[0]),
+    )
+
+    default_conf_usdt["dry_run"] = False
+    default_conf_usdt["trading_mode"] = "futures"
+    default_conf_usdt["margin_mode"] = "isolated"
+
+    freqtradebot = get_patched_freqtradebot(mocker, default_conf_usdt)
+
+    # Create a short and a long position wallet directly to avoid depending on position parsing
+    short_pos = PositionWallet(
+        symbol="FOO/USDT:USDT",
+        position=2.0,
+        leverage=2.0,
+        collateral=100.0,
+        side="short",
+    )
+    long_pos = PositionWallet(
+        symbol="BAR/USDT:USDT",
+        position=3.0,
+        leverage=3.0,
+        collateral=150.0,
+        side="long",
+    )
+
+    mocker.patch.multiple(
+        freqtradebot.wallets,
+        get_all_positions=MagicMock(
+            return_value={short_pos.symbol: short_pos, long_pos.symbol: long_pos}
+        ),
+        get_all_balances=MagicMock(return_value={"USDT": Wallet("USDT", 1000.0, 1000.0, 0.0)}),
+    )
+
+    rpc = RPC(freqtradebot)
+    result = rpc._rpc_balance(
+        default_conf_usdt["stake_currency"], default_conf_usdt["fiat_display_currency"]
+    )
+
+    pos_short = next(c for c in result["currencies"] if c["currency"] == short_pos.symbol)
+    pos_long = next(c for c in result["currencies"] if c["currency"] == long_pos.symbol)
+
+    assert pos_short["est_stake"] == 200.0
+    assert pos_long["est_stake"] == 300.0
+    assert result["total"] == 1500.0
+    assert result["total_bot"] == 1490.0
+    assert result["value_bot"] == 0  # No fiat conversion
+    stake_pos = result["currencies"][0]
+    assert stake_pos["currency"] == "USDT"
+    assert stake_pos["est_stake_bot"] == 990.0
+    assert stake_pos["bot_owned"] == 990.0
 
 
 def test_rpc_start(mocker, default_conf) -> None:
