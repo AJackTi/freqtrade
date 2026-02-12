@@ -2988,7 +2988,7 @@ So, in order to mitigate Kraken API "Rate limit exceeded" exception, this config
 You can use either <code>"limit"</code> or <code>"market"</code> in the <code>order_types.stoploss</code> configuration setting to decide which type of stoploss shall be used.</p>
 </div>
 <h3 id="kucoin-blacklists">Kucoin Blacklists<a class="headerlink" href="#kucoin-blacklists" title="Permanent link">&para;</a></h3>
-<p>For Kucoin, it is suggested to add <code>"KCS/&lt;STAKE&gt;"</code> to your blacklist to avoid issues, unless you are willing to maintain enough extra <code>KCS</code> on the account or unless you're willing to disable using <code>KCS</code> for fees. 
+<p>For Kucoin, it is suggested to add <code>"KCS/&lt;STAKE&gt;"</code> to your blacklist to avoid issues, unless you are willing to maintain enough extra <code>KCS</code> on the account or unless you're willing to disable using <code>KCS</code> for fees.
 Kucoin accounts may use <code>KCS</code> for fees, and if a trade happens to be on <code>KCS</code>, further trades may consume this position and make the initial <code>KCS</code> trade unsellable as the expected amount is not there anymore.</p>
 <h2 id="htx">HTX<a class="headerlink" href="#htx" title="Permanent link">&para;</a></h2>
 <div class="admonition tip">
@@ -3174,6 +3174,7 @@ Different HIP-3 DEXes may also use different quote currencies - so make sure to 
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>HIP-3 DEXes share the same wallet and free amount of collateral as your main Hyperliquid account. Trades on different DEXes will affect your overall account balance and margin.</p>
+<p>The pair name for HIP-3 pairs will be slightly different than non HIP-3 pairs. Please use <code>list-pairs</code> subcommand to get the correct pair naming for all pairs for the specified dexes.</p>
 </div>
 <h2 id="bitvavo">Bitvavo<a class="headerlink" href="#bitvavo" title="Permanent link">&para;</a></h2>
 <p>If your account is required to use an operatorId, you can set it in the configuration file as follows:</p>
@@ -3219,7 +3220,7 @@ By default, Freqtrade assumes that incomplete candle is fetched from the exchang
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Please make sure to fully understand the impacts of these settings before modifying them.
-Using <code>_ft_has_params</code> overrides may lead to unexpected behavior, and may even break your bot. 
+Using <code>_ft_has_params</code> overrides may lead to unexpected behavior, and may even break your bot.
 We will not be able to provide support for issues caused by custom settings in <code>_ft_has_params</code>.</p>
 </div>
 

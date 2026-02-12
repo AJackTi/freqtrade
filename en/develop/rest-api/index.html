@@ -2247,7 +2247,7 @@
 <span class="w">        </span><span class="nt">&quot;listen_port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8080</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;verbosity&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;error&quot;</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;enable_openapi&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;jwt_secret_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;somethingrandom&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;jwt_secret_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;somethingRandomSomethingRandom123&quot;</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;CORS_origins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
 <span class="w">        </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Freqtrader&quot;</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SuperSecret1!&quot;</span><span class="p">,</span>
@@ -2281,7 +2281,7 @@ This should return the response:</p>
 <div class="admonition danger">
 <p class="admonition-title">Password selection</p>
 <p>Please make sure to select a very strong, unique password to protect your bot from unauthorized access.
-Also change <code>jwt_secret_key</code> to something random (no need to remember this, but it'll be used to encrypt your session, so it better be something unique!).</p>
+Also change <code>jwt_secret_key</code> to something random (no need to remember this, but it'll be used to encrypt your session, so it better be something unique!). This value should also be 32 characters or longer to be safe.</p>
 </div>
 <h3 id="configuration-with-docker">Configuration with docker<a class="headerlink" href="#configuration-with-docker" title="Permanent link">&para;</a></h3>
 <p>If you run your bot using docker, you'll need to have the bot listen to incoming connections. The security is then handled by docker.</p>
@@ -2809,7 +2809,7 @@ This can be used to consume real-time data from your bot, such as entry/exit fil
 <span class="w">    </span><span class="nt">&quot;listen_port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8080</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;verbosity&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;error&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;enable_openapi&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;jwt_secret_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;somethingrandom&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;jwt_secret_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;somethingRandomSomethingRandom123&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;CORS_origins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
 <span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Freqtrader&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SuperSecret1!&quot;</span><span class="p">,</span>
@@ -2907,7 +2907,7 @@ It consists of a list of allowed URL's that are allowed to consume resources fro
 <p>Assuming your application is deployed as <code>https://frequi.freqtrade.io/home/</code> - this would mean that the following configuration becomes necessary:</p>
 <div class="highlight"><pre><span></span><code>{
     //...
-    &quot;jwt_secret_key&quot;: &quot;somethingrandom&quot;,
+    &quot;jwt_secret_key&quot;: &quot;somethingRandomSomethingRandom123&quot;,
     &quot;CORS_origins&quot;: [&quot;https://frequi.freqtrade.io&quot;],
     //...
 }
@@ -2917,7 +2917,7 @@ It consists of a list of allowed URL's that are allowed to consume resources fro
 <p>The correct configuration for this case is <code>http://localhost:8080</code> - the main part of the URL including the port.</p>
 <div class="highlight"><pre><span></span><code>{
     //...
-    &quot;jwt_secret_key&quot;: &quot;somethingrandom&quot;,
+    &quot;jwt_secret_key&quot;: &quot;somethingRandomSomethingRandom123&quot;,
     &quot;CORS_origins&quot;: [&quot;http://localhost:8080&quot;],
     //...
 }
