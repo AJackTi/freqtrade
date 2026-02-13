@@ -3300,7 +3300,7 @@ Of course, many more things are possible, and all examples can be combined at wi
 <span class="sd">        e.g. returning -0.05 would create a stoploss 5% below current_rate.</span>
 <span class="sd">        The custom stoploss can never be below self.stoploss, which serves as a hard maximum loss.</span>
 
-<span class="sd">        For full documentation please go to https://www.freqtrade.io/en/latest/strategy-advanced/</span>
+<span class="sd">        For full documentation please go to https://www.freqtrade.io/en/stable/strategy-advanced/</span>
 
 <span class="sd">        When not implemented by a strategy, returns the initial stoploss value.</span>
 <span class="sd">        Only called when use_custom_stoploss is set to True.</span>
@@ -3794,7 +3794,7 @@ This are the last methods that will be called before an order is placed.</p>
 <span class="sd">        Timing for this function is critical, so avoid doing heavy computations or</span>
 <span class="sd">        network requests in this method.</span>
 
-<span class="sd">        For full documentation please go to https://www.freqtrade.io/en/latest/strategy-advanced/</span>
+<span class="sd">        For full documentation please go to https://www.freqtrade.io/en/stable/strategy-advanced/</span>
 
 <span class="sd">        When not implemented by a strategy, returns True (always confirming).</span>
 
@@ -3837,7 +3837,7 @@ The exit-reasons (if applicable) will be in the following sequence:</p>
 <span class="sd">        Timing for this function is critical, so avoid doing heavy computations or</span>
 <span class="sd">        network requests in this method.</span>
 
-<span class="sd">        For full documentation please go to https://www.freqtrade.io/en/latest/strategy-advanced/</span>
+<span class="sd">        For full documentation please go to https://www.freqtrade.io/en/stable/strategy-advanced/</span>
 
 <span class="sd">        When not implemented by a strategy, returns True (always confirming).</span>
 
@@ -3959,7 +3959,7 @@ Regular stoploss rules still apply (cannot move down).</p>
 <span class="sd">        This means extra entry or exit orders with additional fees.</span>
 <span class="sd">        Only called when `position_adjustment_enable` is set to True.</span>
 
-<span class="sd">        For full documentation please go to https://www.freqtrade.io/en/latest/strategy-advanced/</span>
+<span class="sd">        For full documentation please go to https://www.freqtrade.io/en/stable/strategy-advanced/</span>
 
 <span class="sd">        When not implemented by a strategy, returns None</span>
 
@@ -4079,7 +4079,7 @@ Orders that are cancelled via the above methods will not have this callback call
 <span class="sd">        This only executes when a order was already placed, still open (unfilled fully or partially)</span>
 <span class="sd">        and not timed out on subsequent candles after entry trigger.</span>
 
-<span class="sd">        For full documentation please go to https://www.freqtrade.io/en/latest/strategy-callbacks/</span>
+<span class="sd">        For full documentation please go to https://www.freqtrade.io/en/stable/strategy-callbacks/</span>
 
 <span class="sd">        When not implemented by a strategy, returns current_order_rate as default.</span>
 <span class="sd">        If current_order_rate is returned then the existing order is maintained.</span>
