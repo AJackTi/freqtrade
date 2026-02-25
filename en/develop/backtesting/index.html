@@ -2458,18 +2458,15 @@ To learn how to get data for the pairs and exchange you're interested in, head o
 <span class="go">  --strategy-list STRATEGY_LIST [STRATEGY_LIST ...]</span>
 <span class="go">                        Provide a space-separated list of strategies to</span>
 <span class="go">                        backtest. Please note that timeframe needs to be set</span>
-<span class="go">                        either in config or via command line. When using this</span>
-<span class="go">                        together with `--export trades`, the strategy-name is</span>
-<span class="go">                        injected into the filename (so `backtest-data.json`</span>
-<span class="go">                        becomes `backtest-data-SampleStrategy.json`</span>
+<span class="go">                        either in config or via command line.</span>
 <span class="go">  --export {none,trades,signals}</span>
 <span class="go">                        Export backtest results (default: trades).</span>
 <span class="go">  --backtest-filename, --export-filename PATH</span>
-<span class="go">                        Use this filename for backtest results.Example:</span>
-<span class="go">                        `--backtest-</span>
-<span class="go">                        filename=backtest_results_2020-09-27_16-20-48.json`.</span>
-<span class="go">                        Assumes either `user_data/backtest_results/` or</span>
-<span class="go">                        `--export-directory` as base directory.</span>
+<span class="go">                        DEPRECATED: This option is deprecated for backtesting</span>
+<span class="go">                        and will be removed in a future release. Using a</span>
+<span class="go">                        custom filename for backtest results is no longer</span>
+<span class="go">                        supported. Use `--backtest-directory` to specify the</span>
+<span class="go">                        directory.</span>
 <span class="go">  --backtest-directory, --export-directory PATH</span>
 <span class="go">                        Directory to use for backtest results. Example:</span>
 <span class="go">                        `--export-directory=user_data/backtest_results/`.</span>
